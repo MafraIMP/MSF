@@ -106,6 +106,35 @@ app.put('/api/users/:username', async (req, res) => {
     }
 });
 
+// --- NOVA ROTA: Aprovar alteração de nível pelo administrador mafrainf ---
+app.post('/api/admin/approve-level', async (req, res) => {
+    const { username, newRole, docId } = req.body;
+    
+    if (!username || !newRole || !docId) {
+        return res.status(400).json({ success: false, message: "Dados incompletos." });
+    }
+
+    // 1. Atualiza o nível no arquivo de usuários
+    const users = await getDatabase(USERS_FILE);
+    const userIndex = users.findIndex(u => u.username.toLowerCase() === username.toLowerCase());
+    
+    if (userIndex !== -1) {
+        users[userIndex].role = newRole;
+        await saveDatabase(USERS_FILE, users);
+    } else {
+        users.push({ username: username.toLowerCase(), role: newRole });
+        await saveDatabase(USERS_FILE, users);
+    }
+
+    // 2. Remove o documento de solicitação
+    let db = await getDatabase(DATA_FILE);
+    db = db.filter(doc => doc.id !== docId);
+    await saveDatabase(DATA_FILE, db);
+
+    console.log(`[ADMIN] Nível de ${username} atualizado para ${newRole}. Solicitação aprovada.`);
+    res.json({ success: true, message: "Nível atualizado com sucesso!" });
+});
+
 // ==========================================
 // ROTAS DE DOCUMENTOS (DATA.JSON)
 // ==========================================
