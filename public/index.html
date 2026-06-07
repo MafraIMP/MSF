@@ -985,7 +985,10 @@
     }
 
     // Gestão MGI
-    function openUsersModal() {
+    async function openUsersModal() {
+        // --- ADIÇÃO: Puxa a lista atualizada do servidor antes de abrir o painel ---
+        await fetchBackendUsers();
+        
         let accounts = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
         let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
         let container = document.getElementById('users-manager-list');

@@ -96,6 +96,24 @@ app.get('/api/docs', (req, res) => {
 app.post('/api/docs', (req, res) => {
     const db = getDatabase();
     
+	// --- ADIÇÃO: Rota para atualizar o cargo de um usuário ---
+app.put('/api/users/:username', (req, res) => {
+    const users = getUsers();
+    const username = req.params.username;
+    const newRole = req.body.role;
+
+    // Procura o usuário no array e atualiza o cargo se existir
+    const userIndex = users.findIndex(u => u.username === username);
+    if (userIndex !== -1) {
+        users[userIndex].role = newRole;
+        // Salva a alteração de volta no arquivo users.json
+        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+        res.json({ success: true });
+    } else {
+        res.status(404).json({ success: false, message: "Usuário não encontrado." });
+    }
+});
+	
     // Mapeia os campos originais, mas aceita expansões automáticas via operador spread (...)
     const newDoc = {
         id: crypto.randomUUID(),
@@ -118,6 +136,31 @@ app.post('/api/docs', (req, res) => {
     } else {
         res.status(500).json({ success: false, message: "Erro interno ao salvar o registro." });
     }
+});
+
+// Adicionar ao seu server.js
+const USERS_FILE = path.join(__dirname, 'users.json');
+
+// Função para ler usuários do disco
+function getUsers() {
+    if (!fs.existsSync(USERS_FILE)) return [];
+    return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+}
+
+// Rota para o Front-end buscar a lista (A Gestão M.G.I vai usar isto)
+app.get('/api/users', (req, res) => {
+    res.json(getUsers());
+});
+
+// Rota para salvar um usuário novo
+app.post('/api/users', (req, res) => {
+    const users = getUsers();
+    const newUser = req.body;
+    if (!users.find(u => u.username === newUser.username)) {
+        users.push(newUser);
+        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+    }
+    res.status(201).send();
 });
 
 // APRIMORAMENTO: Endpoint de Deleção robusto conectado ao data.json
