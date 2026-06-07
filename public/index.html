@@ -778,6 +778,40 @@
     
     let currentOpenDocId = null;
     let currentOpenDocObj = null;
+	
+	// --- NOVO SISTEMA DE SESSÃO E INATIVIDADE ---
+    const INACTIVITY_LIMIT = 10 * 60 * 1000; // 10 minutos
+    let inactivityTimer = null;
+
+    function updateActivityTimestamp() {
+        if (isLogged && currentUserGlobal !== "Visitante") {
+            let session = JSON.parse(localStorage.getItem('msf_session') || '{}');
+            if(session.user) {
+                session.lastActivity = Date.now();
+                localStorage.setItem('msf_session', JSON.stringify(session));
+            }
+        }
+    }
+
+    // Qualquer movimento do mouse ou teclado zera o tempo de 10 min
+    window.addEventListener('mousemove', updateActivityTimestamp);
+    window.addEventListener('keydown', updateActivityTimestamp);
+    window.addEventListener('click', updateActivityTimestamp);
+
+    function startInactivityMonitor() {
+        if(inactivityTimer) clearInterval(inactivityTimer);
+        inactivityTimer = setInterval(() => {
+            if (isLogged && currentUserGlobal !== "Visitante") {
+                let session = JSON.parse(localStorage.getItem('msf_session') || '{}');
+                if (session.lastActivity && (Date.now() - session.lastActivity > INACTIVITY_LIMIT)) {
+                    alert("SESSÃO EXPIRADA: 10 minutos de inatividade detectados. Desconectando por segurança.");
+                    localStorage.removeItem('msf_session');
+                    location.reload(); // Recarrega para voltar à tela de login
+                }
+            }
+        }, 30000); // Checa o tempo a cada 30 segundos
+    }
+    // ----------------------------------------------
 
     const levelMap = {
         'Agente': 1, 'Público': 1,
@@ -883,18 +917,26 @@
 
         if (userDB[user.toLowerCase()]) {
             if (userDB[user.toLowerCase()] === pass) {
-                isLogged = true; currentUserGlobal = user; initiateSystemSequence();
+                isLogged = true; currentUserGlobal = user; 
+                // Inicia Sessão
+                localStorage.setItem('msf_session', JSON.stringify({ user: user, lastActivity: Date.now() }));
+                startInactivityMonitor();
+                initiateSystemSequence();
             } else { alert("ACESSO NEGADO: Senha incorreta."); }
         } else {
             userDB[user.toLowerCase()] = pass;
             rolesDB[user.toLowerCase()] = 'Agente'; 
             localStorage.setItem('msf_local_accounts', JSON.stringify(userDB));
             localStorage.setItem('msf_account_roles', JSON.stringify(rolesDB));
-			// --- ADIÇÃO AQUI: Envia a nova conta para o servidor ---
             registerUserBackend(user.toLowerCase(), pass, 'Agente');
-            // --------------------------------------------------------
+            
             alert(`[NOVO OPERADOR]: A conta "${user.toUpperCase()}" foi registrada. Nível de Informação padrão: Agente.`);
-            isLogged = true; currentUserGlobal = user; initiateSystemSequence();
+            
+            isLogged = true; currentUserGlobal = user; 
+            // Inicia Sessão
+            localStorage.setItem('msf_session', JSON.stringify({ user: user, lastActivity: Date.now() }));
+            startInactivityMonitor();
+            initiateSystemSequence();
         }
     }
 
@@ -986,12 +1028,19 @@
 
     // Gestão MGI
     async function openUsersModal() {
-        // --- ADIÇÃO: Puxa a lista atualizada do servidor antes de abrir o painel ---
-        await fetchBackendUsers();
+        let container = document.getElementById('users-manager-list');
+        
+        // Efeito visual para você ter certeza que ele está conectando no Backend!
+        container.innerHTML = `<div style="padding: 30px; text-align: center; color: var(--indigo); font-family: var(--font-mono); font-size: 13px;">
+            <i class="fa-solid fa-satellite-dish fa-beat" style="margin-bottom: 10px; font-size: 20px;"></i><br>
+            Sincronizando Base Central...
+        </div>`;
+        openModal('users-modal');
+        
+        await fetchBackendUsers(); // Trava aqui até o servidor responder
         
         let accounts = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
         let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
-        let container = document.getElementById('users-manager-list');
         let html = '';
         
         for(let user in accounts) {
@@ -1013,7 +1062,6 @@
         
         if (Object.keys(accounts).length === 0) container.innerHTML = `<p style="font-family:var(--font-mono); font-size:11px; padding: 10px;">Nenhum operador registrado no sistema local.</p>`;
         else container.innerHTML = html;
-        openModal('users-modal');
     }
 
     function updateUserRole(user, newRole) {
@@ -1556,15 +1604,37 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); if(mgInterval) clearInterval(mgInterval); }
 
-    window.onload = function() {
+   window.onload = function() {
         fetchData();
-		// --- ADIÇÃO AQUI: Puxa todas as contas registradas no servidor ---
         fetchBackendUsers(); 
-        // -----------------------------------------------------------------
+
         let lockout = localStorage.getItem('msf_lockout');
         if (lockout && Date.now() < parseInt(lockout)) {
             let remaining = Math.ceil((parseInt(lockout) - Date.now()) / 1000);
             startLockoutScreenTimer(remaining);
+            return; // Impede o login se estiver no castigo de 30s
+        }
+
+        // --- VERIFICAÇÃO DE AUTO-LOGIN NO F5 ---
+        let sessionData = JSON.parse(localStorage.getItem('msf_session') || 'null');
+        if (sessionData && sessionData.user) {
+            if (Date.now() - sessionData.lastActivity < INACTIVITY_LIMIT) {
+                // Recupera o login instantaneamente
+                isLogged = true;
+                currentUserGlobal = sessionData.user;
+                sessionData.lastActivity = Date.now();
+                localStorage.setItem('msf_session', JSON.stringify(sessionData));
+                
+                document.getElementById('entry-screen').style.display = 'none';
+                startInactivityMonitor();
+                
+                // Abre o sistema direto sem a animação longa de entrada
+                setupInterfaceUI();
+                renderNavigationStructure();
+                fetchData();
+            } else {
+                localStorage.removeItem('msf_session'); // Passou de 10 min, exige senha
+            }
         }
     };
 </script>
