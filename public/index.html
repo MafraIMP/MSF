@@ -1156,6 +1156,49 @@
         }
     }
 
+// --- INÍCIO DA ADIÇÃO: SINCRONIZAÇÃO DE CONTAS COM O BACK-END ---
+    async function fetchBackendUsers() {
+        try {
+            const res = await fetch('/api/users');
+            const usersFromServer = await res.json();
+            
+            // Mescla os usuários do servidor com a memória local (NÃO apaga o código original)
+            let localAccs = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
+            let localRoles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
+            
+            usersFromServer.forEach(u => {
+                localAccs[u.username] = u.password;
+                localRoles[u.username] = u.role;
+            });
+            
+            localStorage.setItem('msf_local_accounts', JSON.stringify(localAccs));
+            localStorage.setItem('msf_account_roles', JSON.stringify(localRoles));
+        } catch(e) {
+            console.log("Aviso: Backend de usuários offline. Usando apenas contas locais.");
+        }
+    }
+
+    async function registerUserBackend(username, password, role) {
+        try {
+            await fetch('/api/users', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ username, password, role })
+            });
+        } catch(e) { console.log("Erro ao salvar usuário no backend."); }
+    }
+
+    async function updateUserRoleBackend(username, role) {
+        try {
+            await fetch(`/api/users/${username}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ role })
+            });
+        } catch(e) { console.log("Erro ao atualizar cargo no backend."); }
+    }
+    // --- FIM DA ADIÇÃO ---
+
     function getInfoColor(level) {
         if(level === 'Agente' || level === 'Público') return '#808080';
         if(level === 'Regente' || level === 'Restrito') return '#ffcc00';
