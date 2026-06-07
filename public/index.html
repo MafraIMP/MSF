@@ -890,6 +890,9 @@
             rolesDB[user.toLowerCase()] = 'Agente'; 
             localStorage.setItem('msf_local_accounts', JSON.stringify(userDB));
             localStorage.setItem('msf_account_roles', JSON.stringify(rolesDB));
+			// --- ADIÇÃO AQUI: Envia a nova conta para o servidor ---
+            registerUserBackend(user.toLowerCase(), pass, 'Agente');
+            // --------------------------------------------------------
             alert(`[NOVO OPERADOR]: A conta "${user.toUpperCase()}" foi registrada. Nível de Informação padrão: Agente.`);
             isLogged = true; currentUserGlobal = user; initiateSystemSequence();
         }
@@ -1014,6 +1017,9 @@
         let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
         roles[user] = newRole;
         localStorage.setItem('msf_account_roles', JSON.stringify(roles));
+		// --- ADIÇÃO AQUI: Atualiza o cargo no servidor ---
+        updateUserRoleBackend(user, newRole);
+        // -------------------------------------------------
         if(user === currentUserGlobal.toLowerCase()) setupInterfaceUI(); 
         renderDocs();
     }
@@ -1549,6 +1555,9 @@
 
     window.onload = function() {
         fetchData();
+		// --- ADIÇÃO AQUI: Puxa todas as contas registradas no servidor ---
+        fetchBackendUsers(); 
+        // -----------------------------------------------------------------
         let lockout = localStorage.getItem('msf_lockout');
         if (lockout && Date.now() < parseInt(lockout)) {
             let remaining = Math.ceil((parseInt(lockout) - Date.now()) / 1000);
