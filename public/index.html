@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>MSF // TERMINAL GATEWAY</title>
+    <link rel="icon" href="LOGO MSF.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* VARIAVEIS GLOBAIS DE DESIGN (ALTERÁVEIS PELO PAINEL) */
+            --bg: #ffffff;
+            --bg-image: none;
+            --text: #000000;
+            --indigo: #4B0082;
+            --border: #000000;
+            --gray-subtle: #f8f9fa;
+            --header-bg: #1a1525;
+            --header-text: #ffffff;
+            --card-bg: #ffffff;
+            --font-mono: 'Space Mono', 'Courier New', monospace;
+            --font-sans: 'Inter', 'Segoe UI', Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: var(--bg); 
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text); 
+            font-family: var(--font-sans); 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+            user-select: none;
+        }
+
+        /* TELA DE ENTRADA / COMPACT LOGIN PORTAL */
+        #entry-screen {
+            position: fixed; inset: 0; background: var(--header-bg); z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; transition: opacity 0.5s ease;
+        }
+        .login-gate-box {
+            background: #110d1a; border: 2px solid var(--indigo); width: 380px; padding: 30px;
+            box-shadow: 0 0 30px rgba(75, 0, 130, 0.4); text-align: center; color: #fff;
+        }
+        .login-gate-box h2 { font-family: var(--font-mono); font-size: 18px; letter-spacing: 2px; margin-top: 10px; color: var(--indigo); }
+        
+        /* TELA DE INTRODUÇÃO (ANIMAÇÃO DE CARGA) */
+        #intro-screen {
+            position: fixed; inset: 0; background: var(--header-bg); z-index: 9999;
+            display: none; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+        .intro-content { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .loader-container {
+            position: relative; width: 120px; height: 120px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .loader-container img { height: 60px; object-fit: contain; z-index: 2; }
+        .spinner {
+            position: absolute; inset: 0; border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--indigo); border-radius: 50%;
+            animation: spin 1s linear infinite; transition: border-color 0.3s;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #intro-text { font-family: var(--font-mono); color: #fff; font-size: 14px; letter-spacing: 2px; transition: color 0.3s; }
+
+        /* CABEÇALHO SUPERIOR (HEADER) */
+        header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: var(--header-bg); border-bottom: 2px solid var(--border); height: 70px; flex-shrink: 0; z-index: 20; color: var(--header-text); }
+        .brand { display: flex; align-items: center; gap: 15px; }
+        .brand img { height: 40px; object-fit: contain; }
+        .brand h1 { font-family: var(--font-mono); font-size: 18px; letter-spacing: 2px; margin: 0; color: var(--header-text); }
+        .brand span { color: var(--indigo); }
+
+        .system-status { display: flex; gap: 20px; font-family: var(--font-mono); font-size: 11px; align-items: center; }
+        .status-indicator { display: flex; align-items: center; gap: 6px; }
+        .dot { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; box-shadow: 0 0 5px #00ff00; }
+
+        .search-container { position: relative; width: 250px; margin-left: 10px; }
+        .search-container input { width: 100%; padding: 8px 35px 8px 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.1); color: var(--header-text); font-size: 12px; outline: none; transition: 0.3s; }
+        .search-container input:focus { border-color: var(--indigo); background: rgba(255,255,255,0.2); }
+        .search-container input::placeholder { color: rgba(255,255,255,0.5); }
+        .search-container i { position: absolute; right: 12px; top: 10px; color: rgba(255,255,255,0.5); }
+
+        /* BARRA HORIZONTAL DE NAVEGAÇÃO */
+        nav.horizontal-nav { 
+            display: flex; align-items: center; background: var(--gray-subtle); 
+            border-bottom: 3px solid var(--border); padding: 0 30px; 
+            flex-shrink: 0; z-index: 100; min-height: 55px; gap: 10px;
+            position: relative;
+        }
+
+        .nav-group-dropdown { position: relative; display: inline-block; }
+        .dropdown-trigger { 
+            padding: 12px 18px; cursor: pointer; font-size: 12px; font-weight: 800; 
+            display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; 
+            color: var(--text); font-family: var(--font-mono); text-transform: uppercase;
+            border: 1px solid transparent;
+        }
+        .dropdown-trigger:hover, .nav-group-dropdown.active .dropdown-trigger { background: var(--bg); border: 1px solid var(--border); }
+        .dropdown-trigger i.chevron { font-size: 10px; transition: transform 0.2s; }
+        .nav-group-dropdown.active .dropdown-trigger i.chevron { transform: rotate(180deg); }
+
+        .dropdown-content { 
+            display: none; position: absolute; top: 100%; left: 0; 
+            background-color: var(--card-bg); min-width: 220px; 
+            box-shadow: 4px 4px 0px var(--border); border: 2px solid var(--border); 
+            z-index: 200; flex-direction: column; padding: 5px 0;
+        }
+        .nav-group-dropdown.active .dropdown-content { display: flex; }
+
+        .dropdown-item { 
+            padding: 10px 15px; font-size: 12px; font-weight: 600; text-decoration: none; 
+            display: flex; align-items: center; gap: 10px; color: var(--text); cursor: pointer; transition: 0.15s;
+        }
+        .dropdown-item i { width: 14px; text-align: center; color: var(--item-color, var(--indigo)); }
+        .dropdown-item:hover { background-color: var(--gray-subtle); }
+        .dropdown-item.active { background-color: var(--gray-subtle); color: var(--indigo); font-weight: 800; border-left: 3px solid var(--indigo); }
+
+        #auth-status-ui { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+        /* PAINEL PRINCIPAL DE CONTEÚDO */
+        main { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .content-wrapper { flex: 1; padding: 40px; overflow-y: auto; background-color: rgba(255,255,255,0.05); backdrop-filter: blur(2px); }
+        
+        /* PAINEL DE INFORMAÇÕES (VISITANTE) */
+        #guest-info-panel { display: none; margin-bottom: 30px; border: 2px solid var(--border); background: var(--card-bg); padding: 25px; box-shadow: 5px 5px 0px rgba(0,0,0,0.1); }
+        .guest-title { font-family: var(--font-mono); color: var(--indigo); font-size: 20px; font-weight: 900; margin-bottom: 12px; }
+        .guest-desc { font-size: 14px; line-height: 1.6; opacity: 0.9; margin-bottom: 15px; }
+        .guest-warning { font-size: 11px; font-family: var(--font-mono); font-weight: bold; color: #d32f2f; background: rgba(211,47,47,0.1); padding: 8px 12px; border-left: 4px solid #d32f2f; display: inline-block; }
+
+        .view-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 4px solid var(--border); padding-bottom: 10px; }
+        .view-header h2 { font-family: var(--font-mono); font-size: 24px; text-transform: uppercase; color: var(--text); }
+
+        /* GRIDS DE DOCUMENTOS PADRÃO E UNIDADES */
+        .docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; grid-auto-flow: dense; }
+        
+        .doc-card { background: var(--card-bg); border: 2px solid var(--border); padding: 0; cursor: pointer; transition: 0.2s; position: relative; display: flex; flex-direction: column; color: var(--text); }
+        .doc-card:hover { transform: translate(-4px, -4px); box-shadow: 6px 6px 0px var(--border); border-color: var(--indigo); }
+        .card-badge { position: absolute; top: -10px; right: 10px; background: var(--text); color: var(--card-bg); font-family: var(--font-mono); font-size: 9px; padding: 2px 8px; border: 1px solid var(--card-bg); font-weight: bold; z-index: 10; }
+        .card-header { padding: 15px; border-bottom: 1px solid var(--border); background: var(--gray-subtle); }
+        .card-category { font-size: 10px; font-weight: 800; color: var(--indigo); text-transform: uppercase; margin-bottom: 5px; }
+        .card-title { font-size: 15px; font-weight: 800; line-height: 1.2; }
+        .card-body { padding: 15px; font-size: 12px; opacity: 0.8; line-height: 1.5; flex: 1; word-wrap: break-word; }
+        .card-footer { padding: 10px 15px; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 9px; display: flex; justify-content: space-between; opacity: 0.6; }
+
+        /* CARDS DE UNIDADES (VERTICAL) */
+        .unit-card { background: var(--card-bg); border: 2px solid var(--border); display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; position: relative; color: var(--text); height: 420px; }
+        .unit-card:hover { transform: translate(-4px, -4px); box-shadow: 6px 6px 0px var(--border); border-color: var(--indigo); }
+        .unit-card-photo { height: 220px; width: 100%; border-bottom: 2px solid var(--border); background: var(--gray-subtle); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        .unit-card-photo img, .unit-card-photo video { width: 100%; height: 100%; object-fit: cover; }
+        .unit-card-photo i { font-size: 40px; color: var(--border); opacity: 0.3; }
+        .unit-card-body { padding: 15px; flex: 1; display: flex; flex-direction: column; }
+        .unit-card-title { font-size: 18px; font-weight: 900; font-family: var(--font-mono); margin-bottom: 5px; text-transform: uppercase; line-height: 1.1; }
+        .unit-card-subtitle { font-size: 10px; font-weight: 800; color: var(--indigo); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
+        .unit-card-stats { display: flex; gap: 5px; flex-wrap: wrap; margin-top: auto; }
+        .unit-badge { font-family: var(--font-mono); font-size: 9px; font-weight: bold; padding: 3px 6px; background: var(--gray-subtle); border: 1px solid var(--border); color: var(--text); }
+
+        /* COMERCIAIS */
+        .commercial-horizontal { grid-column: span 2; }
+        .commercial-vertical { grid-row: span 2; height: 100%; }
+        .commercial-card-media { width: 100%; background: #000; display: flex; align-items: center; justify-content: center; border-bottom: 2px solid var(--border); overflow: hidden;}
+        .commercial-horizontal .commercial-card-media { height: 250px; }
+        .commercial-vertical .commercial-card-media { height: 400px; flex: 1; }
+        .commercial-card-media img, .commercial-card-media video { width: 100%; height: 100%; object-fit: cover; }
+
+        /* CENSURA VISUAL */
+        .censored-text { background-color: var(--text); color: var(--text); user-select: none; }
+        .censored-img { filter: blur(10px) grayscale(100%); opacity: 0.5; }
+
+        /* LAYOUT DE LEITURA UNIDADE */
+        .read-unit-layout { display: flex; gap: 30px; align-items: flex-start; }
+        .read-unit-info { flex: 1; }
+        .read-unit-photo { width: 280px; flex-shrink: 0; border: 4px double var(--border); padding: 5px; background: var(--card-bg); box-shadow: 5px 5px 0px rgba(0,0,0,0.15); text-align: center; }
+        .read-unit-photo img, .read-unit-photo video { max-width: 100%; display: block; margin: 0 auto; object-fit: contain; }
+        .unit-meta-field { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .unit-meta-label { font-family: var(--font-mono); font-size: 10px; color: var(--indigo); font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+        .unit-meta-value { font-size: 14px; font-weight: 600; line-height: 1.5;}
+
+        /* BOTÕES */
+        .btn { border: 2px solid var(--border); background: var(--card-bg); padding: 10px 20px; font-family: var(--font-mono); font-size: 11px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: var(--text); transition: 0.2s; }
+        .btn:hover { background: var(--text); color: var(--card-bg); }
+        .btn-indigo { background: var(--indigo); color: #fff; border-color: var(--indigo); }
+        .btn-indigo:hover { background: var(--text); border-color: var(--text); color: var(--card-bg); }
+        
+        /* CONTROLE DE ÁUDIO INFERIOR DIREITO */
+        #music-control-panel {
+            position: fixed; bottom: 15px; right: 15px; z-index: 999;
+            background: var(--card-bg); border: 2px solid var(--border); padding: 8px 12px;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px;
+        }
+        .btn-music { background: transparent; border: none; cursor: pointer; font-size: 12px; font-family: var(--font-mono); font-weight: bold; display: flex; align-items: center; gap: 5px; outline: none; color: var(--text); }
+        .volume-container { display: flex; align-items: center; gap: 5px; border-left: 1px solid var(--border); padding-left: 12px; }
+        .volume-container i { font-size: 10px; opacity: 0.6; }
+        input[type=range] { width: 60px; accent-color: var(--indigo); cursor: pointer; }
+
+        /* MODAIS */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-box { background: var(--card-bg); border: 4px solid var(--border); width: 700px; max-width: 95%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 15px 15px 0px rgba(0,0,0,0.3); color: var(--text); }
+        .modal-header { padding: 20px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--gray-subtle); }
+        .modal-body { padding: 30px; overflow-y: auto; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
+        .form-control { width: 100%; padding: 10px; border: 2px solid var(--border); font-size: 13px; outline: none; background: var(--card-bg); color: var(--text); }
+        .form-control:focus { border-color: var(--indigo); }
+        textarea.form-control { min-height: 120px; font-family: var(--font-mono); }
+        
+        input[type="file"].form-control { padding: 7px; cursor: pointer; }
+        input[type="file"]::file-selector-button { border: 1px solid var(--border); background: var(--gray-subtle); padding: 5px 10px; font-family: var(--font-mono); font-size: 10px; cursor: pointer; margin-right: 10px; transition: 0.2s; color: var(--text); }
+        input[type="file"]::file-selector-button:hover { background: var(--indigo); color: #fff; }
+
+        /* LEITOR DE DOCUMENTO (PADRÃO) */
+        .reader-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
+        .reader-stamps { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .stamp { border: 2px solid var(--border); padding: 4px 12px; font-family: var(--font-mono); font-weight: bold; font-size: 12px; text-transform: uppercase; }
+        .stamp.secret { border-color: #d32f2f; color: #d32f2f; transform: rotate(-2deg); }
+        .stamp.info-lvl { border-color: var(--info-color, var(--border)); color: var(--info-color, var(--text)); background: var(--card-bg); }
+        #read-text { font-size: 15px; line-height: 1.8; white-space: pre-wrap; font-family: 'Times New Roman', serif; }
+        .attached-photo-frame { border: 4px double var(--border); padding: 5px; background: var(--card-bg); margin-bottom: 25px; display: inline-block; max-width: 100%; box-shadow: 5px 5px 0px rgba(0,0,0,0.15); }
+        .attached-photo-frame img, .attached-photo-frame video { max-width: 100%; max-height: 380px; object-fit: contain; display: block; }
+
+        /* PALETA VISUAL PANEL */
+        .color-picker-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .color-field { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); padding: 8px; background: var(--card-bg); }
+        .color-field input[type="color"] { border: none; width: 30px; height: 30px; cursor: pointer; background: none; }
+
+        /* DESIGN ESTILIZADO DA ANIMAÇÃO DE BLOQUEIO TERMINAL MGI */
+        #lockout-screen {
+            position: fixed; inset: 0; background-color: #0b0713; z-index: 500000;
+            display: none; align-items: center; justify-content: center;
+            flex-direction: column; font-family: var(--font-mono); overflow: hidden;
+        }
+        .lockout-horizontal-band {
+            position: absolute; left: 0; right: 0; height: 90px;
+            background: linear-gradient(90deg, rgba(211,47,47,0.2) 0%, rgba(75,0,130,0.25) 100%);
+            border-top: 3px solid #ff0055; border-bottom: 3px solid #ff0055;
+            box-shadow: 0 0 25px rgba(255, 0, 85, 0.4); z-index: 1;
+            animation: bandPulse 2s infinite alternate ease-in-out;
+        }
+        .lockout-isolated-center {
+            position: relative; z-index: 2; background-color: #0b0713;
+            padding: 30px 60px; border: 2px solid #ff0055;
+            box-shadow: 0 0 40px rgba(255, 0, 85, 0.3); text-align: center;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+        }
+        .lockout-logo { height: 110px; object-fit: contain; animation: pulseGlow 1.2s infinite ease-in-out; }
+        
+        @keyframes bandPulse { 0% { opacity: 0.7; } 100% { opacity: 1; } }
+        @keyframes pulseGlow {
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px #ff0055); }
+            50% { transform: scale(1.04); filter: drop-shadow(0 0 25px #4B0082); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 5px #ff0055); }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--gray-subtle); }
+        ::-webkit-scrollbar-thumb { background: var(--border); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--indigo); }
+    </style>
+</head>
+<body>
+
+    <div id="lockout-screen">
+        <div class="lockout-horizontal-band"></div>
+        <div class="lockout-isolated-center">
+            <img src="LOGO MSF.png" alt="Logo MGI" class="lockout-logo">
+            <h1 style="color: #ff0055; font-size: 22px; letter-spacing: 3px; font-weight: 900; text-shadow: 0 0 10px #ff0055;">SISTEMA CONGELADO</h1>
+            <p style="color: #ffffff; font-size: 12px; max-width: 400px; line-height: 1.5; opacity: 0.9;">
+                Múltiplas violações de quebra de firewall detectadas. Este terminal foi bloqueado temporariamente por razões de contra-inteligência estratégica.
+            </p>
+            <div style="font-size: 36px; font-weight: bold; color: #ff0055; margin-top: 5px; font-family: var(--font-mono);" id="lockout-countdown">30s</div>
+        </div>
+    </div>
+
+    <div id="entry-screen">
+        <div class="login-gate-box">
+            <img src="LOGO MSF.png" alt="Logo MSF" style="height: 55px; object-fit: contain;">
+            <h2>M.S.F // TERMINAL GATEWAY</h2>
+            <p style="font-family: var(--font-mono); font-size: 10px; color: #888; margin-bottom: 20px; letter-spacing: 1px;">SISTEMA DE CREDENCIAIS INTEGRADO</p>
+            
+            <div class="form-group" style="text-align: left;">
+                <label style="color: #bbb; font-family: var(--font-mono);">Operador ID</label>
+                <input type="text" id="gate-user" class="form-control" style="background:#201a2e; color:#fff; border-color:var(--indigo);" placeholder="Digite seu operador">
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label style="color: #bbb; font-family: var(--font-mono);">Access Key (Senha)</label>
+                <input type="password" id="gate-pass" class="form-control" style="background:#201a2e; color:#fff; border-color:var(--indigo);" placeholder="Digite sua senha secreta">
+            </div>
+            <div class="form-group" style="text-align: left; margin-bottom: 25px;">
+                <label style="color: #bbb; font-family: var(--font-mono);">Chave Imperial de Validação</label>
+                <input type="password" id="gate-key" class="form-control" style="background:#201a2e; color:#fff; border-color:var(--indigo);" placeholder="Insira a chave (Apenas Criadores)">
+            </div>
+            
+            <button class="btn btn-indigo" style="width: 100%; margin-bottom: 12px; font-size: 12px;" onclick="validateGateLogin(false)">
+                <i class="fa-solid fa-key"></i> Autenticar / Registrar Operador
+            </button>
+            <button class="btn" style="width: 100%; background: transparent; color: #a99ec2; border-color: #44345e; font-size: 11px;" onclick="validateGateLogin(true)">
+                <i class="fa-solid fa-eye"></i> Entrar como Visitante
+            </button>
+        </div>
+    </div>
+
+    <div id="intro-screen">
+        <div class="intro-content">
+            <div class="loader-container">
+                <img src="LOGO MSF.png" alt="Logo MSF">
+                <div class="spinner" id="intro-spinner"></div>
+            </div>
+            <p id="intro-text">INICIALIZANDO CONEXÃO...</p>
+        </div>
+    </div>
+
+    <audio id="terminal-audio" src="musica2.mp3" loop></audio>
+
+    <header id="main-header">
+        <div class="brand">
+            <img src="LOGO MSF.png" alt="Logo MSF">
+            <h1>M.S.F. <span>//</span> Mafra Search Facility</h1>
+        </div>
+        <div class="system-status">
+            <div class="status-indicator"><div class="dot"></div> DB_CONNECTED</div>
+            <div class="status-indicator" id="current-time-ui">00:00:00</div>
+            <div class="search-container">
+                <input type="text" placeholder="Filtrar por título..." onkeyup="searchDocs(this.value)">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+        </div>
+    </header>
+
+    <nav class="horizontal-nav" id="main-navbar">
+        <div class="nav-group-dropdown">
+            <div class="dropdown-trigger" onclick="toggleDropdown(this)">
+                <i class="fa-solid fa-folder"></i> Diretórios M.S.F <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="dropdown-content" id="dynamic-categories-dropdown">
+            </div>
+        </div>
+
+        <div class="nav-group-dropdown">
+            <div class="dropdown-trigger" onclick="toggleDropdown(this)">
+                <i class="fa-solid fa-users-viewfinder"></i> Unidades <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="filterDocs('Membros da M.G.I', this)">
+                    <i class="fa-solid fa-user-shield"></i> Membros da M.G.I
+                </div>
+                <div class="dropdown-item" onclick="filterDocs('Alvos', this)">
+                    <i class="fa-solid fa-crosshairs"></i> Alvos
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-group-dropdown">
+            <div class="dropdown-trigger" onclick="toggleDropdown(this)">
+                <i class="fa-solid fa-tv"></i> Comerciais <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="filterDocs('Comercial Vertical', this)">
+                    <i class="fa-solid fa-mobile-screen"></i> Formato Vertical
+                </div>
+                <div class="dropdown-item" onclick="filterDocs('Comercial Horizontal', this)">
+                    <i class="fa-solid fa-desktop"></i> Formato Horizontal
+                </div>
+            </div>
+        </div>
+
+        <div id="auth-status-ui"></div>
+    </nav>
+
+    <main>
+        <div class="content-wrapper">
+            
+            <div id="guest-info-panel">
+                <h2 class="guest-title">M.S.F // MAFRA SEARCH FACILITY</h2>
+                <p class="guest-desc">Base científica e estratégica da M.G.I responsável pela pesquisa, estudo e análise detalhada de todas as variáveis, indivíduos e incidentes que possam ser úteis aos nossos propósitos, ou que representem ameaças que devam ser cirurgicamente aniquiladas pela Ordem.</p>
+                <div class="guest-warning">
+                    <i class="fa-solid fa-lock"></i> MODO VISITANTE: INFORMAÇÕES CRIPTOGRAFADAS. QUEBRA DE FIREWALL NECESSÁRIA PARA LEITURA.
+                </div>
+            </div>
+
+            <div class="view-header" id="view-header-container">
+                <h2 id="view-title">Todos os Arquivos</h2>
+                <div id="admin-actions" style="display: none; gap: 10px;">
+                    <button id="btn-gestao-mgi" class="btn" style="border-color: #ff8c00; color: #ff8c00; display: none;" onclick="openUsersModal()">
+                        <i class="fa-solid fa-users-gear"></i> Gestão M.G.I
+                    </button>
+                    <button id="btn-visual-studio" class="btn" style="border-color: var(--indigo); color: var(--indigo); display: none;" onclick="openModal('customizer-modal')">
+                        <i class="fa-solid fa-palette"></i> Visual Studio
+                    </button>
+                    <button id="btn-create-commercial" class="btn" style="border-color: #00ff00; color: #008000; display: none;" onclick="openModalCommercial()">
+                        <i class="fa-solid fa-video"></i> Criar Comercial
+                    </button>
+                    <button class="btn" style="border-color: var(--text); color: var(--text);" onclick="openModalUnit()">
+                        <i class="fa-solid fa-id-badge"></i> Nova Ficha
+                    </button>
+                    <button class="btn btn-indigo" style="width: auto;" onclick="openModalDoc()">
+                        <i class="fa-solid fa-plus"></i> Novo Registro
+                    </button>
+                </div>
+            </div>
+
+            <div class="docs-grid" id="docs-container">
+            </div>
+        </div>
+    </main>
+
+    <div id="music-control-panel">
+        <button class="btn-music" onclick="toggleMusic()">
+            <i id="music-icon" class="fa-solid fa-circle-play" style="color: var(--text);"></i> 
+            <span id="music-text">MÚSICA: OFF</span>
+        </button>
+        <div class="volume-container">
+            <i class="fa-solid fa-volume-low" style="color: var(--text)"></i>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4" oninput="changeVolume(this.value)">
+            <i class="fa-solid fa-volume-high" style="color: var(--text)"></i>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="minigame-modal">
+        <div class="modal-box" style="width: 500px; text-align:center;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-crosshairs"></i> DESCRIPTOGRAFIA REQUERIDA</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom:20px; font-family:var(--font-mono); font-size:12px; color: var(--text);">
+                    Sincronize o pulso na área demarcada para quebrar o firewall de segurança.
+                </p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: #d32f2f; margin-bottom: 10px; font-weight: bold;">
+                    TENTATIVAS RESTANTES: <span id="mg-tries-ui">4</span>
+                </div>
+                <div id="mg-area" style="position:relative; width:100%; height:40px; background:var(--gray-subtle); border:2px solid var(--border); overflow:hidden; border-radius: 4px;">
+                    <div id="mg-target" style="position:absolute; height:100%; background:rgba(75,0,130,0.4); border-left:2px solid var(--indigo); border-right:2px solid var(--indigo);"></div>
+                    <div id="mg-cursor" style="position:absolute; width:4px; height:100%; background:#d32f2f; left:0; box-shadow: 0 0 8px #d32f2f;"></div>
+                </div>
+                <button class="btn btn-indigo" style="margin-top:25px; width:100%; padding: 15px;" onclick="stopMinigameCursor()">
+                    <i class="fa-solid fa-fingerprint"></i> INJETAR BYPASS (ESPAÇO)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="users-modal">
+        <div class="modal-box" style="width: 600px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-users-gear"></i> GESTÃO DE OPERADORES M.G.I</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 11px; font-family: var(--font-mono); opacity: 0.8; margin-bottom: 15px;">
+                    Atribua os Níveis de Informação das contas registradas. Isso limita o que cada operador pode ler no banco de dados da M.S.F.
+                </p>
+                <div id="users-manager-list" style="background: var(--gray-subtle); border: 1px solid var(--border); padding: 10px; max-height: 300px; overflow-y: auto;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="create-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="doc-modal-title">GERAR NOVO REGISTRO OFICIAL</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="doc-edit-id">
+                <div class="form-group">
+                    <label>Título do Dossiê</label>
+                    <input type="text" id="doc-title" class="form-control">
+                </div>
+                <div style="display:flex; gap:20px">
+                    <div class="form-group" style="flex:1">
+                        <label>Divisão / Tópico Vinculado</label>
+                        <select id="doc-category" class="form-control"></select>
+                    </div>
+                    <div class="form-group" style="flex:1">
+                        <label>Nível de Informação (Sigilo)</label>
+                        <select id="doc-info" class="form-control">
+                            <option value="Agente">Agente (Cinza)</option>
+                            <option value="Regente">Regente (Amarelo)</option>
+                            <option value="Flagelo">Flagelo (Laranja Forte)</option>
+                            <option value="Arconte">Arconte (Vermelho)</option>
+                            <option value="Magnitude">Magnitude (Roxo)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-upload"></i> Carregar Mídia (Foto/Vídeo/Áudio)</label>
+                    <input type="file" id="doc-image" class="form-control" accept="image/*,video/*,audio/*">
+                </div>
+                <div class="form-group">
+                    <label>Conteúdo Relatado</label>
+                    <textarea id="doc-content" class="form-control"></textarea>
+                </div>
+                <button class="btn btn-indigo" style="width:100%" onclick="saveDoc()">Transmitir ao Banco de Dados</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="create-unit-modal">
+        <div class="modal-box" style="width: 750px;">
+            <div class="modal-header">
+                <h3 id="unit-modal-title"><i class="fa-solid fa-id-badge"></i> GERAR NOVA FICHA DE UNIDADE</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="unit-edit-id">
+                <div style="display:flex; gap:20px">
+                    <div class="form-group" style="flex:1">
+                        <label>Nome da Unidade / Indivíduo</label>
+                        <input type="text" id="unit-name" class="form-control">
+                    </div>
+                    <div class="form-group" style="flex:1">
+                        <label>Filial / Afiliação</label>
+                        <input type="text" id="unit-filial" class="form-control" placeholder="Ex: M.G.I, Clã Aliado...">
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:20px">
+                    <div class="form-group" style="flex:1">
+                        <label>Classificação</label>
+                        <select id="unit-category" class="form-control">
+                            <option value="Membros da M.G.I">Membros da M.G.I</option>
+                            <option value="Alvos">Alvos</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1">
+                        <label><i class="fa-solid fa-image"></i> Identificação (Foto/Vídeo)</label>
+                        <input type="file" id="unit-image" class="form-control" accept="image/*,video/*">
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:20px">
+                    <div class="form-group" style="flex:1">
+                        <label>Status de Sigilo</label>
+                        <select id="unit-info" class="form-control">
+                            <option value="Agente">Agente</option>
+                            <option value="Regente">Regente</option>
+                            <option value="Flagelo">Flagelo</option>
+                            <option value="Arconte">Arconte</option>
+                            <option value="Magnitude">Magnitude</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1">
+                        <label>Nível de Perigo</label>
+                        <select id="unit-danger" class="form-control">
+                            <option value="Neutro">Neutro / Aliado</option>
+                            <option value="Baixo">Baixo</option>
+                            <option value="Médio">Médio</option>
+                            <option value="Alto">Alto</option>
+                            <option value="Crítico">Crítico</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Descrição Tática / Biografia</label>
+                    <textarea id="unit-desc" class="form-control" style="min-height: 80px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Observações Adicionais (Obs)</label>
+                    <textarea id="unit-obs" class="form-control" style="min-height: 50px;"></textarea>
+                </div>
+                <button class="btn btn-indigo" style="width:100%" onclick="saveUnit()">Arquivar Ficha de Unidade</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="create-commercial-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="comm-modal-title"><i class="fa-solid fa-video"></i> GERAR COMERCIAL ESTRATÉGICO</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="comm-edit-id">
+                <div class="form-group">
+                    <label>Título / Chamada do Comercial</label>
+                    <input type="text" id="comm-title" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Formato de Exibição no Terminal</label>
+                    <select id="comm-category" class="form-control">
+                        <option value="Comercial Horizontal">Horizontal (Paisagem - Ocupa 2 Colunas)</option>
+                        <option value="Comercial Vertical">Vertical (Retrato - Ocupa 2 Linhas de Altura)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-upload"></i> Carregar Mídia Promocional (Foto/Vídeo)</label>
+                    <input type="file" id="comm-image" class="form-control" accept="image/*,video/*">
+                </div>
+                <div class="form-group">
+                    <label>Descrição / Roteiro (Opcional)</label>
+                    <textarea id="comm-content" class="form-control"></textarea>
+                </div>
+                <button class="btn btn-indigo" style="width:100%" onclick="saveCommercial()">Publicar Comercial</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="read-modal">
+        <div class="modal-box" style="width: 800px;">
+            <div class="modal-header">
+                <h3>VISUALIZADOR DE ARQUIVO</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+            </div>
+            <div class="modal-body">
+                <div class="reader-header">
+                    <div class="reader-stamps">
+                        <div class="stamp secret">TOP SECRET</div>
+                        <div id="info-lvl-stamp" class="stamp info-lvl">LVL</div>
+                    </div>
+                    <h1 id="read-title" style="font-size: 32px; font-weight: 900; margin-bottom: 5px;">TÍTULO</h1>
+                    <div style="font-family: var(--font-mono); font-size: 11px; opacity: 0.6;">
+                        REF_ID: <span id="read-id">0000</span> | REGISTRO: <span id="read-date">00/00/0000</span>
+                    </div>
+                </div>
+
+                <div id="read-photo-container" style="text-align: center; margin-bottom: 25px;"></div>
+                <div id="read-text"></div>
+                <div id="admin-doc-actions" style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px; display: none; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn" style="color: var(--indigo); border-color: var(--indigo);" onclick="editCurrentDoc()">
+                        <i class="fa-solid fa-pen"></i> Editar Registro
+                    </button>
+                    <button class="btn" style="color: #d32f2f; border-color: #d32f2f;" onclick="deleteDocTrigger()">
+                        <i class="fa-solid fa-trash"></i> Expurgar Registro Permanentemente
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="read-unit-modal">
+        <div class="modal-box" style="width: 850px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-address-card"></i> FICHA DE UNIDADE</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+            </div>
+            <div class="modal-body">
+                <div class="read-unit-layout">
+                    <div class="read-unit-info">
+                        <div class="reader-header" style="margin-bottom: 15px; padding-bottom: 15px;">
+                            <h1 id="r-unit-name" style="font-size: 32px; font-weight: 900; margin-bottom: 5px; text-transform: uppercase;">NOME</h1>
+                            <div style="font-family: var(--font-mono); font-size: 11px; opacity: 0.6;">
+                                REGISTRO: <span id="r-unit-id">0000</span> | DATA: <span id="r-unit-date">00/00/0000</span>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                            <div class="stamp" id="r-unit-cat" style="border-color: var(--indigo); color: var(--indigo);">CATEGORIA</div>
+                            <div class="stamp" id="r-unit-danger" style="border-color: #d32f2f; color: #d32f2f;">PERIGO</div>
+                        </div>
+
+                        <div class="unit-meta-field">
+                            <div class="unit-meta-label">FILIAL / AFILIAÇÃO</div>
+                            <div class="unit-meta-value" id="r-unit-filial">...</div>
+                        </div>
+                        <div class="unit-meta-field">
+                            <div class="unit-meta-label">STATUS DE SIGILO</div>
+                            <div class="unit-meta-value" id="r-unit-info">...</div>
+                        </div>
+                        <div class="unit-meta-field">
+                            <div class="unit-meta-label">DESCRIÇÃO</div>
+                            <div class="unit-meta-value" id="r-unit-desc" style="font-weight: normal; font-family: 'Times New Roman', serif; line-height: 1.6;">...</div>
+                        </div>
+                        <div class="unit-meta-field" style="border-bottom: none;">
+                            <div class="unit-meta-label">OBSERVAÇÕES (OBS)</div>
+                            <div class="unit-meta-value" id="r-unit-obs" style="font-weight: normal; font-size: 13px; opacity: 0.8; font-style: italic;">...</div>
+                        </div>
+                    </div>
+
+                    <div class="read-unit-photo" id="r-unit-photo-container">
+                        <div id="r-unit-no-img" style="padding: 100px 20px; text-align: center; color: var(--text); opacity: 0.3; font-family: var(--font-mono); font-size: 12px; display: none;">
+                            <i class="fa-solid fa-user-secret" style="font-size: 40px; margin-bottom:10px;"></i><br>[ SEM IMAGEM ]
+                        </div>
+                    </div>
+                </div>
+
+                <div id="admin-unit-actions" style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px; display: none; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn" style="color: var(--indigo); border-color: var(--indigo);" onclick="editCurrentDoc()">
+                        <i class="fa-solid fa-pen"></i> Editar Ficha
+                    </button>
+                    <button class="btn" style="color: #d32f2f; border-color: #d32f2f;" onclick="deleteDocTrigger()">
+                        <i class="fa-solid fa-trash"></i> Eliminar Registro da Unidade
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="customizer-modal">
+        <div class="modal-box" style="width: 700px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-palette"></i> MAFRAINF // VISUAL STUDIO</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+            </div>
+            <div class="modal-body">
+                
+                <h4 style="font-family: var(--font-mono); font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">1. CORES & ELEMENTOS BASE</h4>
+                <div class="color-picker-grid">
+                    <div class="color-field">
+                        <label style="font-size:11px; font-weight:bold;">COR SUPREMA (Destaques):</label>
+                        <input type="color" id="theme-indigo" onchange="previewRealtimeTheme()">
+                    </div>
+                    <div class="color-field">
+                        <label style="font-size:11px; font-weight:bold;">COR DAS BORDAS/LINHAS:</label>
+                        <input type="color" id="theme-border" onchange="previewRealtimeTheme()">
+                    </div>
+                    <div class="color-field">
+                        <label style="font-size:11px; font-weight:bold;">COR DO TEXTO GERAL:</label>
+                        <input type="color" id="theme-text" onchange="previewRealtimeTheme()">
+                    </div>
+                    <div class="color-field">
+                        <label style="font-size:11px; font-weight:bold;">COR DE FUNDO (Background):</label>
+                        <input type="color" id="theme-bg" onchange="previewRealtimeTheme()">
+                    </div>
+                    <div class="color-field">
+                        <label style="font-size:11px; font-weight:bold;">COR DOS CARTÕES (Modais/Cards):</label>
+                        <input type="color" id="theme-card-bg" onchange="previewRealtimeTheme()">
+                    </div>
+                    <div class="color-field">
+                        <label style="font-size:11px; font-weight:bold;">COR DE MENUS/DETALHES (Secundária):</label>
+                        <input type="color" id="theme-gray" onchange="previewRealtimeTheme()">
+                    </div>
+                    <div class="color-field">
+                        <label style="font-size:11px; font-weight:bold;">FUNDO DO CABEÇALHO (Header):</label>
+                        <input type="color" id="theme-header" onchange="previewRealtimeTheme()">
+                    </div>
+                    <div class="color-field">
+                        <label style="font-size:11px; font-weight:bold;">TEXTO DO CABEÇALHO:</label>
+                        <input type="color" id="theme-header-text" onchange="previewRealtimeTheme()">
+                    </div>
+                </div>
+
+                <h4 style="font-family: var(--font-mono); font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-top: 15px;">2. IMAGEM DE FUNDO (WALLPAPER)</h4>
+                <div class="form-group">
+                    <label>URL da Imagem de Fundo (Deixe vazio para usar apenas a cor base)</label>
+                    <input type="url" id="theme-bg-img" class="form-control" placeholder="Ex: https://imagem.com/fundo.jpg" oninput="previewRealtimeTheme()">
+                </div>
+
+                <h4 style="font-family: var(--font-mono); font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-top: 25px;">3. ARQUITETURA DE DIRETÓRIOS (TÓPICOS)</h4>
+                <div class="form-group" style="display: flex; gap: 10px;">
+                    <input type="text" id="new-category-name" class="form-control" placeholder="Ex: Operações Secretas, Relatórios Fiscais...">
+                    <button class="btn btn-indigo" style="padding: 0 15px;" onclick="addCategoryEngine()">Adicionar</button>
+                </div>
+                <div id="category-manager-list" style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border); padding: 10px; background: var(--card-bg);">
+                </div>
+
+                <button class="btn btn-indigo" style="width:100%; margin-top:25px; font-size: 12px; padding: 12px;" onclick="saveMafraEngineSettings()">
+                    <i class="fa-solid fa-floppy-disk"></i> Aplicar e Fixar Todas as Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // BLOQUEIO DE INSPECIONAR CÓDIGO
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.onkeydown = function(e) {
+        if(e.keyCode == 123) return false; // F12
+        if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 67 || e.keyCode == 74)) return false; // Ctrl+Shift+I / C / J
+        if(e.ctrlKey && e.keyCode == 85) return false; // Ctrl+U
+    }
+
+    let audioCtx;
+    let alarmInterval = null;
+    let loadingLoopInterval = null;
+    let isLogged = false;
+    let currentUserGlobal = "Visitante";
+    let guestFails = 0;
+    
+    let currentOpenDocId = null;
+    let currentOpenDocObj = null;
+
+    const levelMap = {
+        'Agente': 1, 'Público': 1,
+        'Regente': 2, 'Restrito': 2,
+        'Flagelo': 3, 'Confidencial': 3,
+        'Arconte': 4, 'Altamente Secreto': 4,
+        'Magnitude': 5
+    };
+
+    let defaultCategories = ['Execução', 'Extermínio', 'Juízo', 'Informação', 'Financeiro', 'Clãs', 'Documentos Gerais'];
+    let currentCategories = JSON.parse(localStorage.getItem('msf_custom_categories')) || defaultCategories;
+
+    document.getElementById('terminal-audio').volume = 0.4;
+
+    (function applySavedEngineTheme() {
+        const theme = JSON.parse(localStorage.getItem('msf_engine_theme') || '{}');
+        const root = document.documentElement;
+        if(theme.indigo) root.style.setProperty('--indigo', theme.indigo);
+        if(theme.border) root.style.setProperty('--border', theme.border);
+        if(theme.text) root.style.setProperty('--text', theme.text);
+        if(theme.bg) root.style.setProperty('--bg', theme.bg);
+        if(theme.cardBg) root.style.setProperty('--card-bg', theme.cardBg);
+        if(theme.graySubtle) root.style.setProperty('--gray-subtle', theme.graySubtle);
+        if(theme.headerBg) root.style.setProperty('--header-bg', theme.headerBg);
+        if(theme.headerText) root.style.setProperty('--header-text', theme.headerText);
+        if(theme.bgImage && theme.bgImage.trim() !== "") {
+            root.style.setProperty('--bg-image', `url('${theme.bgImage}')`);
+        } else {
+            root.style.setProperty('--bg-image', 'none');
+        }
+    })();
+
+    function playLoadingSound() {
+        loadingLoopInterval = setInterval(() => {
+            if(!audioCtx) return;
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime); 
+            gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.08);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.08);
+        }, 120);
+    }
+
+    function playPlimSound() {
+        if(loadingLoopInterval) clearInterval(loadingLoopInterval);
+        setTimeout(() => playTone(523.25, 0.15, 0.05), 0);
+        setTimeout(() => playTone(659.25, 0.3, 0.05), 100);
+    }
+
+    function playTone(freq, duration, volume) {
+        if(!audioCtx) return;
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    // ALARME SUAVE DE BLOQUEIO
+    function startSoftAlarm() {
+        if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        
+        alarmInterval = setInterval(() => {
+            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+            osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.4);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+        }, 1000);
+    }
+    function stopSoftAlarm() { if(alarmInterval) clearInterval(alarmInterval); }
+
+    function validateGateLogin(isGuest) {
+        if (isGuest) {
+            isLogged = false;
+            currentUserGlobal = "Visitante";
+            initiateSystemSequence();
+            return;
+        }
+
+        const user = document.getElementById('gate-user').value.trim();
+        const pass = document.getElementById('gate-pass').value;
+        const key = document.getElementById('gate-key').value.trim();
+
+        if (!user || !pass) { alert("ERRO DE AUTENTICAÇÃO: Os campos Operador e Senha são obrigatórios."); return; }
+        if (key !== "MSF01") { alert("CHAVE DE VALIDAÇÃO INVÁLIDA: Privilégios negados."); return; }
+
+        let userDB = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
+        let rolesDB = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
+
+        if (userDB[user.toLowerCase()]) {
+            if (userDB[user.toLowerCase()] === pass) {
+                isLogged = true; currentUserGlobal = user; initiateSystemSequence();
+            } else { alert("ACESSO NEGADO: Senha incorreta."); }
+        } else {
+            userDB[user.toLowerCase()] = pass;
+            rolesDB[user.toLowerCase()] = 'Agente'; 
+            localStorage.setItem('msf_local_accounts', JSON.stringify(userDB));
+            localStorage.setItem('msf_account_roles', JSON.stringify(rolesDB));
+            alert(`[NOVO OPERADOR]: A conta "${user.toUpperCase()}" foi registrada. Nível de Informação padrão: Agente.`);
+            isLogged = true; currentUserGlobal = user; initiateSystemSequence();
+        }
+    }
+
+    function initiateSystemSequence() {
+        const entryScreen = document.getElementById('entry-screen');
+        entryScreen.style.opacity = '0';
+        setTimeout(() => entryScreen.style.display = 'none', 500);
+
+        const introScreen = document.getElementById('intro-screen');
+        introScreen.style.display = 'flex';
+
+        if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        playLoadingSound();
+
+        setTimeout(() => {
+            const introText = document.getElementById('intro-text');
+            const introSpinner = document.getElementById('intro-spinner');
+            
+            introText.innerText = "CONEXÃO ESTABELECIDA!";
+            introText.style.color = "#00ff00";
+            introSpinner.style.borderTopColor = "#00ff00";
+            
+            playPlimSound();
+
+            const audio = document.getElementById('terminal-audio');
+            const icon = document.getElementById('music-icon');
+            const text = document.getElementById('music-text');
+            
+            audio.play().then(() => {
+                icon.className = "fa-solid fa-circle-pause";
+                icon.style.color = "var(--indigo)";
+                text.innerText = "MÚSICA: ON";
+            }).catch(err => console.log("Áudio bloqueado preventivamente."));
+
+            setTimeout(() => {
+                introScreen.style.opacity = '0';
+                introScreen.style.visibility = 'hidden';
+                
+                setupInterfaceUI();
+                renderNavigationStructure();
+                fetchData();
+                
+                setTimeout(() => introScreen.remove(), 500);
+            }, 1000);
+        }, 2500);
+    }
+
+    function setupInterfaceUI() {
+        const authStatusUi = document.getElementById('auth-status-ui');
+        const adminActions = document.getElementById('admin-actions');
+        const guestPanel = document.getElementById('guest-info-panel');
+        
+        const btnGestao = document.getElementById('btn-gestao-mgi');
+        const btnVisual = document.getElementById('btn-visual-studio');
+        const btnCommercial = document.getElementById('btn-create-commercial');
+
+        if (isLogged) {
+            let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
+            let myRole = roles[currentUserGlobal.toLowerCase()] || 'Agente';
+            
+            authStatusUi.innerHTML = `
+                <div style="display:flex; align-items:center; justify-content: center; gap: 8px; padding: 6px 12px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px;">
+                    <i class="fa-solid fa-user-shield" style="color: var(--indigo)"></i>
+                    <span style="font-size:11px; font-family:var(--font-mono); font-weight:bold; color:var(--text)">
+                        ${currentUserGlobal.toUpperCase()} // LVL: ${myRole.toUpperCase()}
+                    </span>
+                </div>`;
+            adminActions.style.display = 'flex';
+            guestPanel.style.display = 'none';
+
+            let isGod = (currentUserGlobal.toLowerCase() === 'mafrainf' || myRole === 'Magnitude');
+            btnGestao.style.display = isGod ? 'inline-flex' : 'none';
+            btnVisual.style.display = isGod ? 'inline-flex' : 'none';
+            btnCommercial.style.display = isGod ? 'inline-flex' : 'none';
+
+            setupCustomizerModalFields();
+        } else {
+            authStatusUi.innerHTML = `
+                <div style="display:flex; align-items:center; justify-content: center; gap: 8px; padding: 6px 12px; background: var(--gray-subtle); border: 1px solid var(--border); border-radius: 4px;">
+                    <i class="fa-solid fa-eye" style="color: var(--text)"></i>
+                    <span style="font-size:11px; font-family:var(--font-mono); font-weight:bold; color:var(--text)">MODO VISITANTE</span>
+                </div>`;
+            adminActions.style.display = 'none';
+            guestPanel.style.display = 'block';
+        }
+    }
+
+    // Gestão MGI
+    function openUsersModal() {
+        let accounts = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
+        let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
+        let container = document.getElementById('users-manager-list');
+        let html = '';
+        
+        for(let user in accounts) {
+            let role = roles[user] || 'Agente';
+            html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--border);">
+                <span style="font-weight:bold; font-family:var(--font-mono); font-size: 13px; text-transform:uppercase;">
+                    <i class="fa-solid fa-user" style="color:var(--indigo); margin-right:5px;"></i> ${user}
+                </span>
+                <select class="form-control" style="width:160px; font-size:11px; padding: 5px;" onchange="updateUserRole('${user}', this.value)">
+                    <option value="Agente" ${role==='Agente'?'selected':''}>Agente</option>
+                    <option value="Regente" ${role==='Regente'?'selected':''}>Regente</option>
+                    <option value="Flagelo" ${role==='Flagelo'?'selected':''}>Flagelo</option>
+                    <option value="Arconte" ${role==='Arconte'?'selected':''}>Arconte</option>
+                    <option value="Magnitude" ${role==='Magnitude'?'selected':''}>Magnitude</option>
+                </select>
+            </div>`;
+        }
+        
+        if (Object.keys(accounts).length === 0) container.innerHTML = `<p style="font-family:var(--font-mono); font-size:11px; padding: 10px;">Nenhum operador registrado no sistema local.</p>`;
+        else container.innerHTML = html;
+        openModal('users-modal');
+    }
+
+    function updateUserRole(user, newRole) {
+        let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
+        roles[user] = newRole;
+        localStorage.setItem('msf_account_roles', JSON.stringify(roles));
+        if(user === currentUserGlobal.toLowerCase()) setupInterfaceUI(); 
+        renderDocs();
+    }
+
+    // Visual Studio Logic
+    function renderNavigationStructure() {
+        const dropdown = document.getElementById('dynamic-categories-dropdown');
+        const createSelect = document.getElementById('doc-category');
+
+        let dropdownHTML = `
+            <div class="dropdown-item active" id="default-nav-item" onclick="filterDocs('Todos', this)">
+                <i class="fa-solid fa-layer-group"></i> Todos os Arquivos
+            </div>
+            <hr style="border:0; border-top:1px solid var(--border); margin:4px 0;">
+        `;
+        let selectHTML = '';
+
+        currentCategories.forEach(cat => {
+            dropdownHTML += `
+                <div class="dropdown-item" onclick="filterDocs('${cat}', this)">
+                    <i class="fa-solid fa-folder-open"></i> ${cat}
+                </div>
+            `;
+            selectHTML += `<option value="${cat}">${cat}</option>`;
+        });
+
+        dropdown.innerHTML = dropdownHTML;
+        if(createSelect) createSelect.innerHTML = selectHTML;
+    }
+
+    function rgb2hex(rgb) {
+        if(!rgb || rgb.indexOf('rgb') === -1) return rgb;
+        rgb = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+        function hex(x) { return ("0" + parseInt(x).toString(16)).slice(-2); }
+        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+    }
+
+    function setupCustomizerModalFields() {
+        const root = document.documentElement;
+        const style = getComputedStyle(root);
+        document.getElementById('theme-indigo').value = rgb2hex(style.getPropertyValue('--indigo').trim()) || '#4B0082';
+        document.getElementById('theme-border').value = rgb2hex(style.getPropertyValue('--border').trim()) || '#000000';
+        document.getElementById('theme-text').value = rgb2hex(style.getPropertyValue('--text').trim()) || '#000000';
+        document.getElementById('theme-bg').value = rgb2hex(style.getPropertyValue('--bg').trim()) || '#ffffff';
+        document.getElementById('theme-card-bg').value = rgb2hex(style.getPropertyValue('--card-bg').trim()) || '#ffffff';
+        document.getElementById('theme-gray').value = rgb2hex(style.getPropertyValue('--gray-subtle').trim()) || '#f8f9fa';
+        document.getElementById('theme-header').value = rgb2hex(style.getPropertyValue('--header-bg').trim()) || '#1a1525';
+        document.getElementById('theme-header-text').value = rgb2hex(style.getPropertyValue('--header-text').trim()) || '#ffffff';
+        
+        let bgImg = style.getPropertyValue('--bg-image').trim();
+        if(bgImg && bgImg !== 'none') document.getElementById('theme-bg-img').value = bgImg.replace(/url\(['"]?(.*?)['"]?\)/i, '$1');
+        renderCustomizerCategoryList();
+    }
+
+    function renderCustomizerCategoryList() {
+        const list = document.getElementById('category-manager-list');
+        list.innerHTML = '';
+        currentCategories.forEach((cat, index) => {
+            list.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:6px; border-bottom:1px solid var(--border); font-family:var(--font-mono); font-size:11px;">
+                    <span>${cat}</span><i class="fa-solid fa-trash-can" style="color:#d32f2f; cursor:pointer;" onclick="removeCategoryEngine(${index})"></i>
+                </div>`;
+        });
+    }
+
+    function previewRealtimeTheme() {
+        const root = document.documentElement;
+        root.style.setProperty('--indigo', document.getElementById('theme-indigo').value);
+        root.style.setProperty('--border', document.getElementById('theme-border').value);
+        root.style.setProperty('--text', document.getElementById('theme-text').value);
+        root.style.setProperty('--bg', document.getElementById('theme-bg').value);
+        root.style.setProperty('--card-bg', document.getElementById('theme-card-bg').value);
+        root.style.setProperty('--gray-subtle', document.getElementById('theme-gray').value);
+        root.style.setProperty('--header-bg', document.getElementById('theme-header').value);
+        root.style.setProperty('--header-text', document.getElementById('theme-header-text').value);
+        const imgUrl = document.getElementById('theme-bg-img').value.trim();
+        if(imgUrl) root.style.setProperty('--bg-image', `url('${imgUrl}')`); else root.style.setProperty('--bg-image', 'none');
+    }
+
+    function addCategoryEngine() {
+        const nameInput = document.getElementById('new-category-name'); const name = nameInput.value.trim();
+        if(!name) return; if(currentCategories.includes(name)) return alert("Este tópico já existe.");
+        currentCategories.push(name); nameInput.value = ''; renderCustomizerCategoryList();
+    }
+    function removeCategoryEngine(index) { currentCategories.splice(index, 1); renderCustomizerCategoryList(); }
+
+    function saveMafraEngineSettings() {
+        const themeConfig = {
+            indigo: document.getElementById('theme-indigo').value, border: document.getElementById('theme-border').value,
+            text: document.getElementById('theme-text').value, bg: document.getElementById('theme-bg').value,
+            cardBg: document.getElementById('theme-card-bg').value, graySubtle: document.getElementById('theme-gray').value,
+            headerBg: document.getElementById('theme-header').value, headerText: document.getElementById('theme-header-text').value,
+            bgImage: document.getElementById('theme-bg-img').value.trim()
+        };
+        localStorage.setItem('msf_engine_theme', JSON.stringify(themeConfig));
+        localStorage.setItem('msf_custom_categories', JSON.stringify(currentCategories));
+        alert("Alterações gravadas."); renderNavigationStructure(); renderDocs(); closeModals();
+    }
+
+    function toggleDropdown(element) {
+        const parent = element.parentElement; const isActive = parent.classList.contains('active');
+        document.querySelectorAll('.nav-group-dropdown').forEach(d => d.classList.remove('active'));
+        if (!isActive) parent.classList.add('active');
+    }
+
+    window.addEventListener('click', function(e) {
+        if (!e.target.closest('.nav-group-dropdown')) document.querySelectorAll('.nav-group-dropdown').forEach(d => d.classList.remove('active'));
+    });
+
+    function toggleMusic() {
+        const audio = document.getElementById('terminal-audio'); const icon = document.getElementById('music-icon'); const text = document.getElementById('music-text');
+        if (audio.paused) { audio.play(); icon.className = "fa-solid fa-circle-pause"; icon.style.color = "var(--indigo)"; text.innerText = "MÚSICA: ON";
+        } else { audio.pause(); icon.className = "fa-solid fa-circle-play"; icon.style.color = "var(--text)"; text.innerText = "MÚSICA: OFF"; }
+    }
+    function changeVolume(val) { document.getElementById('terminal-audio').volume = val; }
+
+    setInterval(() => { document.getElementById('current-time-ui').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
+
+    // BANCO E LÓGICA DE DADOS
+    let globalDocs = [];
+    let currentFilter = 'Todos';
+
+    async function fetchData() {
+        try {
+            const res = await fetch('/api/docs');
+            globalDocs = await res.json();
+        } catch(e) {
+            console.log("Aviso: Fallback para LocalStorage ativado (Sem resposta do servidor).");
+            globalDocs = JSON.parse(localStorage.getItem('msf_local_database') || '[]');
+        }
+        renderDocs();
+    }
+
+    async function syncBackendData(doc, method) {
+        try {
+            const url = method === 'POST' ? '/api/docs' : `/api/docs/${doc.id}`;
+            await fetch(url, { method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(doc) });
+        } catch(e) {
+            localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
+        }
+    }
+
+    function getInfoColor(level) {
+        if(level === 'Agente' || level === 'Público') return '#808080';
+        if(level === 'Regente' || level === 'Restrito') return '#ffcc00';
+        if(level === 'Flagelo' || level === 'Confidencial') return '#ff8c00';
+        if(level === 'Arconte' || level === 'Altamente Secreto') return '#ff0000';
+        if(level === 'Magnitude') return '#800080'; return '#808080';
+    }
+
+    function checkUserDocAccess(docInfoLevel) {
+        if (!isLogged) return false;
+        let myRole = JSON.parse(localStorage.getItem('msf_account_roles') || '{}')[currentUserGlobal.toLowerCase()] || 'Agente';
+        if (myRole === 'Magnitude') return true;
+        return (levelMap[myRole] || 1) >= (levelMap[docInfoLevel] || 1);
+    }
+
+    // Renderiza Imagem, Vídeo ou Áudio
+    function renderMediaElement(url, isGridCard = false) {
+        if(!url) return '';
+        if(url.startsWith('data:video')) return `<video src="${url}" ${isGridCard ? 'muted loop onmouseover="this.play()" onmouseout="this.pause()"' : 'controls'}></video>`;
+        if(url.startsWith('data:audio')) return isGridCard ? `<i class="fa-solid fa-file-audio" style="font-size: 40px; color: var(--border); opacity: 0.3;"></i>` : `<audio src="${url}" controls style="width:100%; max-width: 400px;"></audio>`;
+        return `<img src="${url}">`;
+    }
+
+    function renderDocs(filterOverride = null) {
+        const container = document.getElementById('docs-container');
+        container.innerHTML = '';
+        
+        let query = filterOverride || currentFilter;
+        let filtered = [];
+
+        // LÓGICA DE ISOLAMENTO: Ocultar Unidades e Comerciais da aba geral
+        if(query === 'Todos') {
+            filtered = globalDocs.filter(d => 
+                d.category !== 'Membros da M.G.I' && 
+                d.category !== 'Alvos' && 
+                d.category !== 'Comercial Horizontal' && 
+                d.category !== 'Comercial Vertical'
+            );
+        } else {
+            filtered = globalDocs.filter(d => d.category === query);
+        }
+
+        if(filtered.length === 0) {
+            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; font-family: var(--font-mono); opacity: 0.6;">[ NENHUM REGISTRO ENCONTRADO NESTA SEÇÃO ]</div>`;
+            return;
+        }
+
+        let htmlString = '';
+        [...filtered].reverse().forEach(doc => { 
+            const hasAccess = checkUserDocAccess(doc.infoLevel);
+            const infoColor = getInfoColor(doc.infoLevel);
+            const badgeInfoHTML = `<div class="card-badge" style="background: ${infoColor}; border-color: ${infoColor}; color:#fff;">${(doc.infoLevel || 'AGENTE').toUpperCase()}</div>`;
+            
+            const displayTitle = !hasAccess ? `<span class="censored-text">████████████</span>` : doc.title;
+            const displayContent = !hasAccess ? 
+                `<span style="font-weight: bold; color: #d32f2f;">[ BLOQUEADO ]</span>` : 
+                (doc.content.substring(0, 100) + (doc.content.length > 100 ? '...' : ''));
+
+            let mediaPreview = hasAccess && doc.imageUrl ? renderMediaElement(doc.imageUrl, true) : (doc.imageUrl ? `<img class="censored-img" src="${doc.imageUrl}">` : `<i class="fa-solid fa-file-shield"></i>`);
+
+            if(doc.category === 'Comercial Horizontal' || doc.category === 'Comercial Vertical') {
+                const isVert = doc.category === 'Comercial Vertical';
+                htmlString += `
+                <div class="doc-card ${isVert ? 'commercial-vertical' : 'commercial-horizontal'}" onclick='openDoc(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
+                    <div class="commercial-card-media">${mediaPreview}</div>
+                    <div class="card-body" style="padding:15px; font-weight:bold; display: flex; flex-direction:column; justify-content:center;">
+                        <span style="font-size:10px; color:var(--indigo); margin-bottom:5px;">COMERCIAL</span>
+                        <div style="font-size:16px;">${displayTitle}</div>
+                    </div>
+                </div>`;
+            }
+            else if(doc.isUnitType) {
+                htmlString += `
+                <div class="unit-card" onclick='openUnit(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
+                    <div class="unit-card-photo">${mediaPreview}</div>
+                    <div class="unit-card-body">
+                        <div class="unit-card-subtitle">${doc.category}</div>
+                        <div class="unit-card-title">${displayTitle}</div>
+                        <div class="unit-card-stats" style="margin-top:auto">
+                            <span class="unit-badge" style="color: ${infoColor}; border-color: ${infoColor};">${doc.infoLevel.toUpperCase()}</span>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                htmlString += `
+                <div class="doc-card" onclick='openDoc(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
+                    ${badgeInfoHTML}
+                    <div class="card-header"><div class="card-category">${doc.category}</div><div class="card-title">${displayTitle}</div></div>
+                    <div class="card-body">${displayContent}</div>
+                    <div class="card-footer"><span>ID: ${doc.id.substring(0,6)}</span><span>${doc.dateFormatted}</span></div>
+                </div>`;
+            }
+        });
+        container.innerHTML = htmlString;
+    }
+
+    function searchDocs(val) {
+        const filtered = globalDocs.filter(d => d.title.toLowerCase().includes(val.toLowerCase()));
+        currentFilter = 'Busca';
+        document.getElementById('view-title').innerText = 'Resultados da Busca';
+        globalDocsTemp = globalDocs; // backup provisório
+        globalDocs = filtered; renderDocs('Busca'); globalDocs = globalDocsTemp;
+    }
+
+    function filterDocs(cat, el) {
+        currentFilter = cat;
+        document.getElementById('view-title').innerText = cat === 'Todos' ? 'Todos os Arquivos' : cat;
+        document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+        if(el) el.classList.add('active');
+        renderDocs();
+    }
+
+    // MINIGAME E BLOQUEIO
+    let mgInterval; let mgPosition = 0; let mgDirection = 1; let mgTargetStart = 40; let mgTargetWidth = 20;
+    let mgDocPending = null; let mgIsUnitPending = false;
+
+    window.addEventListener('keydown', function(e) { if(e.code === 'Space' && document.getElementById('minigame-modal').style.display === 'flex') { e.preventDefault(); stopMinigameCursor(); }});
+
+    function startLockoutScreenTimer(seconds) {
+        localStorage.setItem('msf_lockout', Date.now() + (seconds * 1000));
+        const lockScreen = document.getElementById('lockout-screen');
+        const countdownEl = document.getElementById('lockout-countdown');
+        lockScreen.style.display = 'flex'; countdownEl.innerText = seconds + 's';
+        
+        startSoftAlarm(); // Chama o alarme contínuo
+        
+        let counter = seconds;
+        let timer = setInterval(() => {
+            counter--; countdownEl.innerText = counter + 's';
+            if(counter <= 0) {
+                clearInterval(timer); stopSoftAlarm();
+                lockScreen.style.display = 'none';
+                guestFails = 0; localStorage.removeItem('msf_lockout');
+            }
+        }, 1000);
+    }
+
+    function initiateMinigame(doc, isUnit) {
+        let lockout = localStorage.getItem('msf_lockout');
+        if (lockout && Date.now() < parseInt(lockout)) { return startLockoutScreenTimer(Math.ceil((parseInt(lockout) - Date.now()) / 1000)); }
+        if (lockout && Date.now() >= parseInt(lockout)) { localStorage.removeItem('msf_lockout'); guestFails = 0; }
+
+        mgDocPending = doc; mgIsUnitPending = isUnit;
+        let level = levelMap[doc.infoLevel] || 1; 
+        let mgSpeed = 3 + (level * 2); 
+        mgTargetWidth = 35 - (level * 5); 
+        mgTargetStart = Math.random() * (100 - mgTargetWidth);
+        
+        document.getElementById('mg-target').style.left = mgTargetStart + '%';
+        document.getElementById('mg-target').style.width = mgTargetWidth + '%';
+        document.getElementById('mg-tries-ui').innerText = (4 - guestFails);
+        
+        mgPosition = 0; openModal('minigame-modal');
+        if(mgInterval) clearInterval(mgInterval);
+        mgInterval = setInterval(() => {
+            mgPosition += mgSpeed * mgDirection;
+            if(mgPosition >= 100) { mgPosition = 100; mgDirection = -1; }
+            if(mgPosition <= 0) { mgPosition = 0; mgDirection = 1; }
+            document.getElementById('mg-cursor').style.left = mgPosition + '%';
+        }, 20);
+    }
+
+    function stopMinigameCursor() {
+        clearInterval(mgInterval);
+        let cursorPct = mgPosition; let min = mgTargetStart; let max = mgTargetStart + mgTargetWidth;
+        
+        if(cursorPct >= min && cursorPct <= max) {
+            guestFails = 0;
+            document.getElementById('mg-cursor').style.background = "#00ff00"; document.getElementById('mg-cursor').style.boxShadow = "0 0 8px #00ff00";
+            setTimeout(() => { closeModals(); document.getElementById('mg-cursor').style.background = "#d32f2f"; document.getElementById('mg-cursor').style.boxShadow = "0 0 8px #d32f2f";
+                if(mgIsUnitPending) openUnitBypass(mgDocPending); else openDocBypass(mgDocPending);
+            }, 500);
+        } else {
+            guestFails++;
+            if (guestFails >= 4) { closeModals(); startLockoutScreenTimer(30); } 
+            else { alert("DESINCRONIZAÇÃO. Restam: " + (4 - guestFails) + " tentativas."); initiateMinigame(mgDocPending, mgIsUnitPending); }
+        }
+    }
+
+    // CONTROLE DE AÇÕES DE ADMINISTRADOR NOS LEITORES
+    function toggleAdminReaderActions(doc) {
+        let myRole = JSON.parse(localStorage.getItem('msf_account_roles') || '{}')[currentUserGlobal.toLowerCase()] || 'Agente';
+        let isGod = (currentUserGlobal.toLowerCase() === 'mafrainf' || myRole === 'Magnitude');
+        document.getElementById('admin-doc-actions').style.display = isGod ? 'flex' : 'none';
+        document.getElementById('admin-unit-actions').style.display = isGod ? 'flex' : 'none';
+    }
+
+    function openDoc(doc) {
+        if (!checkUserDocAccess(doc.infoLevel)) { initiateMinigame(doc, false); return; }
+        openDocBypass(doc);
+    }
+
+    function openDocBypass(doc) {
+        currentOpenDocId = doc.id;
+        currentOpenDocObj = doc;
+        document.getElementById('read-title').innerText = doc.title;
+        document.getElementById('read-date').innerText = doc.dateFormatted || '00/00/0000';
+        document.getElementById('read-id').innerText = doc.id ? doc.id.substring(0,12).toUpperCase() : '0000';
+        document.getElementById('read-text').innerText = doc.content;
+        
+        const photoContainer = document.getElementById('read-photo-container');
+        if(doc.imageUrl && doc.imageUrl.trim() !== "") {
+            photoContainer.innerHTML = `<div class="attached-photo-frame">${renderMediaElement(doc.imageUrl, false)}</div>`;
+        } else { photoContainer.innerHTML = ''; }
+
+        const infoColor = getInfoColor(doc.infoLevel);
+        const infoStamp = document.getElementById('info-lvl-stamp');
+        infoStamp.innerText = "NÍVEL: " + (doc.infoLevel || 'AGENTE').toUpperCase();
+        infoStamp.style.setProperty('--info-color', infoColor);
+
+        toggleAdminReaderActions();
+        openModal('read-modal');
+    }
+
+    function openUnit(doc) {
+        if (!checkUserDocAccess(doc.infoLevel)) { initiateMinigame(doc, true); return; }
+        openUnitBypass(doc);
+    }
+
+    function openUnitBypass(doc) {
+        currentOpenDocId = doc.id;
+        currentOpenDocObj = doc;
+        
+        document.getElementById('r-unit-name').innerText = doc.title;
+        document.getElementById('r-unit-id').innerText = doc.id ? doc.id.substring(0,12).toUpperCase() : '0000';
+        document.getElementById('r-unit-date').innerText = doc.dateFormatted || '00/00/0000';
+        document.getElementById('r-unit-cat').innerText = doc.category.toUpperCase();
+        
+        const dColor = doc.dangerLevel === 'Neutro' ? '#888' : '#d32f2f';
+        const dStamp = document.getElementById('r-unit-danger');
+        dStamp.innerText = "RISCO: " + doc.dangerLevel.toUpperCase();
+        dStamp.style.borderColor = dColor; dStamp.style.color = dColor;
+        
+        document.getElementById('r-unit-filial').innerText = doc.filial || 'Desconhecida';
+        document.getElementById('r-unit-info').innerText = doc.infoLevel || 'Não Classificado';
+        document.getElementById('r-unit-desc').innerText = doc.content || '';
+        document.getElementById('r-unit-obs').innerText = doc.obs || 'Nenhuma observação documentada.';
+
+        const photoContainer = document.getElementById('r-unit-photo-container');
+        if(doc.imageUrl && doc.imageUrl.trim() !== "") {
+            photoContainer.innerHTML = renderMediaElement(doc.imageUrl, false);
+        } else {
+            photoContainer.innerHTML = `<div id="r-unit-no-img" style="padding: 100px 20px; text-align: center; color: var(--text); opacity: 0.3; font-family: var(--font-mono); font-size: 12px;"><i class="fa-solid fa-user-secret" style="font-size: 40px; margin-bottom:10px;"></i><br>[ SEM IMAGEM ]</div>`;
+        }
+
+        toggleAdminReaderActions();
+        openModal('read-unit-modal');
+    }
+
+    // MODAIS E SALVAMENTOS E EDIÇÕES
+    function convertFileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader(); reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error);
+        });
+    }
+
+    function openModalDoc() { document.getElementById('doc-edit-id').value=''; document.getElementById('doc-title').value=''; document.getElementById('doc-content').value=''; document.getElementById('doc-modal-title').innerText='GERAR NOVO REGISTRO OFICIAL'; openModal('create-modal'); }
+    function openModalUnit() { document.getElementById('unit-edit-id').value=''; document.getElementById('unit-name').value=''; document.getElementById('unit-desc').value=''; document.getElementById('unit-modal-title').innerHTML='<i class="fa-solid fa-id-badge"></i> GERAR NOVA FICHA DE UNIDADE'; openModal('create-unit-modal'); }
+    function openModalCommercial() { document.getElementById('comm-edit-id').value=''; document.getElementById('comm-title').value=''; document.getElementById('comm-content').value=''; document.getElementById('comm-modal-title').innerHTML='<i class="fa-solid fa-video"></i> GERAR COMERCIAL ESTRATÉGICO'; openModal('create-commercial-modal'); }
+
+    // BOTÃO EDITAR (Puxa do objeto atual que está aberto)
+    function editCurrentDoc() {
+        if(!currentOpenDocObj) return;
+        let d = currentOpenDocObj;
+        closeModals();
+
+        if (d.category === 'Comercial Horizontal' || d.category === 'Comercial Vertical') {
+            document.getElementById('comm-edit-id').value = d.id;
+            document.getElementById('comm-title').value = d.title;
+            document.getElementById('comm-category').value = d.category;
+            document.getElementById('comm-content').value = d.content;
+            document.getElementById('comm-modal-title').innerHTML = '<i class="fa-solid fa-pen"></i> EDITAR COMERCIAL';
+            openModal('create-commercial-modal');
+        } else if (d.isUnitType) {
+            document.getElementById('unit-edit-id').value = d.id;
+            document.getElementById('unit-name').value = d.title;
+            document.getElementById('unit-filial').value = d.filial;
+            document.getElementById('unit-category').value = d.category;
+            document.getElementById('unit-info').value = d.infoLevel;
+            document.getElementById('unit-danger').value = d.dangerLevel;
+            document.getElementById('unit-desc').value = d.content;
+            document.getElementById('unit-obs').value = d.obs;
+            document.getElementById('unit-modal-title').innerHTML = '<i class="fa-solid fa-pen"></i> EDITAR FICHA DE UNIDADE';
+            openModal('create-unit-modal');
+        } else {
+            document.getElementById('doc-edit-id').value = d.id;
+            document.getElementById('doc-title').value = d.title;
+            document.getElementById('doc-category').value = d.category;
+            document.getElementById('doc-info').value = d.infoLevel;
+            document.getElementById('doc-content').value = d.content;
+            document.getElementById('doc-modal-title').innerText = 'EDITAR REGISTRO OFICIAL';
+            openModal('create-modal');
+        }
+    }
+
+    async function processFormSave(type) {
+        let prefix = type === 'doc' ? 'doc' : (type === 'unit' ? 'unit' : 'comm');
+        const title = document.getElementById(`${prefix}-title`)?.value || document.getElementById(`${prefix}-name`)?.value;
+        const editId = document.getElementById(`${prefix}-edit-id`).value;
+        
+        if(!title) return alert("Erro: O título/nome é obrigatório.");
+
+        let imageUrl = currentOpenDocObj && editId ? currentOpenDocObj.imageUrl : ''; 
+        const fileInput = document.getElementById(`${prefix}-image`);
+        if (fileInput && fileInput.files.length > 0) {
+            try { imageUrl = await convertFileToBase64(fileInput.files[0]); } catch(e) { return alert("Erro na leitura da mídia."); }
+        }
+
+        const newDoc = {
+            id: editId || Math.random().toString(36).substr(2, 9).toUpperCase(),
+            isUnitType: type === 'unit',
+            title: title,
+            category: document.getElementById(`${prefix}-category`)?.value || 'Geral',
+            infoLevel: document.getElementById(`${prefix}-info`)?.value || 'Público',
+            dangerLevel: document.getElementById(`${prefix}-danger`)?.value,
+            filial: document.getElementById(`${prefix}-filial`)?.value,
+            content: document.getElementById(`${prefix}-content`)?.value || document.getElementById(`${prefix}-desc`)?.value || '',
+            obs: document.getElementById(`${prefix}-obs`)?.value,
+            imageUrl: imageUrl,
+            dateFormatted: new Date().toLocaleDateString('pt-BR')
+        };
+
+        if(editId) {
+            globalDocs = globalDocs.map(d => d.id === editId ? newDoc : d);
+            await syncBackendData(newDoc, 'PUT');
+        } else {
+            globalDocs.push(newDoc);
+            await syncBackendData(newDoc, 'POST');
+        }
+        closeModals(); renderDocs();
+    }
+
+    function saveDoc() { processFormSave('doc'); }
+    function saveUnit() { processFormSave('unit'); }
+    function saveCommercial() { processFormSave('comm'); }
+
+    async function deleteDocTrigger() {
+        if(confirm("ALERTA CRÍTICO: Você está prestes a expurgar este registro permanentemente. Prosseguir?")) {
+            globalDocs = globalDocs.filter(doc => doc.id !== currentOpenDocId);
+            await syncBackendData({id: currentOpenDocId}, 'DELETE');
+            closeModals(); renderDocs();
+        }
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); if(mgInterval) clearInterval(mgInterval); }
+
+    window.onload = function() {
+        fetchData();
+        let lockout = localStorage.getItem('msf_lockout');
+        if (lockout && Date.now() < parseInt(lockout)) {
+            let remaining = Math.ceil((parseInt(lockout) - Date.now()) / 1000);
+            startLockoutScreenTimer(remaining);
+        }
+    };
+</script>
+</body>
+</html>
