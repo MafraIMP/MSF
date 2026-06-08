@@ -48,12 +48,63 @@ async function getDatabase(filePath) {
 }
 
 // Função inteligente para salvar JSON
+// ==========================================
+// CONFIGURAÇÕES DO GITHUB (ATENÇÃO AQUI, MAFRA)
+// ==========================================
+const REPO_OWNER = 'MafraIMP'; // Ex: MafraINF
+const REPO_NAME = 'MSF'; // Ex: mgi-terminal
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN; 
+
+// Função inteligente para salvar JSON direto no GitHub
 async function saveDatabase(filePath, data) {
+    const fileBaseName = require('path').basename(filePath);
+    const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileBaseName}`;
+    
+    const headers = {
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+    };
+
     try {
-        await fs.writeFile(filePath, JSON.stringify(data, null, 2));
-        return true;
+        // 1. O GitHub precisa saber a versão atual do arquivo para autorizar a mudança
+        const getFileReq = await fetch(url, { headers });
+        const fileData = await getFileReq.json();
+        
+        // Se o arquivo não existir ainda no repositório, o SHA será indefinido, e tudo bem.
+        const currentSha = fileData.sha ? fileData.sha : null;
+
+        // 2. Converte o seu banco de dados para a criptografia Base64 (exigência do GitHub)
+        const jsonString = JSON.stringify(data, null, 2);
+        const contentBase64 = Buffer.from(jsonString).toString('base64');
+
+        // 3. Dispara a atualização para o Quartel General
+        const putFileReq = await fetch(url, {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify({
+                message: `M.S.F Auto-Sync: Atualização no banco de dados (${fileBaseName})`,
+                content: contentBase64,
+                sha: currentSha
+            })
+        });
+
+        if (putFileReq.ok) {
+            console.log(`[BACKUP SEGURO] ${fileBaseName} sincronizado com sucesso no GitHub.`);
+            
+            // Grava localmente também para manter a fluidez imediata do servidor
+            const fs = require('fs').promises;
+            await fs.writeFile(filePath, jsonString);
+            
+            return true;
+        } else {
+            const errorMsg = await putFileReq.text();
+            console.error("[ERRO DE TRANSMISSÃO] Falha ao enviar para o GitHub:", errorMsg);
+            return false;
+        }
+
     } catch (error) {
-        console.error(`[ERRO] Falha ao salvar ${filePath}:`, error);
+        console.error(`[ERRO CRÍTICO] Ocorreu uma falha grave ao salvar ${fileBaseName}:`, error);
         return false;
     }
 }
