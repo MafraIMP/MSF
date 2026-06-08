@@ -194,6 +194,25 @@ app.delete('/api/docs/:id', async (req, res) => {
     }
 });
 
+// --- NOVA ROTA: Sincronização Forçada (Overwrite Completo) ---
+app.post('/api/docs/sync-all', async (req, res) => {
+    const allDocs = req.body;
+    
+    // Verifica se os dados recebidos são uma lista válida
+    if (!Array.isArray(allDocs)) {
+        return res.status(400).json({ success: false, message: "Formato inválido para sincronização." });
+    }
+    
+    // Sobrescreve o arquivo data.json completamente com a lista atualizada
+    const success = await saveDatabase(DATA_FILE, allDocs);
+    if (success) {
+        console.log(`[BACKUP FORÇADO] Base de dados totalmente reescrita por comando Supremo. Total de registros: ${allDocs.length}`);
+        res.json({ success: true, message: "Banco de dados sincronizado com sucesso!" });
+    } else {
+        res.status(500).json({ success: false, message: "Erro crítico ao processar o backup forçado." });
+    }
+});
+
 // ==========================================
 // INICIALIZAÇÃO
 // ==========================================

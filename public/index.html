@@ -397,6 +397,13 @@
                     <button id="btn-create-commercial" class="btn" style="border-color: #00ff00; color: #008000; display: none;" onclick="openModalCommercial()">
                         <i class="fa-solid fa-video"></i> Criar Comercial
                     </button>
+					
+					<div id="admin-actions" style="display: none; gap: 10px;">
+    <button id="btn-force-sync" class="btn" style="border-color: #ff0055; color: #ff0055; display: none;" onclick="forceSyncAll()">
+        <i class="fa-solid fa-server"></i> Forçar Sincronização
+    </button>
+    <button id="btn-gestao-mgi" ...>
+					
                     <button class="btn" style="border-color: var(--text); color: var(--text);" onclick="openModalUnit()">
                         <i class="fa-solid fa-id-badge"></i> Nova Ficha
                     </button>
@@ -1018,6 +1025,13 @@
             btnGestao.style.display = isGod ? 'inline-flex' : 'none';
             btnVisual.style.display = isGod ? 'inline-flex' : 'none';
             btnCommercial.style.display = isGod ? 'inline-flex' : 'none';
+			
+			// ADICIONE ESTA LINHA:
+            const btnForceSync = document.getElementById('btn-force-sync');
+            if (btnForceSync) {
+                // Garante que só a conta mafrainf tenha o poder do backup forçado
+                btnForceSync.style.display = (currentUserGlobal.toLowerCase() === 'mafrainf') ? 'inline-flex' : 'none';
+            }
 
             setupCustomizerModalFields();
         } else {
@@ -1718,6 +1732,41 @@
         renderDocs('solicitacoes_nivel');
     }
     // ------------------------------------------
+
+// --- NOVA FUNÇÃO EXCLUSIVA MAFRAINF: SINCRONIZAÇÃO FORÇADA DE TODA A BASE ---
+    async function forceSyncAll() {
+        if(!confirm("ALERTA IMPERIAL: Esta ação irá reescrever completamente o banco de dados do servidor com os dados carregados na sua tela atual. Prosseguir?")) return;
+        
+        // Pega o ícone do botão e adiciona efeito de carregamento visual
+        const btn = document.getElementById('btn-force-sync');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sincronizando...';
+        
+        try {
+            // Dispara toda a array globalDocs para a nova rota do servidor
+            const response = await fetch('/api/docs/sync-all', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(globalDocs)
+            });
+            
+            if (response.ok) {
+                // Salva também no LocalStorage como medida de redundância
+                localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
+                alert("SISTEMA CENTRALIZADO: Backup global e sincronização aplicados com sucesso.");
+            } else {
+                alert("FALHA DE COMUNICAÇÃO: O servidor rejeitou a sobreposição de dados.");
+            }
+        } catch(e) {
+            // Caso o servidor de hospedagem tenha caído ou resetado abruptamente
+            localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
+            alert("SERVIDOR OFFLINE: Os dados foram forçados no cache local de contingência.");
+            console.error(e);
+        } finally {
+            // Restaura o botão
+            btn.innerHTML = originalText;
+        }
+    }
 
    window.onload = function() {
         fetchData();
