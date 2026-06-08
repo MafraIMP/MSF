@@ -162,14 +162,6 @@
         .unit-card-stats { display: flex; gap: 5px; flex-wrap: wrap; margin-top: auto; }
         .unit-badge { font-family: var(--font-mono); font-size: 9px; font-weight: bold; padding: 3px 6px; background: var(--gray-subtle); border: 1px solid var(--border); color: var(--text); }
 
-        /* COMERCIAIS */
-        .commercial-horizontal { grid-column: span 2; }
-        .commercial-vertical { grid-row: span 2; height: 100%; }
-        .commercial-card-media { width: 100%; background: #000; display: flex; align-items: center; justify-content: center; border-bottom: 2px solid var(--border); overflow: hidden;}
-        .commercial-horizontal .commercial-card-media { height: 250px; }
-        .commercial-vertical .commercial-card-media { height: 400px; flex: 1; }
-        .commercial-card-media img, .commercial-card-media video { width: 100%; height: 100%; object-fit: cover; }
-
         /* CENSURA VISUAL */
         .censored-text { background-color: var(--text); color: var(--text); user-select: none; }
         .censored-img { filter: blur(10px) grayscale(100%); opacity: 0.5; }
@@ -199,6 +191,30 @@
         .volume-container { display: flex; align-items: center; gap: 5px; border-left: 1px solid var(--border); padding-left: 12px; }
         .volume-container i { font-size: 10px; opacity: 0.6; }
         input[type=range] { width: 60px; accent-color: var(--indigo); cursor: pointer; }
+
+        /* BANNER COMERCIAL ESTILO YOUTUBE */
+        .mgi-banner {
+            position: fixed; bottom: 70px; right: 15px; width: 380px; max-width: 90vw;
+            background: var(--card-bg); border: 2px solid var(--indigo);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.4); z-index: 990;
+            display: flex; flex-direction: row; align-items: center; padding: 10px; gap: 12px;
+            border-radius: 4px; animation: slideUpBanner 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            color: var(--text);
+        }
+        @keyframes slideUpBanner { from { transform: translateY(150%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .mgi-banner .close-banner {
+            position: absolute; top: -10px; right: -10px; background: var(--indigo); color: #fff;
+            border: 2px solid var(--border); border-radius: 50%; width: 24px; height: 24px;
+            cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center;
+            transition: 0.2s; box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+        }
+        .mgi-banner .close-banner:hover { background: #ff0055; transform: scale(1.1); }
+        .banner-media { width: 70px; height: 70px; flex-shrink: 0; background: var(--gray-subtle); border: 1px solid var(--border); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .banner-media img, .banner-media video { width: 100%; height: 100%; object-fit: cover; }
+        .banner-info { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .banner-tag { font-family: var(--font-mono); font-size: 9px; color: #fff; background: var(--indigo); padding: 2px 6px; font-weight: bold; align-self: flex-start; margin-bottom: 5px; border-radius: 2px; }
+        .banner-info h4 { font-size: 13px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+        .banner-info p { font-size: 10px; opacity: 0.8; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
 
         /* MODAIS */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
@@ -357,20 +373,6 @@
             </div>
         </div>
 
-        <div class="nav-group-dropdown">
-            <div class="dropdown-trigger" onclick="toggleDropdown(this)">
-                <i class="fa-solid fa-tv"></i> Comerciais <i class="fa-solid fa-chevron-down chevron"></i>
-            </div>
-            <div class="dropdown-content">
-                <div class="dropdown-item" onclick="filterDocs('Comercial Vertical', this)">
-                    <i class="fa-solid fa-mobile-screen"></i> Formato Vertical
-                </div>
-                <div class="dropdown-item" onclick="filterDocs('Comercial Horizontal', this)">
-                    <i class="fa-solid fa-desktop"></i> Formato Horizontal
-                </div>
-            </div>
-        </div>
-
         <div id="auth-status-ui"></div>
     </nav>
 
@@ -387,7 +389,11 @@
 
             <div class="view-header" id="view-header-container">
                 <h2 id="view-title">Todos os Arquivos</h2>
-                <div id="admin-actions" style="display: none; gap: 10px;">
+                
+                <div id="admin-actions" style="display: none; gap: 10px; align-items: center;">
+                    <button id="btn-force-sync" class="btn" style="border-color: #ff0055; color: #ff0055; display: none;" onclick="forceSyncAll()">
+                        <i class="fa-solid fa-server"></i> Forçar Backup
+                    </button>
                     <button id="btn-gestao-mgi" class="btn" style="border-color: #ff8c00; color: #ff8c00; display: none;" onclick="openUsersModal()">
                         <i class="fa-solid fa-users-gear"></i> Gestão M.G.I
                     </button>
@@ -395,15 +401,8 @@
                         <i class="fa-solid fa-palette"></i> Visual Studio
                     </button>
                     <button id="btn-create-commercial" class="btn" style="border-color: #00ff00; color: #008000; display: none;" onclick="openModalCommercial()">
-                        <i class="fa-solid fa-video"></i> Criar Comercial
+                        <i class="fa-solid fa-bullhorn"></i> Anunciar Comercial
                     </button>
-					
-					<div id="admin-actions" style="display: none; gap: 10px;">
-    <button id="btn-force-sync" class="btn" style="border-color: #ff0055; color: #ff0055; display: none;" onclick="forceSyncAll()">
-        <i class="fa-solid fa-server"></i> Forçar Sincronização
-    </button>
-    <button id="btn-gestao-mgi" ...>
-					
                     <button class="btn" style="border-color: var(--text); color: var(--text);" onclick="openModalUnit()">
                         <i class="fa-solid fa-id-badge"></i> Nova Ficha
                     </button>
@@ -417,6 +416,21 @@
             </div>
         </div>
     </main>
+
+    <div id="mgi-commercial-banner" class="mgi-banner" style="display:none;">
+        <button class="close-banner" onclick="document.getElementById('mgi-commercial-banner').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
+        <div class="banner-media" id="banner-media"></div>
+        <div class="banner-info">
+            <span class="banner-tag"><i class="fa-solid fa-satellite-dish"></i> M.G.I COMUNICA</span>
+            <h4 id="banner-title">Título</h4>
+            <p id="banner-desc">Descrição do comunicado ou anúncio aparecerá aqui.</p>
+        </div>
+        <div class="banner-actions" id="banner-admin-actions" style="display:none;">
+            <button class="btn" style="font-size: 9px; padding: 4px 8px; border-color: #d32f2f; color: #d32f2f; background: transparent;" onclick="deleteCommercial()">
+                <i class="fa-solid fa-trash"></i> Retirar do Ar
+            </button>
+        </div>
+    </div>
 
     <div id="music-control-panel">
         <button class="btn-music" onclick="toggleMusic()">
@@ -583,31 +597,27 @@
     <div class="modal-overlay" id="create-commercial-modal">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 id="comm-modal-title"><i class="fa-solid fa-video"></i> GERAR COMERCIAL ESTRATÉGICO</h3>
+                <h3 id="comm-modal-title"><i class="fa-solid fa-bullhorn"></i> TRANSMITIR COMUNICADO / COMERCIAL</h3>
                 <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
             </div>
             <div class="modal-body">
+                <p style="font-size: 11px; font-family: var(--font-mono); opacity: 0.8; margin-bottom: 15px;">
+                    Este conteúdo aparecerá como um banner flutuante para todos os usuários do terminal, semelhante a um anúncio em vídeo.
+                </p>
                 <input type="hidden" id="comm-edit-id">
                 <div class="form-group">
-                    <label>Título / Chamada do Comercial</label>
-                    <input type="text" id="comm-title" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Formato de Exibição no Terminal</label>
-                    <select id="comm-category" class="form-control">
-                        <option value="Comercial Horizontal">Horizontal (Paisagem - Ocupa 2 Colunas)</option>
-                        <option value="Comercial Vertical">Vertical (Retrato - Ocupa 2 Linhas de Altura)</option>
-                    </select>
+                    <label>Título / Chamada Curta</label>
+                    <input type="text" id="comm-title" class="form-control" placeholder="Ex: NOVA OPERAÇÃO INICIADA">
                 </div>
                 <div class="form-group">
                     <label><i class="fa-solid fa-upload"></i> Carregar Mídia Promocional (Foto/Vídeo)</label>
                     <input type="file" id="comm-image" class="form-control" accept="image/*,video/*">
                 </div>
                 <div class="form-group">
-                    <label>Descrição / Roteiro (Opcional)</label>
-                    <textarea id="comm-content" class="form-control"></textarea>
+                    <label>Descrição Curta / Mensagem</label>
+                    <textarea id="comm-content" class="form-control" style="min-height: 80px;" placeholder="Digite o aviso..."></textarea>
                 </div>
-                <button class="btn btn-indigo" style="width:100%" onclick="saveCommercial()">Publicar Comercial</button>
+                <button class="btn btn-indigo" style="width:100%" onclick="saveCommercial()">Colocar no Ar</button>
             </div>
         </div>
     </div>
@@ -771,9 +781,9 @@
     // BLOQUEIO DE INSPECIONAR CÓDIGO
     document.addEventListener('contextmenu', event => event.preventDefault());
     document.onkeydown = function(e) {
-        if(e.keyCode == 123) return false; // F12
-        if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 67 || e.keyCode == 74)) return false; // Ctrl+Shift+I / C / J
-        if(e.ctrlKey && e.keyCode == 85) return false; // Ctrl+U
+        if(e.keyCode == 123) return false; 
+        if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 67 || e.keyCode == 74)) return false; 
+        if(e.ctrlKey && e.keyCode == 85) return false; 
     }
 
     let audioCtx;
@@ -785,9 +795,10 @@
     
     let currentOpenDocId = null;
     let currentOpenDocObj = null;
+    let currentCommercialId = null; // Variável global pro comercial ativo
 	
-	// --- NOVO SISTEMA DE SESSÃO E INATIVIDADE ---
-    const INACTIVITY_LIMIT = 10 * 60 * 1000; // 10 minutos
+	// --- SISTEMA DE SESSÃO E INATIVIDADE ---
+    const INACTIVITY_LIMIT = 10 * 60 * 1000;
     let inactivityTimer = null;
 
     function updateActivityTimestamp() {
@@ -800,7 +811,6 @@
         }
     }
 
-    // Qualquer movimento do mouse ou teclado zera o tempo de 10 min
     window.addEventListener('mousemove', updateActivityTimestamp);
     window.addEventListener('keydown', updateActivityTimestamp);
     window.addEventListener('click', updateActivityTimestamp);
@@ -813,12 +823,11 @@
                 if (session.lastActivity && (Date.now() - session.lastActivity > INACTIVITY_LIMIT)) {
                     alert("SESSÃO EXPIRADA: 10 minutos de inatividade detectados. Desconectando por segurança.");
                     localStorage.removeItem('msf_session');
-                    location.reload(); // Recarrega para voltar à tela de login
+                    location.reload();
                 }
             }
-        }, 30000); // Checa o tempo a cada 30 segundos
+        }, 30000);
     }
-    // ----------------------------------------------
 
     const levelMap = {
         'Agente': 1, 'Público': 1,
@@ -887,7 +896,6 @@
         osc.stop(audioCtx.currentTime + duration);
     }
 
-    // ALARME SUAVE DE BLOQUEIO
     function startSoftAlarm() {
         if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if(audioCtx.state === 'suspended') audioCtx.resume();
@@ -906,10 +914,8 @@
 
     function validateGateLogin(isGuest) {
         if (isGuest) {
-            isLogged = false;
-            currentUserGlobal = "Visitante";
-            initiateSystemSequence();
-            return;
+            isLogged = false; currentUserGlobal = "Visitante";
+            initiateSystemSequence(); return;
         }
 
         const user = document.getElementById('gate-user').value.trim();
@@ -925,7 +931,6 @@
         if (userDB[user.toLowerCase()]) {
             if (userDB[user.toLowerCase()] === pass) {
                 isLogged = true; currentUserGlobal = user; 
-                // Inicia Sessão
                 localStorage.setItem('msf_session', JSON.stringify({ user: user, lastActivity: Date.now() }));
                 startInactivityMonitor();
                 initiateSystemSequence();
@@ -940,7 +945,6 @@
             alert(`[NOVO OPERADOR]: A conta "${user.toUpperCase()}" foi registrada. Nível de Informação padrão: Agente.`);
             
             isLogged = true; currentUserGlobal = user; 
-            // Inicia Sessão
             localStorage.setItem('msf_session', JSON.stringify({ user: user, lastActivity: Date.now() }));
             startInactivityMonitor();
             initiateSystemSequence();
@@ -981,13 +985,8 @@
             }).catch(err => console.log("Áudio bloqueado preventivamente."));
 
             setTimeout(() => {
-                introScreen.style.opacity = '0';
-                introScreen.style.visibility = 'hidden';
-                
-                setupInterfaceUI();
-                renderNavigationStructure();
-                fetchData();
-                
+                introScreen.style.opacity = '0'; introScreen.style.visibility = 'hidden';
+                setupInterfaceUI(); renderNavigationStructure(); fetchData();
                 setTimeout(() => introScreen.remove(), 500);
             }, 1000);
         }, 2500);
@@ -998,6 +997,7 @@
         const adminActions = document.getElementById('admin-actions');
         const guestPanel = document.getElementById('guest-info-panel');
         
+        const btnForceSync = document.getElementById('btn-force-sync');
         const btnGestao = document.getElementById('btn-gestao-mgi');
         const btnVisual = document.getElementById('btn-visual-studio');
         const btnCommercial = document.getElementById('btn-create-commercial');
@@ -1006,7 +1006,6 @@
             let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
             let myRole = roles[currentUserGlobal.toLowerCase()] || 'Agente';
             
-            // --- ATUALIZADO: Adicionado botão de solicitar nível ---
             authStatusUi.innerHTML = `
                 <button onclick="criarSolicitacaoNivel()" style="background: transparent; border: 1px solid var(--indigo); color: var(--text); padding: 5px 10px; font-size:10px; font-family: var(--font-mono); font-weight: bold; cursor:pointer; border-radius: 4px; margin-right: 10px; transition: 0.2s;" onmouseover="this.style.background='var(--indigo)'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.color='var(--text)';">
                     <i class="fa-solid fa-key"></i> Pedir Nível
@@ -1025,11 +1024,8 @@
             btnGestao.style.display = isGod ? 'inline-flex' : 'none';
             btnVisual.style.display = isGod ? 'inline-flex' : 'none';
             btnCommercial.style.display = isGod ? 'inline-flex' : 'none';
-			
-			// ADICIONE ESTA LINHA:
-            const btnForceSync = document.getElementById('btn-force-sync');
+            
             if (btnForceSync) {
-                // Garante que só a conta mafrainf tenha o poder do backup forçado
                 btnForceSync.style.display = (currentUserGlobal.toLowerCase() === 'mafrainf') ? 'inline-flex' : 'none';
             }
 
@@ -1045,18 +1041,15 @@
         }
     }
 
-    // Gestão MGI
     async function openUsersModal() {
         let container = document.getElementById('users-manager-list');
-        
-        // Efeito visual para você ter certeza que ele está conectando no Backend!
         container.innerHTML = `<div style="padding: 30px; text-align: center; color: var(--indigo); font-family: var(--font-mono); font-size: 13px;">
             <i class="fa-solid fa-satellite-dish fa-beat" style="margin-bottom: 10px; font-size: 20px;"></i><br>
             Sincronizando Base Central...
         </div>`;
         openModal('users-modal');
         
-        await fetchBackendUsers(); // Trava aqui até o servidor responder
+        await fetchBackendUsers(); 
         
         let accounts = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
         let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
@@ -1085,16 +1078,12 @@
 
     function updateUserRole(user, newRole) {
         let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
-        roles[user] = newRole;
-        localStorage.setItem('msf_account_roles', JSON.stringify(roles));
-		// --- ADIÇÃO AQUI: Atualiza o cargo no servidor ---
+        roles[user] = newRole; localStorage.setItem('msf_account_roles', JSON.stringify(roles));
         updateUserRoleBackend(user, newRole);
-        // -------------------------------------------------
         if(user === currentUserGlobal.toLowerCase()) setupInterfaceUI(); 
         renderDocs();
     }
 
-    // Visual Studio Logic
     function renderNavigationStructure() {
         const dropdown = document.getElementById('dynamic-categories-dropdown');
         const createSelect = document.getElementById('doc-category');
@@ -1116,7 +1105,6 @@
             selectHTML += `<option value="${cat}">${cat}</option>`;
         });
 
-        // --- NOVA CATEGORIA EXCLUSIVA PARA O MAFRAINF ---
         if (currentUserGlobal.toLowerCase() === 'mafrainf') {
             dropdownHTML += `
                 <hr style="border:0; border-top:1px solid var(--border); margin:4px 0;">
@@ -1218,7 +1206,6 @@
 
     setInterval(() => { document.getElementById('current-time-ui').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
 
-    // BANCO E LÓGICA DE DADOS
     let globalDocs = [];
     let currentFilter = 'Todos';
 
@@ -1242,13 +1229,11 @@
         }
     }
 
-// --- INÍCIO DA ADIÇÃO: SINCRONIZAÇÃO DE CONTAS COM O BACK-END ---
     async function fetchBackendUsers() {
         try {
             const res = await fetch('/api/users');
             const usersFromServer = await res.json();
             
-            // Mescla os usuários do servidor com a memória local (NÃO apaga o código original)
             let localAccs = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
             let localRoles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
             
@@ -1283,7 +1268,6 @@
             });
         } catch(e) { console.log("Erro ao atualizar cargo no backend."); }
     }
-    // --- FIM DA ADIÇÃO ---
 
     function getInfoColor(level) {
         if(level === 'Agente' || level === 'Público') return '#808080';
@@ -1300,7 +1284,6 @@
         return (levelMap[myRole] || 1) >= (levelMap[docInfoLevel] || 1);
     }
 
-    // Renderiza Imagem, Vídeo ou Áudio
     function renderMediaElement(url, isGridCard = false) {
         if(!url) return '';
         if(url.startsWith('data:video')) return `<video src="${url}" ${isGridCard ? 'muted loop onmouseover="this.play()" onmouseout="this.pause()"' : 'controls'}></video>`;
@@ -1308,7 +1291,46 @@
         return `<img src="${url}">`;
     }
 
-    // --- ATUALIZADO: RENDER DOCS PARA SUPORTAR SOLICITAÇÕES ---
+    // LOGICA DA BARRA DO COMERCIAL ESTILO YOUTUBE
+    function renderCommercialBanner() {
+        const commercials = globalDocs.filter(d => d.category === 'Comercial');
+        const banner = document.getElementById('mgi-commercial-banner');
+        
+        if (commercials.length === 0) {
+            banner.style.display = 'none';
+            return;
+        }
+
+        // Seleciona o comercial mais recente da array
+        const latestComm = commercials[commercials.length - 1];
+        currentCommercialId = latestComm.id;
+
+        document.getElementById('banner-title').innerText = latestComm.title;
+        document.getElementById('banner-desc').innerText = latestComm.content || '';
+        
+        const mediaContainer = document.getElementById('banner-media');
+        if(latestComm.imageUrl) {
+            mediaContainer.innerHTML = renderMediaElement(latestComm.imageUrl, true);
+        } else {
+            mediaContainer.innerHTML = '<i class="fa-solid fa-bullhorn" style="color:var(--text); font-size:24px; opacity: 0.5;"></i>';
+        }
+
+        let myRole = JSON.parse(localStorage.getItem('msf_account_roles') || '{}')[currentUserGlobal.toLowerCase()] || 'Agente';
+        let isGod = (currentUserGlobal.toLowerCase() === 'mafrainf' || myRole === 'Magnitude');
+        document.getElementById('banner-admin-actions').style.display = isGod ? 'block' : 'none';
+
+        banner.style.display = 'flex';
+    }
+
+    async function deleteCommercial() {
+        if(!currentCommercialId) return;
+        if(confirm("COMANDO MAFRA: Remover este anúncio do ar para todos os terminais?")) {
+            globalDocs = globalDocs.filter(doc => doc.id !== currentCommercialId);
+            await syncBackendData({id: currentCommercialId}, 'DELETE');
+            renderDocs(); // Re-renderiza tudo, fazendo o banner sumir ou puxar o anterior
+        }
+    }
+
     function renderDocs(filterOverride = null) {
         const container = document.getElementById('docs-container');
         container.innerHTML = '';
@@ -1316,24 +1338,20 @@
         let query = filterOverride || currentFilter;
         let filtered = [];
 
-        // LÓGICA DE ISOLAMENTO
+        // Ignoramos a categoria Comercial para não popular a grid principal
         if(query === 'Todos') {
             filtered = globalDocs.filter(d => 
                 d.category !== 'Membros da M.G.I' && 
                 d.category !== 'Alvos' && 
-                d.category !== 'Comercial Horizontal' && 
-                d.category !== 'Comercial Vertical' &&
-                d.type !== 'solicitacao_nivel' // Oculta as solicitações da aba Geral
+                d.category !== 'Comercial' && // Comercial agora é pop-up
+                d.type !== 'solicitacao_nivel'
             );
         } else if (query === 'solicitacoes_nivel') {
-            // RENDERIZAÇÃO EXCLUSIVA DAS SOLICITAÇÕES
             filtered = globalDocs.filter(d => d.type === 'solicitacao_nivel');
-            
             if(filtered.length === 0) {
                 container.innerHTML = `<p style="grid-column: 1/-1; padding:20px; text-align: center; font-family:var(--font-mono); font-size:12px; color:gray; border: 1px dashed var(--border);">Nenhuma solicitação de nível pendente no momento.</p>`;
                 return;
             }
-            
             let htmlString = '';
             [...filtered].reverse().forEach(req => {
                 htmlString += `
@@ -1356,70 +1374,61 @@
                 </div>`;
             });
             container.innerHTML = htmlString;
-            return; // Interrompe para não renderizar os cards normais nesta aba
+            return; 
         } else {
             filtered = globalDocs.filter(d => d.category === query && d.type !== 'solicitacao_nivel');
         }
 
         if(filtered.length === 0) {
             container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; font-family: var(--font-mono); opacity: 0.6;">[ NENHUM REGISTRO ENCONTRADO NESTA SEÇÃO ]</div>`;
-            return;
+        } else {
+            let htmlString = '';
+            [...filtered].reverse().forEach(doc => { 
+                const hasAccess = checkUserDocAccess(doc.infoLevel);
+                const infoColor = getInfoColor(doc.infoLevel);
+                const badgeInfoHTML = `<div class="card-badge" style="background: ${infoColor}; border-color: ${infoColor}; color:#fff;">${(doc.infoLevel || 'AGENTE').toUpperCase()}</div>`;
+                
+                const displayTitle = !hasAccess ? `<span class="censored-text">████████████</span>` : doc.title;
+                const displayContent = !hasAccess ? 
+                    `<span style="font-weight: bold; color: #d32f2f;">[ BLOQUEADO ]</span>` : 
+                    (doc.content.substring(0, 100) + (doc.content.length > 100 ? '...' : ''));
+
+                let mediaPreview = hasAccess && doc.imageUrl ? renderMediaElement(doc.imageUrl, true) : (doc.imageUrl ? `<img class="censored-img" src="${doc.imageUrl}">` : `<i class="fa-solid fa-file-shield"></i>`);
+
+                if(doc.isUnitType) {
+                    htmlString += `
+                    <div class="unit-card" onclick='openUnit(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
+                        <div class="unit-card-photo">${mediaPreview}</div>
+                        <div class="unit-card-body">
+                            <div class="unit-card-subtitle">${doc.category}</div>
+                            <div class="unit-card-title">${displayTitle}</div>
+                            <div class="unit-card-stats" style="margin-top:auto">
+                                <span class="unit-badge" style="color: ${infoColor}; border-color: ${infoColor};">${doc.infoLevel.toUpperCase()}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                } else {
+                    htmlString += `
+                    <div class="doc-card" onclick='openDoc(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
+                        ${badgeInfoHTML}
+                        <div class="card-header"><div class="card-category">${doc.category}</div><div class="card-title">${displayTitle}</div></div>
+                        <div class="card-body">${displayContent}</div>
+                        <div class="card-footer"><span>ID: ${doc.id.substring(0,6)}</span><span>${doc.dateFormatted}</span></div>
+                    </div>`;
+                }
+            });
+            container.innerHTML = htmlString;
         }
 
-        let htmlString = '';
-        [...filtered].reverse().forEach(doc => { 
-            const hasAccess = checkUserDocAccess(doc.infoLevel);
-            const infoColor = getInfoColor(doc.infoLevel);
-            const badgeInfoHTML = `<div class="card-badge" style="background: ${infoColor}; border-color: ${infoColor}; color:#fff;">${(doc.infoLevel || 'AGENTE').toUpperCase()}</div>`;
-            
-            const displayTitle = !hasAccess ? `<span class="censored-text">████████████</span>` : doc.title;
-            const displayContent = !hasAccess ? 
-                `<span style="font-weight: bold; color: #d32f2f;">[ BLOQUEADO ]</span>` : 
-                (doc.content.substring(0, 100) + (doc.content.length > 100 ? '...' : ''));
-
-            let mediaPreview = hasAccess && doc.imageUrl ? renderMediaElement(doc.imageUrl, true) : (doc.imageUrl ? `<img class="censored-img" src="${doc.imageUrl}">` : `<i class="fa-solid fa-file-shield"></i>`);
-
-            if(doc.category === 'Comercial Horizontal' || doc.category === 'Comercial Vertical') {
-                const isVert = doc.category === 'Comercial Vertical';
-                htmlString += `
-                <div class="doc-card ${isVert ? 'commercial-vertical' : 'commercial-horizontal'}" onclick='openDoc(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
-                    <div class="commercial-card-media">${mediaPreview}</div>
-                    <div class="card-body" style="padding:15px; font-weight:bold; display: flex; flex-direction:column; justify-content:center;">
-                        <span style="font-size:10px; color:var(--indigo); margin-bottom:5px;">COMERCIAL</span>
-                        <div style="font-size:16px;">${displayTitle}</div>
-                    </div>
-                </div>`;
-            }
-            else if(doc.isUnitType) {
-                htmlString += `
-                <div class="unit-card" onclick='openUnit(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
-                    <div class="unit-card-photo">${mediaPreview}</div>
-                    <div class="unit-card-body">
-                        <div class="unit-card-subtitle">${doc.category}</div>
-                        <div class="unit-card-title">${displayTitle}</div>
-                        <div class="unit-card-stats" style="margin-top:auto">
-                            <span class="unit-badge" style="color: ${infoColor}; border-color: ${infoColor};">${doc.infoLevel.toUpperCase()}</span>
-                        </div>
-                    </div>
-                </div>`;
-            } else {
-                htmlString += `
-                <div class="doc-card" onclick='openDoc(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
-                    ${badgeInfoHTML}
-                    <div class="card-header"><div class="card-category">${doc.category}</div><div class="card-title">${displayTitle}</div></div>
-                    <div class="card-body">${displayContent}</div>
-                    <div class="card-footer"><span>ID: ${doc.id.substring(0,6)}</span><span>${doc.dateFormatted}</span></div>
-                </div>`;
-            }
-        });
-        container.innerHTML = htmlString;
+        // Atualiza a barra de comercial depois de renderizar a interface
+        renderCommercialBanner();
     }
 
     function searchDocs(val) {
-        const filtered = globalDocs.filter(d => d.title.toLowerCase().includes(val.toLowerCase()) && d.type !== 'solicitacao_nivel');
+        const filtered = globalDocs.filter(d => d.title.toLowerCase().includes(val.toLowerCase()) && d.type !== 'solicitacao_nivel' && d.category !== 'Comercial');
         currentFilter = 'Busca';
         document.getElementById('view-title').innerText = 'Resultados da Busca';
-        globalDocsTemp = globalDocs; // backup provisório
+        let globalDocsTemp = globalDocs; 
         globalDocs = filtered; renderDocs('Busca'); globalDocs = globalDocsTemp;
     }
 
@@ -1431,7 +1440,6 @@
         renderDocs();
     }
 
-    // MINIGAME E BLOQUEIO
     let mgInterval; let mgPosition = 0; let mgDirection = 1; let mgTargetStart = 40; let mgTargetWidth = 20;
     let mgDocPending = null; let mgIsUnitPending = false;
 
@@ -1443,7 +1451,7 @@
         const countdownEl = document.getElementById('lockout-countdown');
         lockScreen.style.display = 'flex'; countdownEl.innerText = seconds + 's';
         
-        startSoftAlarm(); // Chama o alarme contínuo
+        startSoftAlarm(); 
         
         let counter = seconds;
         let timer = setInterval(() => {
@@ -1498,7 +1506,6 @@
         }
     }
 
-    // CONTROLE DE AÇÕES DE ADMINISTRADOR NOS LEITORES
     function toggleAdminReaderActions(doc) {
         let myRole = JSON.parse(localStorage.getItem('msf_account_roles') || '{}')[currentUserGlobal.toLowerCase()] || 'Agente';
         let isGod = (currentUserGlobal.toLowerCase() === 'mafrainf' || myRole === 'Magnitude');
@@ -1568,7 +1575,6 @@
         openModal('read-unit-modal');
     }
 
-    // MODAIS E SALVAMENTOS E EDIÇÕES
     function convertFileToBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader(); reader.readAsDataURL(file);
@@ -1578,22 +1584,14 @@
 
     function openModalDoc() { document.getElementById('doc-edit-id').value=''; document.getElementById('doc-title').value=''; document.getElementById('doc-content').value=''; document.getElementById('doc-modal-title').innerText='GERAR NOVO REGISTRO OFICIAL'; openModal('create-modal'); }
     function openModalUnit() { document.getElementById('unit-edit-id').value=''; document.getElementById('unit-name').value=''; document.getElementById('unit-desc').value=''; document.getElementById('unit-modal-title').innerHTML='<i class="fa-solid fa-id-badge"></i> GERAR NOVA FICHA DE UNIDADE'; openModal('create-unit-modal'); }
-    function openModalCommercial() { document.getElementById('comm-edit-id').value=''; document.getElementById('comm-title').value=''; document.getElementById('comm-content').value=''; document.getElementById('comm-modal-title').innerHTML='<i class="fa-solid fa-video"></i> GERAR COMERCIAL ESTRATÉGICO'; openModal('create-commercial-modal'); }
+    function openModalCommercial() { document.getElementById('comm-edit-id').value=''; document.getElementById('comm-title').value=''; document.getElementById('comm-content').value=''; openModal('create-commercial-modal'); }
 
-    // BOTÃO EDITAR (Puxa do objeto atual que está aberto)
     function editCurrentDoc() {
         if(!currentOpenDocObj) return;
         let d = currentOpenDocObj;
         closeModals();
 
-        if (d.category === 'Comercial Horizontal' || d.category === 'Comercial Vertical') {
-            document.getElementById('comm-edit-id').value = d.id;
-            document.getElementById('comm-title').value = d.title;
-            document.getElementById('comm-category').value = d.category;
-            document.getElementById('comm-content').value = d.content;
-            document.getElementById('comm-modal-title').innerHTML = '<i class="fa-solid fa-pen"></i> EDITAR COMERCIAL';
-            openModal('create-commercial-modal');
-        } else if (d.isUnitType) {
+        if (d.isUnitType) {
             document.getElementById('unit-edit-id').value = d.id;
             document.getElementById('unit-name').value = d.title;
             document.getElementById('unit-filial').value = d.filial;
@@ -1632,8 +1630,9 @@
             id: editId || Math.random().toString(36).substr(2, 9).toUpperCase(),
             isUnitType: type === 'unit',
             title: title,
-            category: document.getElementById(`${prefix}-category`)?.value || 'Geral',
-            infoLevel: document.getElementById(`${prefix}-info`)?.value || 'Público',
+            // Força a categoria Comercial se for do tipo 'comm'
+            category: type === 'comm' ? 'Comercial' : (document.getElementById(`${prefix}-category`)?.value || 'Geral'),
+            infoLevel: type === 'comm' ? 'Público' : (document.getElementById(`${prefix}-info`)?.value || 'Público'),
             dangerLevel: document.getElementById(`${prefix}-danger`)?.value,
             filial: document.getElementById(`${prefix}-filial`)?.value,
             content: document.getElementById(`${prefix}-content`)?.value || document.getElementById(`${prefix}-desc`)?.value || '',
@@ -1667,12 +1666,8 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); if(mgInterval) clearInterval(mgInterval); }
 
-    // --- FUNÇÕES DE SOLICITAÇÃO DE NÍVEL ---
     async function criarSolicitacaoNivel() {
-        if(currentUserGlobal === "Visitante") {
-            alert("Visitantes não podem solicitar alteração de nível.");
-            return;
-        }
+        if(currentUserGlobal === "Visitante") { alert("Visitantes não podem solicitar alteração de nível."); return; }
         
         const nivelDesejado = prompt("Digite o nível que você precisa (Agente, Regente, Flagelo, Arconte, Magnitude):");
         if(!nivelDesejado) return;
@@ -1682,14 +1677,13 @@
         const novaSolicitacao = {
             id: 'REQ-' + Date.now(),
             type: 'solicitacao_nivel',
-            category: 'solicitacoes_nivel', // Protege o arquivo para não ser listado na busca normal
+            category: 'solicitacoes_nivel',
             requestedBy: currentUserGlobal,
             requestedRole: nivelDesejado.trim(),
             justification: justificativa,
             timestamp: Date.now()
         };
         
-        // Salva utilizando a rota base de envio
         globalDocs.push(novaSolicitacao);
         await syncBackendData(novaSolicitacao, 'POST');
         alert("Solicitação enviada com sucesso! Aguarde a aprovação do operador MAFRAINF.");
@@ -1708,21 +1702,13 @@
             
             if(response.ok) {
                 alert(`Operador ${username.toUpperCase()} atualizado com sucesso!`);
-                
-                // Limpa o chamado localmente
                 globalDocs = globalDocs.filter(d => d.id !== docId);
-                
-                // Força o sistema a puxar os cargos novos do backend
                 await fetchBackendUsers();
-                
-                // Recarrega a tela do mafrainf
                 renderDocs('solicitacoes_nivel');
             } else {
                 alert("Erro ao processar a aprovação no servidor.");
             }
-        } catch(err) {
-            console.error(err);
-        }
+        } catch(err) { console.error(err); }
     }
 
     async function rejectLevelRequest(docId) {
@@ -1731,19 +1717,16 @@
         await syncBackendData({id: docId}, 'DELETE');
         renderDocs('solicitacoes_nivel');
     }
-    // ------------------------------------------
 
-// --- NOVA FUNÇÃO EXCLUSIVA MAFRAINF: SINCRONIZAÇÃO FORÇADA DE TODA A BASE ---
+    // A SOLICITAÇÃO ORIGINAL DO MAFRAINF: FORÇAR SINCRONIZAÇÃO TOTAL
     async function forceSyncAll() {
         if(!confirm("ALERTA IMPERIAL: Esta ação irá reescrever completamente o banco de dados do servidor com os dados carregados na sua tela atual. Prosseguir?")) return;
         
-        // Pega o ícone do botão e adiciona efeito de carregamento visual
         const btn = document.getElementById('btn-force-sync');
         const originalText = btn.innerHTML;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sincronizando...';
         
         try {
-            // Dispara toda a array globalDocs para a nova rota do servidor
             const response = await fetch('/api/docs/sync-all', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1751,19 +1734,16 @@
             });
             
             if (response.ok) {
-                // Salva também no LocalStorage como medida de redundância
                 localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
                 alert("SISTEMA CENTRALIZADO: Backup global e sincronização aplicados com sucesso.");
             } else {
                 alert("FALHA DE COMUNICAÇÃO: O servidor rejeitou a sobreposição de dados.");
             }
         } catch(e) {
-            // Caso o servidor de hospedagem tenha caído ou resetado abruptamente
             localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
             alert("SERVIDOR OFFLINE: Os dados foram forçados no cache local de contingência.");
             console.error(e);
         } finally {
-            // Restaura o botão
             btn.innerHTML = originalText;
         }
     }
@@ -1776,14 +1756,12 @@
         if (lockout && Date.now() < parseInt(lockout)) {
             let remaining = Math.ceil((parseInt(lockout) - Date.now()) / 1000);
             startLockoutScreenTimer(remaining);
-            return; // Impede o login se estiver no castigo de 30s
+            return; 
         }
 
-        // --- VERIFICAÇÃO DE AUTO-LOGIN NO F5 ---
         let sessionData = JSON.parse(localStorage.getItem('msf_session') || 'null');
         if (sessionData && sessionData.user) {
             if (Date.now() - sessionData.lastActivity < INACTIVITY_LIMIT) {
-                // Recupera o login instantaneamente
                 isLogged = true;
                 currentUserGlobal = sessionData.user;
                 sessionData.lastActivity = Date.now();
@@ -1792,12 +1770,11 @@
                 document.getElementById('entry-screen').style.display = 'none';
                 startInactivityMonitor();
                 
-                // Abre o sistema direto sem a animação longa de entrada
                 setupInterfaceUI();
                 renderNavigationStructure();
                 fetchData();
             } else {
-                localStorage.removeItem('msf_session'); // Passou de 10 min, exige senha
+                localStorage.removeItem('msf_session'); 
             }
         }
     };
