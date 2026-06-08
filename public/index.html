@@ -37,7 +37,30 @@
             height: 100vh; 
             overflow: hidden; 
             user-select: none;
+            transition: filter 0.3s ease;
         }
+
+        /* EASTER EGG GLITCH EFFECTS */
+        @keyframes glitch-anim-purple {
+            0% { transform: translate(0); filter: drop-shadow(0 0 0px var(--indigo)); }
+            20% { transform: translate(-2px, 2px); filter: drop-shadow(5px 0 10px var(--indigo)) hue-rotate(90deg); }
+            40% { transform: translate(-2px, -2px); filter: invert(10%); }
+            60% { transform: translate(2px, 2px); filter: drop-shadow(-5px 0 15px var(--indigo)); }
+            80% { transform: translate(2px, -2px); filter: drop-shadow(0 0 20px var(--indigo)); }
+            100% { transform: translate(0); filter: drop-shadow(0 0 0px var(--indigo)); }
+        }
+        .glitch-purple-heavy { animation: glitch-anim-purple 0.15s linear infinite; }
+        .glitch-purple-subtle { animation: glitch-anim-purple 4s ease-in-out infinite alternate; opacity: 0.97; }
+
+        @keyframes glitch-anim-white {
+            0% { filter: grayscale(0); transform: skew(0deg); }
+            20% { filter: grayscale(100%) contrast(200%); transform: skew(2deg); }
+            40% { filter: invert(100%); transform: skew(-2deg); }
+            60% { filter: grayscale(100%) brightness(200%); }
+            100% { filter: grayscale(0); transform: skew(0deg); }
+        }
+        .glitch-white-heavy { animation: glitch-anim-white 0.15s linear infinite; }
+        .glitch-white-subtle { animation: glitch-anim-white 5s ease-in-out infinite alternate; filter: grayscale(15%) contrast(110%); }
 
         /* TELA DE ENTRADA / COMPACT LOGIN PORTAL */
         #entry-screen {
@@ -181,13 +204,28 @@
         .btn-indigo { background: var(--indigo); color: #fff; border-color: var(--indigo); }
         .btn-indigo:hover { background: var(--text); border-color: var(--text); color: var(--card-bg); }
         
-        /* CONTROLE DE ÁUDIO INFERIOR DIREITO */
+        /* CONTROLE DE ÁUDIO AVANÇADO */
         #music-control-panel {
             position: fixed; bottom: 15px; right: 15px; z-index: 999;
             background: var(--card-bg); border: 2px solid var(--border); padding: 8px 12px;
             box-shadow: 3px 3px 0px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px;
         }
         .btn-music { background: transparent; border: none; cursor: pointer; font-size: 12px; font-family: var(--font-mono); font-weight: bold; display: flex; align-items: center; gap: 5px; outline: none; color: var(--text); }
+        .btn-music i:hover { color: var(--indigo); transform: scale(1.1); transition: 0.2s; }
+        .track-info-container { width: 120px; overflow: hidden; white-space: nowrap; border-left: 1px solid var(--border); padding-left: 10px; display: flex; flex-direction: column; }
+        .track-name-scroll { display: inline-block; font-size: 9px; font-family: var(--font-mono); font-weight: bold; color: var(--indigo); animation: scrollText 5s linear infinite; }
+        @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        
+        .visualizer-container { display: flex; align-items: flex-end; gap: 2px; height: 12px; margin-top: 3px; }
+        .vis-bar { width: 3px; background: var(--indigo); animation: vis-bounce 0.5s infinite alternate ease-in; }
+        .vis-bar:nth-child(1) { animation-delay: 0.1s; height: 40%; }
+        .vis-bar:nth-child(2) { animation-delay: 0.3s; height: 80%; }
+        .vis-bar:nth-child(3) { animation-delay: 0.2s; height: 60%; }
+        .vis-bar:nth-child(4) { animation-delay: 0.4s; height: 100%; }
+        .vis-bar:nth-child(5) { animation-delay: 0.15s; height: 50%; }
+        @keyframes vis-bounce { from { transform: scaleY(0.3); } to { transform: scaleY(1); } }
+        .visualizer-container.paused .vis-bar { animation-play-state: paused; transform: scaleY(0.2); }
+        
         .volume-container { display: flex; align-items: center; gap: 5px; border-left: 1px solid var(--border); padding-left: 12px; }
         .volume-container i { font-size: 10px; opacity: 0.6; }
         input[type=range] { width: 60px; accent-color: var(--indigo); cursor: pointer; }
@@ -232,14 +270,16 @@
         input[type="file"]::file-selector-button { border: 1px solid var(--border); background: var(--gray-subtle); padding: 5px 10px; font-family: var(--font-mono); font-size: 10px; cursor: pointer; margin-right: 10px; transition: 0.2s; color: var(--text); }
         input[type="file"]::file-selector-button:hover { background: var(--indigo); color: #fff; }
 
-        /* LEITOR DE DOCUMENTO (PADRÃO) */
+        /* LEITOR DE DOCUMENTO (PADRÃO) E MULTIMÍDIA */
         .reader-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
         .reader-stamps { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
         .stamp { border: 2px solid var(--border); padding: 4px 12px; font-family: var(--font-mono); font-weight: bold; font-size: 12px; text-transform: uppercase; }
         .stamp.secret { border-color: #d32f2f; color: #d32f2f; transform: rotate(-2deg); }
         .stamp.info-lvl { border-color: var(--info-color, var(--border)); color: var(--info-color, var(--text)); background: var(--card-bg); }
         #read-text { font-size: 15px; line-height: 1.8; white-space: pre-wrap; font-family: 'Times New Roman', serif; }
-        .attached-photo-frame { border: 4px double var(--border); padding: 5px; background: var(--card-bg); margin-bottom: 25px; display: inline-block; max-width: 100%; box-shadow: 5px 5px 0px rgba(0,0,0,0.15); }
+        
+        .media-gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; justify-items: center; align-items: start; margin-bottom: 25px; }
+        .attached-photo-frame { border: 4px double var(--border); padding: 5px; background: var(--card-bg); box-shadow: 5px 5px 0px rgba(0,0,0,0.15); width: 100%; display: flex; justify-content: center; }
         .attached-photo-frame img, .attached-photo-frame video { max-width: 100%; max-height: 380px; object-fit: contain; display: block; }
 
         /* PALETA VISUAL PANEL */
@@ -282,6 +322,10 @@
     </style>
 </head>
 <body>
+
+    <div id="gears-message" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:99999; color:white; font-family:var(--font-mono); font-size:32px; font-weight:bold; letter-spacing: 5px; text-transform:uppercase; text-shadow: 2px 2px 0px #000, 0 0 20px #fff; opacity:0; transition: opacity 1.5s ease-in-out;">
+        Oque em mim te interessa?
+    </div>
 
     <div id="lockout-screen">
         <div class="lockout-horizontal-band"></div>
@@ -433,10 +477,23 @@
     </div>
 
     <div id="music-control-panel">
-        <button class="btn-music" onclick="toggleMusic()">
+        <button class="btn-music" onclick="changeTrack(-1)" title="Música Anterior"><i class="fa-solid fa-backward-step"></i></button>
+        <button class="btn-music" onclick="toggleMusic()" style="font-size: 16px;">
             <i id="music-icon" class="fa-solid fa-circle-play" style="color: var(--text);"></i> 
-            <span id="music-text">MÚSICA: OFF</span>
         </button>
+        <button class="btn-music" onclick="changeTrack(1)" title="Próxima Música"><i class="fa-solid fa-forward-step"></i></button>
+        
+        <div class="track-info-container">
+            <div class="track-name-scroll" id="track-name-ui">MÚSICA PAUSADA...</div>
+            <div class="visualizer-container paused" id="music-visualizer">
+                <div class="vis-bar"></div>
+                <div class="vis-bar"></div>
+                <div class="vis-bar"></div>
+                <div class="vis-bar"></div>
+                <div class="vis-bar"></div>
+            </div>
+        </div>
+
         <div class="volume-container">
             <i class="fa-solid fa-volume-low" style="color: var(--text)"></i>
             <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4" oninput="changeVolume(this.value)">
@@ -513,8 +570,9 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label><i class="fa-solid fa-upload"></i> Carregar Mídia (Foto/Vídeo/Áudio)</label>
-                    <input type="file" id="doc-image" class="form-control" accept="image/*,video/*,audio/*">
+                    <label><i class="fa-solid fa-upload"></i> Carregar Mídias (Fotos/Vídeos/Áudios)</label>
+                    <input type="file" id="doc-image" class="form-control" accept="image/*,video/*,audio/*" multiple>
+                    <small style="font-family: var(--font-mono); font-size: 9px; opacity: 0.7;">Você pode selecionar vários arquivos ao mesmo tempo.</small>
                 </div>
                 <div class="form-group">
                     <label>Conteúdo Relatado</label>
@@ -640,8 +698,9 @@
                     </div>
                 </div>
 
-                <div id="read-photo-container" style="text-align: center; margin-bottom: 25px;"></div>
+                <div id="read-photo-container"></div>
                 <div id="read-text"></div>
+                
                 <div id="admin-doc-actions" style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px; display: none; gap: 10px; flex-wrap: wrap;">
                     <button class="btn" style="color: var(--indigo); border-color: var(--indigo);" onclick="editCurrentDoc()">
                         <i class="fa-solid fa-pen"></i> Editar Registro
@@ -795,11 +854,19 @@
     
     let currentOpenDocId = null;
     let currentOpenDocObj = null;
-    let currentCommercialId = null; // Variável global pro comercial ativo
+    let currentCommercialId = null; 
 	
 	// --- SISTEMA DE SESSÃO E INATIVIDADE ---
     const INACTIVITY_LIMIT = 10 * 60 * 1000;
     let inactivityTimer = null;
+
+    // --- SISTEMA DE PLAYLIST ---
+    const musicPlaylist = [
+        { file: 'musica2.mp3', name: 'TEMA M.S.F - INICIAL' },
+        { file: 'musica3.mp3', name: 'OPERAÇÃO TÁTICA' }, // Adicione nomes reais dos seus arquivos aqui
+        { file: 'musica4.mp3', name: 'AMBIENTE SECRETO' }
+    ];
+    let currentTrackIndex = 0;
 
     function updateActivityTimestamp() {
         if (isLogged && currentUserGlobal !== "Visitante") {
@@ -976,13 +1043,21 @@
 
             const audio = document.getElementById('terminal-audio');
             const icon = document.getElementById('music-icon');
-            const text = document.getElementById('music-text');
+            const trackText = document.getElementById('track-name-ui');
+            const visualizer = document.getElementById('music-visualizer');
+            
+            // Configurar a primeira música do array
+            audio.src = musicPlaylist[currentTrackIndex].file;
             
             audio.play().then(() => {
                 icon.className = "fa-solid fa-circle-pause";
                 icon.style.color = "var(--indigo)";
-                text.innerText = "MÚSICA: ON";
-            }).catch(err => console.log("Áudio bloqueado preventivamente."));
+                trackText.innerText = "TOCANDO: " + musicPlaylist[currentTrackIndex].name;
+                visualizer.classList.remove('paused');
+            }).catch(err => {
+                console.log("Áudio bloqueado preventivamente.");
+                trackText.innerText = "MÚSICA PAUSADA...";
+            });
 
             setTimeout(() => {
                 introScreen.style.opacity = '0'; introScreen.style.visibility = 'hidden';
@@ -1197,11 +1272,43 @@
         if (!e.target.closest('.nav-group-dropdown')) document.querySelectorAll('.nav-group-dropdown').forEach(d => d.classList.remove('active'));
     });
 
+    // SISTEMA DE TROCA DE FAIXAS E VISUALIZER
     function toggleMusic() {
-        const audio = document.getElementById('terminal-audio'); const icon = document.getElementById('music-icon'); const text = document.getElementById('music-text');
-        if (audio.paused) { audio.play(); icon.className = "fa-solid fa-circle-pause"; icon.style.color = "var(--indigo)"; text.innerText = "MÚSICA: ON";
-        } else { audio.pause(); icon.className = "fa-solid fa-circle-play"; icon.style.color = "var(--text)"; text.innerText = "MÚSICA: OFF"; }
+        const audio = document.getElementById('terminal-audio'); 
+        const icon = document.getElementById('music-icon'); 
+        const trackText = document.getElementById('track-name-ui');
+        const visualizer = document.getElementById('music-visualizer');
+        
+        if (audio.paused) { 
+            audio.play(); 
+            icon.className = "fa-solid fa-circle-pause"; 
+            icon.style.color = "var(--indigo)"; 
+            trackText.innerText = "TOCANDO: " + musicPlaylist[currentTrackIndex].name;
+            visualizer.classList.remove('paused');
+        } else { 
+            audio.pause(); 
+            icon.className = "fa-solid fa-circle-play"; 
+            icon.style.color = "var(--text)"; 
+            trackText.innerText = "MÚSICA PAUSADA...";
+            visualizer.classList.add('paused');
+        }
     }
+    
+    function changeTrack(direction) {
+        currentTrackIndex += direction;
+        if (currentTrackIndex >= musicPlaylist.length) currentTrackIndex = 0;
+        if (currentTrackIndex < 0) currentTrackIndex = musicPlaylist.length - 1;
+        
+        const audio = document.getElementById('terminal-audio');
+        const isPaused = audio.paused;
+        audio.src = musicPlaylist[currentTrackIndex].file;
+        
+        if (!isPaused) {
+            audio.play();
+            document.getElementById('track-name-ui').innerText = "TOCANDO: " + musicPlaylist[currentTrackIndex].name;
+        }
+    }
+
     function changeVolume(val) { document.getElementById('terminal-audio').volume = val; }
 
     setInterval(() => { document.getElementById('current-time-ui').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
@@ -1286,9 +1393,9 @@
 
     function renderMediaElement(url, isGridCard = false) {
         if(!url) return '';
-        if(url.startsWith('data:video')) return `<video src="${url}" ${isGridCard ? 'muted loop onmouseover="this.play()" onmouseout="this.pause()"' : 'controls'}></video>`;
-        if(url.startsWith('data:audio')) return isGridCard ? `<i class="fa-solid fa-file-audio" style="font-size: 40px; color: var(--border); opacity: 0.3;"></i>` : `<audio src="${url}" controls style="width:100%; max-width: 400px;"></audio>`;
-        return `<img src="${url}">`;
+        if(url.startsWith('data:video')) return `<video src="${url}" ${isGridCard ? 'muted loop onmouseover="this.play()" onmouseout="this.pause()"' : 'controls'} style="max-width:100%; max-height:380px;"></video>`;
+        if(url.startsWith('data:audio')) return isGridCard ? `<i class="fa-solid fa-file-audio" style="font-size: 40px; color: var(--border); opacity: 0.3;"></i>` : `<audio src="${url}" controls style="width:100%; max-width: 400px; margin: 15px 0;"></audio>`;
+        return `<img src="${url}" style="max-width:100%; max-height:380px; object-fit:contain;">`;
     }
 
     // LOGICA DA BARRA DO COMERCIAL ESTILO YOUTUBE
@@ -1309,8 +1416,11 @@
         document.getElementById('banner-desc').innerText = latestComm.content || '';
         
         const mediaContainer = document.getElementById('banner-media');
-        if(latestComm.imageUrl) {
-            mediaContainer.innerHTML = renderMediaElement(latestComm.imageUrl, true);
+        // Usa a primeira mídia do array, ou a imageUrl legado
+        let previewImg = latestComm.media && latestComm.media.length > 0 ? latestComm.media[0] : latestComm.imageUrl;
+        
+        if(previewImg) {
+            mediaContainer.innerHTML = renderMediaElement(previewImg, true);
         } else {
             mediaContainer.innerHTML = '<i class="fa-solid fa-bullhorn" style="color:var(--text); font-size:24px; opacity: 0.5;"></i>';
         }
@@ -1393,7 +1503,8 @@
                     `<span style="font-weight: bold; color: #d32f2f;">[ BLOQUEADO ]</span>` : 
                     (doc.content.substring(0, 100) + (doc.content.length > 100 ? '...' : ''));
 
-                let mediaPreview = hasAccess && doc.imageUrl ? renderMediaElement(doc.imageUrl, true) : (doc.imageUrl ? `<img class="censored-img" src="${doc.imageUrl}">` : `<i class="fa-solid fa-file-shield"></i>`);
+                let firstMedia = doc.media && doc.media.length > 0 ? doc.media[0] : doc.imageUrl;
+                let mediaPreview = hasAccess && firstMedia ? renderMediaElement(firstMedia, true) : (firstMedia ? `<img class="censored-img" src="${firstMedia}">` : `<i class="fa-solid fa-file-shield"></i>`);
 
                 if(doc.isUnitType) {
                     htmlString += `
@@ -1425,7 +1536,38 @@
     }
 
     function searchDocs(val) {
-        const filtered = globalDocs.filter(d => d.title.toLowerCase().includes(val.toLowerCase()) && d.type !== 'solicitacao_nivel' && d.category !== 'Comercial');
+        const lowerVal = val.toLowerCase();
+        
+        // --- INÍCIO DOS EASTER EGGS ---
+        if (lowerVal === 'mafra' || lowerVal === 'mafrainf') {
+            document.body.classList.add('glitch-purple-heavy');
+            setTimeout(() => {
+                document.body.classList.remove('glitch-purple-heavy');
+                document.body.classList.add('glitch-purple-subtle');
+            }, 800);
+        } 
+        else if (lowerVal === 'gears') {
+            document.body.classList.add('glitch-white-heavy');
+            const msg = document.getElementById('gears-message');
+            msg.style.display = 'block';
+            setTimeout(() => msg.style.opacity = '1', 100);
+            
+            setTimeout(() => {
+                document.body.classList.remove('glitch-white-heavy');
+                document.body.classList.add('glitch-white-subtle');
+                msg.style.opacity = '0';
+                setTimeout(() => msg.style.display = 'none', 1500);
+            }, 2000);
+        }
+        else {
+            // Limpa os glitches caso a pessoa pesquise outra coisa e apague
+            if(val.trim() === '') {
+                document.body.classList.remove('glitch-purple-subtle', 'glitch-purple-heavy', 'glitch-white-subtle', 'glitch-white-heavy');
+            }
+        }
+        // --- FIM DOS EASTER EGGS ---
+
+        const filtered = globalDocs.filter(d => d.title.toLowerCase().includes(lowerVal) && d.type !== 'solicitacao_nivel' && d.category !== 'Comercial');
         currentFilter = 'Busca';
         document.getElementById('view-title').innerText = 'Resultados da Busca';
         let globalDocsTemp = globalDocs; 
@@ -1527,9 +1669,20 @@
         document.getElementById('read-text').innerText = doc.content;
         
         const photoContainer = document.getElementById('read-photo-container');
-        if(doc.imageUrl && doc.imageUrl.trim() !== "") {
-            photoContainer.innerHTML = `<div class="attached-photo-frame">${renderMediaElement(doc.imageUrl, false)}</div>`;
-        } else { photoContainer.innerHTML = ''; }
+        
+        // Renderiza múltiplas mídias se existirem
+        let mediaFiles = doc.media || (doc.imageUrl ? [doc.imageUrl] : []);
+        
+        if(mediaFiles.length > 0) {
+            let html = '<div class="media-gallery-grid">';
+            mediaFiles.forEach(m => {
+                html += `<div class="attached-photo-frame">${renderMediaElement(m, false)}</div>`;
+            });
+            html += '</div>';
+            photoContainer.innerHTML = html;
+        } else { 
+            photoContainer.innerHTML = ''; 
+        }
 
         const infoColor = getInfoColor(doc.infoLevel);
         const infoStamp = document.getElementById('info-lvl-stamp');
@@ -1565,8 +1718,10 @@
         document.getElementById('r-unit-obs').innerText = doc.obs || 'Nenhuma observação documentada.';
 
         const photoContainer = document.getElementById('r-unit-photo-container');
-        if(doc.imageUrl && doc.imageUrl.trim() !== "") {
-            photoContainer.innerHTML = renderMediaElement(doc.imageUrl, false);
+        let firstMedia = doc.media && doc.media.length > 0 ? doc.media[0] : doc.imageUrl;
+        
+        if(firstMedia) {
+            photoContainer.innerHTML = renderMediaElement(firstMedia, false);
         } else {
             photoContainer.innerHTML = `<div id="r-unit-no-img" style="padding: 100px 20px; text-align: center; color: var(--text); opacity: 0.3; font-family: var(--font-mono); font-size: 12px;"><i class="fa-solid fa-user-secret" style="font-size: 40px; margin-bottom:10px;"></i><br>[ SEM IMAGEM ]</div>`;
         }
@@ -1620,10 +1775,23 @@
         
         if(!title) return alert("Erro: O título/nome é obrigatório.");
 
-        let imageUrl = currentOpenDocObj && editId ? currentOpenDocObj.imageUrl : ''; 
+        // Resgatar mídias antigas se for edição
+        let mediaArray = currentOpenDocObj && editId && currentOpenDocObj.media ? currentOpenDocObj.media : [];
+        if (currentOpenDocObj && editId && currentOpenDocObj.imageUrl && (!currentOpenDocObj.media || currentOpenDocObj.media.length === 0)) {
+            mediaArray = [currentOpenDocObj.imageUrl]; // Migração de dados antigos
+        }
+
         const fileInput = document.getElementById(`${prefix}-image`);
         if (fileInput && fileInput.files.length > 0) {
-            try { imageUrl = await convertFileToBase64(fileInput.files[0]); } catch(e) { return alert("Erro na leitura da mídia."); }
+            try {
+                let newMediaFiles = [];
+                for(let i=0; i < fileInput.files.length; i++) {
+                    let b64 = await convertFileToBase64(fileInput.files[i]);
+                    newMediaFiles.push(b64);
+                }
+                // Sobrescreve as mídias com os novos uploads (se quiser somar, mude para concat)
+                mediaArray = newMediaFiles;
+            } catch(e) { return alert("Erro na leitura das mídias."); }
         }
 
         const newDoc = {
@@ -1637,7 +1805,8 @@
             filial: document.getElementById(`${prefix}-filial`)?.value,
             content: document.getElementById(`${prefix}-content`)?.value || document.getElementById(`${prefix}-desc`)?.value || '',
             obs: document.getElementById(`${prefix}-obs`)?.value,
-            imageUrl: imageUrl,
+            imageUrl: mediaArray.length > 0 ? mediaArray[0] : '', // Mantém p/ grid e unidades
+            media: mediaArray, // Novo array com todas as fotos/videos
             dateFormatted: new Date().toLocaleDateString('pt-BR')
         };
 
