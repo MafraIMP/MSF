@@ -1,5 +1,5 @@
 const express = require('express');
-const fs = require('fs').promises; // USO DE PROMISES PARA MÁXIMA EFICIÊNCIA (Não trava o servidor)
+const fs = require('fs').promises; // USO DE PROMISES PARA MÁXIMA EFICIÊNCIA
 const path = require('path');
 const app = express();
 
@@ -37,7 +37,6 @@ async function getDatabase(filePath) {
         const data = await fs.readFile(filePath, 'utf8');
         return JSON.parse(data);
     } catch (error) {
-        // Se o arquivo não existir, cria um array vazio e devolve
         if (error.code === 'ENOENT' || error.name === 'SyntaxError') {
             await fs.writeFile(filePath, '[]');
             return [];
@@ -47,19 +46,34 @@ async function getDatabase(filePath) {
     }
 }
 
-// Função inteligente para salvar JSON
 // ==========================================
 // CONFIGURAÇÕES DO GITHUB (ATENÇÃO AQUI, MAFRA)
 // ==========================================
-const REPO_OWNER = 'MafraIMP'; // Ex: MafraINF
-const REPO_NAME = 'MSF'; // Ex: mgi-terminal
+const REPO_OWNER = 'MafraIMP'; 
+const REPO_NAME = 'MSF'; 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN; 
 
-// Função inteligente para salvar JSON direto no GitHub
+// Função inteligente para salvar JSON (Local PRIMEIRO, depois GitHub)
 async function saveDatabase(filePath, data) {
     const fileBaseName = require('path').basename(filePath);
+    const jsonString = JSON.stringify(data, null, 2);
+
+    // 1. SALVAMENTO LOCAL (GARANTIA DE FUNCIONAMENTO)
+    try {
+        await fs.writeFile(filePath, jsonString);
+        console.log(`[BANCO DE DADOS] ${fileBaseName} salvo localmente com sucesso.`);
+    } catch (error) {
+        console.error(`[ERRO CRÍTICO] Falha grave ao salvar ${fileBaseName} localmente:`, error);
+        return false; // Se falhar localmente, aborta.
+    }
+
+    // 2. BACKUP NO GITHUB (OPCIONAL/SECUNDÁRIO)
+    if (!GITHUB_TOKEN) {
+        console.log(`[AVISO GITHUB] Token ausente. Backup de ${fileBaseName} no GitHub ignorado.`);
+        return true; // Retorna true porque o salvamento local funcionou!
+    }
+
     const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileBaseName}`;
-    
     const headers = {
         'Authorization': `Bearer ${GITHUB_TOKEN}`,
         'Accept': 'application/vnd.github.v3+json',
@@ -67,18 +81,11 @@ async function saveDatabase(filePath, data) {
     };
 
     try {
-        // 1. O GitHub precisa saber a versão atual do arquivo para autorizar a mudança
         const getFileReq = await fetch(url, { headers });
         const fileData = await getFileReq.json();
-        
-        // Se o arquivo não existir ainda no repositório, o SHA será indefinido, e tudo bem.
         const currentSha = fileData.sha ? fileData.sha : null;
-
-        // 2. Converte o seu banco de dados para a criptografia Base64 (exigência do GitHub)
-        const jsonString = JSON.stringify(data, null, 2);
         const contentBase64 = Buffer.from(jsonString).toString('base64');
 
-        // 3. Dispara a atualização para o Quartel General
         const putFileReq = await fetch(url, {
             method: 'PUT',
             headers: headers,
@@ -91,21 +98,14 @@ async function saveDatabase(filePath, data) {
 
         if (putFileReq.ok) {
             console.log(`[BACKUP SEGURO] ${fileBaseName} sincronizado com sucesso no GitHub.`);
-            
-            // Grava localmente também para manter a fluidez imediata do servidor
-            const fs = require('fs').promises;
-            await fs.writeFile(filePath, jsonString);
-            
-            return true;
         } else {
             const errorMsg = await putFileReq.text();
             console.error("[ERRO DE TRANSMISSÃO] Falha ao enviar para o GitHub:", errorMsg);
-            return false;
         }
-
+        return true; 
     } catch (error) {
-        console.error(`[ERRO CRÍTICO] Ocorreu uma falha grave ao salvar ${fileBaseName}:`, error);
-        return false;
+        console.error(`[ERRO GITHUB] Sincronização falhou, mas os dados estão seguros localmente:`, error);
+        return true; 
     }
 }
 
@@ -113,7 +113,7 @@ async function saveDatabase(filePath, data) {
 // ROTAS DE AUTENTICAÇÃO E USUÁRIOS
 // ==========================================
 
-// Verificar senha de Administrador (Preservado da sua lógica original)
+// Verificar senha de Administrador
 app.post('/api/verify', (req, res) => {
     const { password } = req.body;
     if (VALID_ADMIN_PASSWORDS.includes(password)) {
@@ -157,7 +157,7 @@ app.put('/api/users/:username', async (req, res) => {
     }
 });
 
-// --- NOVA ROTA: Aprovar alteração de nível pelo administrador mafrainf ---
+// Aprovar alteração de nível pelo administrador mafrainf
 app.post('/api/admin/approve-level', async (req, res) => {
     const { username, newRole, docId } = req.body;
     
@@ -165,7 +165,6 @@ app.post('/api/admin/approve-level', async (req, res) => {
         return res.status(400).json({ success: false, message: "Dados incompletos." });
     }
 
-    // 1. Atualiza o nível no arquivo de usuários
     const users = await getDatabase(USERS_FILE);
     const userIndex = users.findIndex(u => u.username.toLowerCase() === username.toLowerCase());
     
@@ -177,7 +176,6 @@ app.post('/api/admin/approve-level', async (req, res) => {
         await saveDatabase(USERS_FILE, users);
     }
 
-    // 2. Remove o documento de solicitação
     let db = await getDatabase(DATA_FILE);
     db = db.filter(doc => doc.id !== docId);
     await saveDatabase(DATA_FILE, db);
@@ -245,16 +243,14 @@ app.delete('/api/docs/:id', async (req, res) => {
     }
 });
 
-// --- NOVA ROTA: Sincronização Forçada (Overwrite Completo) ---
+// Sincronização Forçada (Overwrite Completo)
 app.post('/api/docs/sync-all', async (req, res) => {
     const allDocs = req.body;
     
-    // Verifica se os dados recebidos são uma lista válida
     if (!Array.isArray(allDocs)) {
         return res.status(400).json({ success: false, message: "Formato inválido para sincronização." });
     }
     
-    // Sobrescreve o arquivo data.json completamente com a lista atualizada
     const success = await saveDatabase(DATA_FILE, allDocs);
     if (success) {
         console.log(`[BACKUP FORÇADO] Base de dados totalmente reescrita por comando Supremo. Total de registros: ${allDocs.length}`);
