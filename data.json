@@ -541,5 +541,18 @@
     "createdTime": "18:07:52",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781039272374
+  },
+  {
+    "id": "LOG-SXK68SIEO",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [[ 🔴 ] Lombador]",
+    "createdBy": "MafraINF",
+    "createdTime": "18:08:08",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781039288768
   }
 ]
