@@ -40,6 +40,13 @@
             transition: filter 0.3s ease;
         }
 
+        /* ANIMAÇÕES GERAIS E APRIMORADAS */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes pulseSoft { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        
+        .animated-card { animation: slideInUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
+
         /* EASTER EGG GLITCH EFFECTS */
         @keyframes glitch-anim-purple {
             0% { transform: translate(0); filter: drop-shadow(0 0 0px var(--indigo)); }
@@ -71,6 +78,7 @@
         .login-gate-box {
             background: #110d1a; border: 2px solid var(--indigo); width: 380px; padding: 30px;
             box-shadow: 0 0 30px rgba(75, 0, 130, 0.4); text-align: center; color: #fff;
+            animation: fadeIn 1s ease-out;
         }
         .login-gate-box h2 { font-family: var(--font-mono); font-size: 18px; letter-spacing: 2px; margin-top: 10px; color: var(--indigo); }
         
@@ -135,6 +143,7 @@
             background-color: var(--card-bg); min-width: 220px; 
             box-shadow: 4px 4px 0px var(--border); border: 2px solid var(--border); 
             z-index: 200; flex-direction: column; padding: 5px 0;
+            animation: fadeIn 0.2s ease-out;
         }
         .nav-group-dropdown.active .dropdown-content { display: flex; }
 
@@ -143,7 +152,7 @@
             display: flex; align-items: center; gap: 10px; color: var(--text); cursor: pointer; transition: 0.15s;
         }
         .dropdown-item i { width: 14px; text-align: center; color: var(--item-color, var(--indigo)); }
-        .dropdown-item:hover { background-color: var(--gray-subtle); }
+        .dropdown-item:hover { background-color: var(--gray-subtle); padding-left: 20px; } /* Efeito Hover animado */
         .dropdown-item.active { background-color: var(--gray-subtle); color: var(--indigo); font-weight: 800; border-left: 3px solid var(--indigo); }
 
         #auth-status-ui { margin-left: auto; display: flex; align-items: center; gap: 10px; }
@@ -171,7 +180,8 @@
         .card-category { font-size: 10px; font-weight: 800; color: var(--indigo); text-transform: uppercase; margin-bottom: 5px; }
         .card-title { font-size: 15px; font-weight: 800; line-height: 1.2; }
         .card-body { padding: 15px; font-size: 12px; opacity: 0.8; line-height: 1.5; flex: 1; word-wrap: break-word; }
-        .card-footer { padding: 10px 15px; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 9px; display: flex; justify-content: space-between; opacity: 0.6; }
+        .card-footer { padding: 10px 15px; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 9px; display: flex; justify-content: space-between; opacity: 0.6; align-items: center;}
+        .card-author-info { text-align: right; line-height: 1.2;}
 
         /* CARDS DE UNIDADES (VERTICAL) */
         .unit-card { background: var(--card-bg); border: 2px solid var(--border); display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; position: relative; color: var(--text); height: 420px; }
@@ -199,8 +209,8 @@
         .unit-meta-value { font-size: 14px; font-weight: 600; line-height: 1.5;}
 
         /* BOTÕES */
-        .btn { border: 2px solid var(--border); background: var(--card-bg); padding: 10px 20px; font-family: var(--font-mono); font-size: 11px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: var(--text); transition: 0.2s; }
-        .btn:hover { background: var(--text); color: var(--card-bg); }
+        .btn { border: 2px solid var(--border); background: var(--card-bg); padding: 10px 20px; font-family: var(--font-mono); font-size: 11px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: var(--text); transition: all 0.2s ease; }
+        .btn:hover { background: var(--text); color: var(--card-bg); animation: pulseSoft 0.4s ease; }
         .btn-indigo { background: var(--indigo); color: #fff; border-color: var(--indigo); }
         .btn-indigo:hover { background: var(--text); border-color: var(--text); color: var(--card-bg); }
         
@@ -256,7 +266,7 @@
 
         /* MODAIS */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-box { background: var(--card-bg); border: 4px solid var(--border); width: 700px; max-width: 95%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 15px 15px 0px rgba(0,0,0,0.3); color: var(--text); }
+        .modal-box { background: var(--card-bg); border: 4px solid var(--border); width: 700px; max-width: 95%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 15px 15px 0px rgba(0,0,0,0.3); color: var(--text); animation: fadeIn 0.3s ease-out; }
         .modal-header { padding: 20px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--gray-subtle); }
         .modal-body { padding: 30px; overflow-y: auto; }
 
@@ -270,8 +280,8 @@
         input[type="file"]::file-selector-button { border: 1px solid var(--border); background: var(--gray-subtle); padding: 5px 10px; font-family: var(--font-mono); font-size: 10px; cursor: pointer; margin-right: 10px; transition: 0.2s; color: var(--text); }
         input[type="file"]::file-selector-button:hover { background: var(--indigo); color: #fff; }
 
-        /* LEITOR DE DOCUMENTO (PADRÃO) E MULTIMÍDIA */
-        .reader-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
+        /* LEITOR DE DOCUMENTO E MULTIMÍDIA */
+        .reader-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; position: relative;}
         .reader-stamps { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
         .stamp { border: 2px solid var(--border); padding: 4px 12px; font-family: var(--font-mono); font-weight: bold; font-size: 12px; text-transform: uppercase; }
         .stamp.secret { border-color: #d32f2f; color: #d32f2f; transform: rotate(-2deg); }
@@ -287,7 +297,13 @@
         .color-field { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); padding: 8px; background: var(--card-bg); }
         .color-field input[type="color"] { border: none; width: 30px; height: 30px; cursor: pointer; background: none; }
 
-        /* DESIGN ESTILIZADO DA ANIMAÇÃO DE BLOQUEIO TERMINAL MGI */
+        /* CANAL DE CHAT */
+        .chat-message-box { padding: 10px; margin-bottom: 10px; border: 1px solid var(--border); background: var(--card-bg); border-radius: 4px; }
+        .chat-header { font-family: var(--font-mono); font-size: 10px; margin-bottom: 5px; color: var(--indigo); font-weight: bold; display: flex; justify-content: space-between;}
+        .chat-text { font-size: 13px; line-height: 1.4; word-wrap: break-word;}
+        .chat-msg-self { background: rgba(75,0,130,0.05); border-color: var(--indigo); }
+
+        /* BLOQUEIO TERMINAL MGI (TEMPORÁRIO) */
         #lockout-screen {
             position: fixed; inset: 0; background-color: #0b0713; z-index: 500000;
             display: none; align-items: center; justify-content: center;
@@ -315,6 +331,11 @@
             100% { transform: scale(1); filter: drop-shadow(0 0 5px #ff0055); }
         }
 
+        /* BANIDO PERMANENTEMENTE */
+        #banned-screen {
+            display:none; position:fixed; inset:0; background:#0f0518; z-index:999999; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#fff; font-family:var(--font-mono);
+        }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--gray-subtle); }
         ::-webkit-scrollbar-thumb { background: var(--border); }
@@ -325,6 +346,12 @@
 
     <div id="gears-message" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:99999; color:white; font-family:var(--font-mono); font-size:32px; font-weight:bold; letter-spacing: 5px; text-transform:uppercase; text-shadow: 2px 2px 0px #000, 0 0 20px #fff; opacity:0; transition: opacity 1.5s ease-in-out;">
         Oque em mim te interessa?
+    </div>
+
+    <div id="banned-screen">
+        <i class="fa-solid fa-ban" style="font-size: 80px; color: #ff0055; margin-bottom: 20px;"></i>
+        <h1 style="color: #ff0055; font-size: 32px; text-transform: uppercase;">Acesso Bloqueado</h1>
+        <p style="margin-top: 10px; max-width: 500px; line-height: 1.5; color: #d8b4e2;">Sua credencial foi irrevogavelmente banida do sistema.<br><b style="color:#fff;">A Autoridade Imperial (MAFRA) bloqueou sua existência neste terminal.</b></p>
     </div>
 
     <div id="lockout-screen">
@@ -434,7 +461,10 @@
             <div class="view-header" id="view-header-container">
                 <h2 id="view-title">Todos os Arquivos</h2>
                 
-                <div id="admin-actions" style="display: none; gap: 10px; align-items: center;">
+                <div id="admin-actions" style="display: none; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <button class="btn" style="border-color: #00bcd4; color: #00bcd4;" onclick="openChatModal()">
+                        <i class="fa-solid fa-walkie-talkie"></i> Comunicação Segura
+                    </button>
                     <button id="btn-force-sync" class="btn" style="border-color: #ff0055; color: #ff0055; display: none;" onclick="forceSyncAll()">
                         <i class="fa-solid fa-server"></i> Forçar Backup
                     </button>
@@ -525,17 +555,55 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="users-modal">
+    <div class="modal-overlay" id="minigame-2-modal">
+        <div class="modal-box" style="width: 500px; text-align:center;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-terminal"></i> INJEÇÃO DE MATRIZ</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom:20px; font-family:var(--font-mono); font-size:12px; color: var(--text);">
+                    Sobrescreva o código de bloqueio copiando exatamente a sequência alfanumérica abaixo antes que o temporizador expire.
+                </p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: #d32f2f; margin-bottom: 10px; font-weight: bold;">
+                    TEMPO RESTANTE: <span id="mg2-timer-ui">8.0</span>s
+                </div>
+                <div id="mg2-target-code" style="font-size: 32px; font-weight: 900; font-family: var(--font-mono); letter-spacing: 10px; color: var(--indigo); background: var(--gray-subtle); padding: 20px; border: 2px dashed var(--border); margin-bottom: 15px; user-select: none;">
+                    X7A9
+                </div>
+                <input type="text" id="mg2-input" class="form-control" style="text-align: center; font-size: 24px; font-weight: bold; font-family: var(--font-mono); letter-spacing: 5px; text-transform: uppercase;" placeholder="DIGITE AQUI" onkeyup="checkMinigame2(this.value)">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="chat-modal">
         <div class="modal-box" style="width: 600px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-walkie-talkie"></i> COMUNICAÇÃO SEGURA</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeChatModal()"></i>
+            </div>
+            <div class="modal-body" style="padding: 20px; display: flex; flex-direction: column; height: 500px;">
+                <div id="chat-messages-container" style="flex: 1; overflow-y: auto; background: var(--gray-subtle); border: 1px solid var(--border); padding: 15px; margin-bottom: 15px; display: flex; flex-direction: column;">
+                    </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="chat-input-text" class="form-control" placeholder="Transmitir mensagem na frequência..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                    <button class="btn btn-indigo" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="users-modal">
+        <div class="modal-box" style="width: 700px;">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-users-gear"></i> GESTÃO DE OPERADORES M.G.I</h3>
                 <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
             </div>
             <div class="modal-body">
                 <p style="font-size: 11px; font-family: var(--font-mono); opacity: 0.8; margin-bottom: 15px;">
-                    Atribua os Níveis de Informação das contas registradas. Isso limita o que cada operador pode ler no banco de dados da M.S.F.
+                    Atribua os Níveis de Informação, conceda privilégios de ADM ou execute o Bloqueio Permanente de credenciais indesejadas.
                 </p>
-                <div id="users-manager-list" style="background: var(--gray-subtle); border: 1px solid var(--border); padding: 10px; max-height: 300px; overflow-y: auto;">
+                <div id="users-manager-list" style="background: var(--gray-subtle); border: 1px solid var(--border); padding: 10px; max-height: 400px; overflow-y: auto;">
                 </div>
             </div>
         </div>
@@ -688,6 +756,11 @@
             </div>
             <div class="modal-body">
                 <div class="reader-header">
+                    <div style="position: absolute; right: 0; top: 0; text-align: right; font-family: var(--font-mono); font-size: 11px; opacity: 0.7;">
+                        <i class="fa-solid fa-user-pen" style="color: var(--indigo);"></i> <span id="read-author">Autor</span><br>
+                        <span id="read-time-exact">00:00:00</span>
+                    </div>
+
                     <div class="reader-stamps">
                         <div class="stamp secret">TOP SECRET</div>
                         <div id="info-lvl-stamp" class="stamp info-lvl">LVL</div>
@@ -723,6 +796,11 @@
                 <div class="read-unit-layout">
                     <div class="read-unit-info">
                         <div class="reader-header" style="margin-bottom: 15px; padding-bottom: 15px;">
+                             <div style="position: absolute; right: 0; top: 0; text-align: right; font-family: var(--font-mono); font-size: 11px; opacity: 0.7;">
+                                <i class="fa-solid fa-user-pen" style="color: var(--indigo);"></i> <span id="r-unit-author">Autor</span><br>
+                                <span id="r-unit-time-exact">00:00:00</span>
+                            </div>
+
                             <h1 id="r-unit-name" style="font-size: 32px; font-weight: 900; margin-bottom: 5px; text-transform: uppercase;">NOME</h1>
                             <div style="font-family: var(--font-mono); font-size: 11px; opacity: 0.6;">
                                 REGISTRO: <span id="r-unit-id">0000</span> | DATA: <span id="r-unit-date">00/00/0000</span>
@@ -855,15 +933,15 @@
     let currentOpenDocId = null;
     let currentOpenDocObj = null;
     let currentCommercialId = null; 
-	
-	// --- SISTEMA DE SESSÃO E INATIVIDADE ---
+    
+    // --- SISTEMA DE SESSÃO E INATIVIDADE ---
     const INACTIVITY_LIMIT = 10 * 60 * 1000;
     let inactivityTimer = null;
 
     // --- SISTEMA DE PLAYLIST ---
     const musicPlaylist = [
         { file: 'musica2.mp3', name: 'TEMA M.S.F - INICIAL' },
-        { file: 'musica3.mp3', name: 'OPERAÇÃO TÁTICA' }, // Adicione nomes reais dos seus arquivos aqui
+        { file: 'musica3.mp3', name: 'OPERAÇÃO TÁTICA' }, 
         { file: 'musica4.mp3', name: 'AMBIENTE SECRETO' }
     ];
     let currentTrackIndex = 0;
@@ -904,8 +982,11 @@
         'Magnitude': 5
     };
 
-    let defaultCategories = ['Execução', 'Extermínio', 'Juízo', 'Informação', 'Financeiro', 'Clãs', 'Documentos Gerais'];
+    let defaultCategories = ['Execução', 'Extermínio', 'Juízo', 'Informação', 'Financeiro', 'Clãs', 'Documentos Gerais', 'Logs do Sistema'];
     let currentCategories = JSON.parse(localStorage.getItem('msf_custom_categories')) || defaultCategories;
+
+    // Garante que Logs do Sistema existe para a nova feature
+    if(!currentCategories.includes('Logs do Sistema')) currentCategories.push('Logs do Sistema');
 
     document.getElementById('terminal-audio').volume = 0.4;
 
@@ -979,6 +1060,24 @@
     }
     function stopSoftAlarm() { if(alarmInterval) clearInterval(alarmInterval); }
 
+    function logSystemAction(actionDescription) {
+        const logDoc = {
+            id: 'LOG-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+            type: 'sys_log',
+            isUnitType: false,
+            title: 'REGISTRO DE AUDITORIA',
+            category: 'Logs do Sistema',
+            infoLevel: 'Arconte',
+            content: actionDescription,
+            createdBy: currentUserGlobal || 'Sistema',
+            createdTime: new Date().toLocaleTimeString('pt-BR'),
+            dateFormatted: new Date().toLocaleDateString('pt-BR'),
+            timestamp: Date.now()
+        };
+        globalDocs.push(logDoc);
+        syncBackendData(logDoc, 'POST');
+    }
+
     function validateGateLogin(isGuest) {
         if (isGuest) {
             isLogged = false; currentUserGlobal = "Visitante";
@@ -992,6 +1091,13 @@
         if (!user || !pass) { alert("ERRO DE AUTENTICAÇÃO: Os campos Operador e Senha são obrigatórios."); return; }
         if (key !== "MSF01") { alert("CHAVE DE VALIDAÇÃO INVÁLIDA: Privilégios negados."); return; }
 
+        let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
+        if(bannedList.includes(user.toLowerCase())) {
+            document.getElementById('entry-screen').style.display = 'none';
+            document.getElementById('banned-screen').style.display = 'flex';
+            return;
+        }
+
         let userDB = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
         let rolesDB = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
 
@@ -999,6 +1105,7 @@
             if (userDB[user.toLowerCase()] === pass) {
                 isLogged = true; currentUserGlobal = user; 
                 localStorage.setItem('msf_session', JSON.stringify({ user: user, lastActivity: Date.now() }));
+                logSystemAction(`Operador [${user.toUpperCase()}] realizou login na rede.`);
                 startInactivityMonitor();
                 initiateSystemSequence();
             } else { alert("ACESSO NEGADO: Senha incorreta."); }
@@ -1013,9 +1120,20 @@
             
             isLogged = true; currentUserGlobal = user; 
             localStorage.setItem('msf_session', JSON.stringify({ user: user, lastActivity: Date.now() }));
+            logSystemAction(`Novo Operador [${user.toUpperCase()}] foi registrado na rede.`);
             startInactivityMonitor();
             initiateSystemSequence();
         }
+    }
+
+    function checkAdminPrivileges() {
+        if(!isLogged) return false;
+        if(currentUserGlobal.toLowerCase() === 'mafrainf') return true;
+        let adminList = JSON.parse(localStorage.getItem('msf_admin_users') || '[]');
+        if(adminList.includes(currentUserGlobal.toLowerCase())) return true;
+        
+        let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
+        return roles[currentUserGlobal.toLowerCase()] === 'Magnitude';
     }
 
     function initiateSystemSequence() {
@@ -1046,7 +1164,6 @@
             const trackText = document.getElementById('track-name-ui');
             const visualizer = document.getElementById('music-visualizer');
             
-            // Configurar a primeira música do array
             audio.src = musicPlaylist[currentTrackIndex].file;
             
             audio.play().then(() => {
@@ -1081,12 +1198,14 @@
             let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
             let myRole = roles[currentUserGlobal.toLowerCase()] || 'Agente';
             
+            let isAdmin = checkAdminPrivileges();
+
             authStatusUi.innerHTML = `
                 <button onclick="criarSolicitacaoNivel()" style="background: transparent; border: 1px solid var(--indigo); color: var(--text); padding: 5px 10px; font-size:10px; font-family: var(--font-mono); font-weight: bold; cursor:pointer; border-radius: 4px; margin-right: 10px; transition: 0.2s;" onmouseover="this.style.background='var(--indigo)'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.color='var(--text)';">
                     <i class="fa-solid fa-key"></i> Pedir Nível
                 </button>
                 <div style="display:flex; align-items:center; justify-content: center; gap: 8px; padding: 6px 12px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px;">
-                    <i class="fa-solid fa-user-shield" style="color: var(--indigo)"></i>
+                    <i class="fa-solid ${isAdmin ? 'fa-crown' : 'fa-user-shield'}" style="color: var(--indigo)"></i>
                     <span style="font-size:11px; font-family:var(--font-mono); font-weight:bold; color:var(--text)">
                         ${currentUserGlobal.toUpperCase()} // LVL: ${myRole.toUpperCase()}
                     </span>
@@ -1095,13 +1214,12 @@
             adminActions.style.display = 'flex';
             guestPanel.style.display = 'none';
 
-            let isGod = (currentUserGlobal.toLowerCase() === 'mafrainf' || myRole === 'Magnitude');
-            btnGestao.style.display = isGod ? 'inline-flex' : 'none';
-            btnVisual.style.display = isGod ? 'inline-flex' : 'none';
-            btnCommercial.style.display = isGod ? 'inline-flex' : 'none';
+            btnGestao.style.display = isAdmin ? 'inline-flex' : 'none';
+            btnVisual.style.display = isAdmin ? 'inline-flex' : 'none';
+            btnCommercial.style.display = isAdmin ? 'inline-flex' : 'none';
             
             if (btnForceSync) {
-                btnForceSync.style.display = (currentUserGlobal.toLowerCase() === 'mafrainf') ? 'inline-flex' : 'none';
+                btnForceSync.style.display = isAdmin ? 'inline-flex' : 'none';
             }
 
             setupCustomizerModalFields();
@@ -1128,27 +1246,67 @@
         
         let accounts = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
         let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
+        let adminList = JSON.parse(localStorage.getItem('msf_admin_users') || '[]');
+        let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
+
         let html = '';
         
         for(let user in accounts) {
             let role = roles[user] || 'Agente';
+            let isAdm = adminList.includes(user);
+            let isBan = bannedList.includes(user);
+            let isMafra = (user === 'mafrainf');
+
             html += `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--border);">
-                <span style="font-weight:bold; font-family:var(--font-mono); font-size: 13px; text-transform:uppercase;">
-                    <i class="fa-solid fa-user" style="color:var(--indigo); margin-right:5px;"></i> ${user}
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--border); background: ${isBan ? 'rgba(211,47,47,0.1)' : 'transparent'};">
+                <span style="font-weight:bold; font-family:var(--font-mono); font-size: 13px; text-transform:uppercase; text-decoration: ${isBan ? 'line-through' : 'none'}; color: ${isBan ? '#d32f2f' : 'var(--text)'};">
+                    <i class="fa-solid ${isAdm || isMafra ? 'fa-crown' : 'fa-user'}" style="color:var(--indigo); margin-right:5px;"></i> ${user}
                 </span>
-                <select class="form-control" style="width:160px; font-size:11px; padding: 5px;" onchange="updateUserRole('${user}', this.value)">
-                    <option value="Agente" ${role==='Agente'?'selected':''}>Agente</option>
-                    <option value="Regente" ${role==='Regente'?'selected':''}>Regente</option>
-                    <option value="Flagelo" ${role==='Flagelo'?'selected':''}>Flagelo</option>
-                    <option value="Arconte" ${role==='Arconte'?'selected':''}>Arconte</option>
-                    <option value="Magnitude" ${role==='Magnitude'?'selected':''}>Magnitude</option>
-                </select>
+                
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    ${!isMafra ? `
+                        <button class="btn" style="padding: 4px 8px; font-size: 9px; background: ${isAdm ? 'var(--indigo)' : 'var(--card-bg)'}; color: ${isAdm ? '#fff' : 'var(--text)'}; border-color: var(--indigo);" onclick="toggleAdminRole('${user}')" title="Dar/Tirar ADM">ADM</button>
+                        <button class="btn" style="padding: 4px 8px; font-size: 9px; background: ${isBan ? '#d32f2f' : 'var(--card-bg)'}; color: ${isBan ? '#fff' : 'var(--text)'}; border-color: #d32f2f;" onclick="toggleBanStatus('${user}')" title="Bloquear/Desbloquear"><i class="fa-solid fa-ban"></i></button>
+                    ` : '<span style="font-size:10px; font-family:var(--font-mono); color:var(--indigo); font-weight:bold;">[CRIADOR]</span>'}
+                    
+                    <select class="form-control" style="width:120px; font-size:11px; padding: 4px;" onchange="updateUserRole('${user}', this.value)" ${isMafra ? 'disabled' : ''}>
+                        <option value="Agente" ${role==='Agente'?'selected':''}>Agente</option>
+                        <option value="Regente" ${role==='Regente'?'selected':''}>Regente</option>
+                        <option value="Flagelo" ${role==='Flagelo'?'selected':''}>Flagelo</option>
+                        <option value="Arconte" ${role==='Arconte'?'selected':''}>Arconte</option>
+                        <option value="Magnitude" ${role==='Magnitude'?'selected':''}>Magnitude</option>
+                    </select>
+                </div>
             </div>`;
         }
         
         if (Object.keys(accounts).length === 0) container.innerHTML = `<p style="font-family:var(--font-mono); font-size:11px; padding: 10px;">Nenhum operador registrado no sistema local.</p>`;
         else container.innerHTML = html;
+    }
+
+    function toggleAdminRole(user) {
+        let adminList = JSON.parse(localStorage.getItem('msf_admin_users') || '[]');
+        if(adminList.includes(user)) {
+            adminList = adminList.filter(u => u !== user);
+        } else {
+            adminList.push(user);
+        }
+        localStorage.setItem('msf_admin_users', JSON.stringify(adminList));
+        openUsersModal(); // Recarrega
+        if(user === currentUserGlobal.toLowerCase()) setupInterfaceUI();
+    }
+
+    function toggleBanStatus(user) {
+        let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
+        if(bannedList.includes(user)) {
+            bannedList = bannedList.filter(u => u !== user);
+        } else {
+            if(confirm(`Tem certeza que deseja aplicar o BLOQUEIO PERMANENTE no usuário ${user.toUpperCase()}? Ele não poderá mais logar.`)) {
+                bannedList.push(user);
+            }
+        }
+        localStorage.setItem('msf_banned_users', JSON.stringify(bannedList));
+        openUsersModal();
     }
 
     function updateUserRole(user, newRole) {
@@ -1177,10 +1335,13 @@
                     <i class="fa-solid fa-folder-open"></i> ${cat}
                 </div>
             `;
-            selectHTML += `<option value="${cat}">${cat}</option>`;
+            // Não permite criar documento direto na pasta de logs ou chat
+            if(cat !== 'Logs do Sistema' && cat !== 'Chat') {
+                selectHTML += `<option value="${cat}">${cat}</option>`;
+            }
         });
 
-        if (currentUserGlobal.toLowerCase() === 'mafrainf') {
+        if (checkAdminPrivileges()) {
             dropdownHTML += `
                 <hr style="border:0; border-top:1px solid var(--border); margin:4px 0;">
                 <div class="dropdown-item" onclick="filterDocs('solicitacoes_nivel', this)" style="color: #ff4500; font-weight: bold;">
@@ -1221,6 +1382,7 @@
         const list = document.getElementById('category-manager-list');
         list.innerHTML = '';
         currentCategories.forEach((cat, index) => {
+            if(cat === 'Logs do Sistema') return; // Hide system reserved folder
             list.innerHTML += `
                 <div style="display:flex; justify-content:space-between; align-items:center; padding:6px; border-bottom:1px solid var(--border); font-family:var(--font-mono); font-size:11px;">
                     <span>${cat}</span><i class="fa-solid fa-trash-can" style="color:#d32f2f; cursor:pointer;" onclick="removeCategoryEngine(${index})"></i>
@@ -1325,6 +1487,7 @@
             globalDocs = JSON.parse(localStorage.getItem('msf_local_database') || '[]');
         }
         renderDocs();
+        if(chatRefreshInterval) renderChatMessages(); // Atualiza o chat se estiver aberto
     }
 
     async function syncBackendData(doc, method) {
@@ -1387,7 +1550,7 @@
     function checkUserDocAccess(docInfoLevel) {
         if (!isLogged) return false;
         let myRole = JSON.parse(localStorage.getItem('msf_account_roles') || '{}')[currentUserGlobal.toLowerCase()] || 'Agente';
-        if (myRole === 'Magnitude') return true;
+        if (myRole === 'Magnitude' || checkAdminPrivileges()) return true;
         return (levelMap[myRole] || 1) >= (levelMap[docInfoLevel] || 1);
     }
 
@@ -1408,7 +1571,6 @@
             return;
         }
 
-        // Seleciona o comercial mais recente da array
         const latestComm = commercials[commercials.length - 1];
         currentCommercialId = latestComm.id;
 
@@ -1416,7 +1578,6 @@
         document.getElementById('banner-desc').innerText = latestComm.content || '';
         
         const mediaContainer = document.getElementById('banner-media');
-        // Usa a primeira mídia do array, ou a imageUrl legado
         let previewImg = latestComm.media && latestComm.media.length > 0 ? latestComm.media[0] : latestComm.imageUrl;
         
         if(previewImg) {
@@ -1425,8 +1586,7 @@
             mediaContainer.innerHTML = '<i class="fa-solid fa-bullhorn" style="color:var(--text); font-size:24px; opacity: 0.5;"></i>';
         }
 
-        let myRole = JSON.parse(localStorage.getItem('msf_account_roles') || '{}')[currentUserGlobal.toLowerCase()] || 'Agente';
-        let isGod = (currentUserGlobal.toLowerCase() === 'mafrainf' || myRole === 'Magnitude');
+        let isGod = checkAdminPrivileges();
         document.getElementById('banner-admin-actions').style.display = isGod ? 'block' : 'none';
 
         banner.style.display = 'flex';
@@ -1437,7 +1597,8 @@
         if(confirm("COMANDO MAFRA: Remover este anúncio do ar para todos os terminais?")) {
             globalDocs = globalDocs.filter(doc => doc.id !== currentCommercialId);
             await syncBackendData({id: currentCommercialId}, 'DELETE');
-            renderDocs(); // Re-renderiza tudo, fazendo o banner sumir ou puxar o anterior
+            logSystemAction(`Operador expurgou o Comunicado Geral do ar.`);
+            renderDocs(); 
         }
     }
 
@@ -1448,13 +1609,14 @@
         let query = filterOverride || currentFilter;
         let filtered = [];
 
-        // Ignoramos a categoria Comercial para não popular a grid principal
         if(query === 'Todos') {
             filtered = globalDocs.filter(d => 
                 d.category !== 'Membros da M.G.I' && 
                 d.category !== 'Alvos' && 
-                d.category !== 'Comercial' && // Comercial agora é pop-up
-                d.type !== 'solicitacao_nivel'
+                d.category !== 'Comercial' && 
+                d.type !== 'solicitacao_nivel' &&
+                d.type !== 'chat_msg' &&
+                d.type !== 'sys_log'
             );
         } else if (query === 'solicitacoes_nivel') {
             filtered = globalDocs.filter(d => d.type === 'solicitacao_nivel');
@@ -1465,7 +1627,7 @@
             let htmlString = '';
             [...filtered].reverse().forEach(req => {
                 htmlString += `
-                <div style="border: 2px solid var(--border); padding: 20px; background: var(--card-bg); display: flex; flex-direction: column; gap: 15px;">
+                <div class="animated-card" style="border: 2px solid var(--border); padding: 20px; background: var(--card-bg); display: flex; flex-direction: column; gap: 15px;">
                     <div style="font-family: var(--font-mono); font-size: 13px;">
                         <strong>OPERADOR:</strong> <span style="text-transform: uppercase; color: var(--indigo); font-weight: bold;">${req.requestedBy}</span><br>
                         <strong>NÍVEL SOLICITADO:</strong> <span style="color: #008000; font-weight: bold;">${req.requestedRole}</span><br>
@@ -1486,7 +1648,7 @@
             container.innerHTML = htmlString;
             return; 
         } else {
-            filtered = globalDocs.filter(d => d.category === query && d.type !== 'solicitacao_nivel');
+            filtered = globalDocs.filter(d => d.category === query && d.type !== 'solicitacao_nivel' && d.type !== 'chat_msg');
         }
 
         if(filtered.length === 0) {
@@ -1508,30 +1670,33 @@
 
                 if(doc.isUnitType) {
                     htmlString += `
-                    <div class="unit-card" onclick='openUnit(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
+                    <div class="unit-card animated-card" onclick='openUnit(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
                         <div class="unit-card-photo">${mediaPreview}</div>
                         <div class="unit-card-body">
                             <div class="unit-card-subtitle">${doc.category}</div>
                             <div class="unit-card-title">${displayTitle}</div>
-                            <div class="unit-card-stats" style="margin-top:auto">
+                            <div class="unit-card-stats" style="margin-top:auto; display:flex; justify-content:space-between; align-items:end; width:100%;">
                                 <span class="unit-badge" style="color: ${infoColor}; border-color: ${infoColor};">${doc.infoLevel.toUpperCase()}</span>
+                                <div class="card-author-info" style="font-family:var(--font-mono); font-size:8px; opacity:0.6;"><i class="fa-solid fa-user"></i> ${doc.createdBy || 'Sistema'}<br>${doc.dateFormatted}</div>
                             </div>
                         </div>
                     </div>`;
                 } else {
                     htmlString += `
-                    <div class="doc-card" onclick='openDoc(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
+                    <div class="doc-card animated-card" onclick='openDoc(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
                         ${badgeInfoHTML}
                         <div class="card-header"><div class="card-category">${doc.category}</div><div class="card-title">${displayTitle}</div></div>
                         <div class="card-body">${displayContent}</div>
-                        <div class="card-footer"><span>ID: ${doc.id.substring(0,6)}</span><span>${doc.dateFormatted}</span></div>
+                        <div class="card-footer">
+                            <span>ID: ${doc.id.substring(0,6)}</span>
+                            <div class="card-author-info"><i class="fa-solid fa-user"></i> ${doc.createdBy || 'Sistema'}<br>${doc.dateFormatted} ${doc.createdTime || ''}</div>
+                        </div>
                     </div>`;
                 }
             });
             container.innerHTML = htmlString;
         }
 
-        // Atualiza a barra de comercial depois de renderizar a interface
         renderCommercialBanner();
     }
 
@@ -1560,14 +1725,13 @@
             }, 2000);
         }
         else {
-            // Limpa os glitches caso a pessoa pesquise outra coisa e apague
             if(val.trim() === '') {
                 document.body.classList.remove('glitch-purple-subtle', 'glitch-purple-heavy', 'glitch-white-subtle', 'glitch-white-heavy');
             }
         }
         // --- FIM DOS EASTER EGGS ---
 
-        const filtered = globalDocs.filter(d => d.title.toLowerCase().includes(lowerVal) && d.type !== 'solicitacao_nivel' && d.category !== 'Comercial');
+        const filtered = globalDocs.filter(d => d.title.toLowerCase().includes(lowerVal) && d.type !== 'solicitacao_nivel' && d.category !== 'Comercial' && d.type !== 'chat_msg');
         currentFilter = 'Busca';
         document.getElementById('view-title').innerText = 'Resultados da Busca';
         let globalDocsTemp = globalDocs; 
@@ -1582,7 +1746,12 @@
         renderDocs();
     }
 
+    // MINIGAME 1
     let mgInterval; let mgPosition = 0; let mgDirection = 1; let mgTargetStart = 40; let mgTargetWidth = 20;
+    
+    // MINIGAME 2
+    let mg2TimerInterval; let mg2TargetStr = ""; let mg2TimeLeft = 8.0;
+
     let mgDocPending = null; let mgIsUnitPending = false;
 
     window.addEventListener('keydown', function(e) { if(e.code === 'Space' && document.getElementById('minigame-modal').style.display === 'flex') { e.preventDefault(); stopMinigameCursor(); }});
@@ -1612,6 +1781,16 @@
         if (lockout && Date.now() >= parseInt(lockout)) { localStorage.removeItem('msf_lockout'); guestFails = 0; }
 
         mgDocPending = doc; mgIsUnitPending = isUnit;
+        
+        // Randomiza qual minigame vai aparecer (50% de chance para cada)
+        if(Math.random() > 0.5) {
+            startMinigame1(doc);
+        } else {
+            startMinigame2(doc);
+        }
+    }
+
+    function startMinigame1(doc) {
         let level = levelMap[doc.infoLevel] || 1; 
         let mgSpeed = 3 + (level * 2); 
         mgTargetWidth = 35 - (level * 5); 
@@ -1642,17 +1821,57 @@
                 if(mgIsUnitPending) openUnitBypass(mgDocPending); else openDocBypass(mgDocPending);
             }, 500);
         } else {
-            guestFails++;
-            if (guestFails >= 4) { closeModals(); startLockoutScreenTimer(30); } 
-            else { alert("DESINCRONIZAÇÃO. Restam: " + (4 - guestFails) + " tentativas."); initiateMinigame(mgDocPending, mgIsUnitPending); }
+            handleMinigameFail();
         }
     }
 
-    function toggleAdminReaderActions(doc) {
-        let myRole = JSON.parse(localStorage.getItem('msf_account_roles') || '{}')[currentUserGlobal.toLowerCase()] || 'Agente';
-        let isGod = (currentUserGlobal.toLowerCase() === 'mafrainf' || myRole === 'Magnitude');
-        document.getElementById('admin-doc-actions').style.display = isGod ? 'flex' : 'none';
-        document.getElementById('admin-unit-actions').style.display = isGod ? 'flex' : 'none';
+    function startMinigame2(doc) {
+        let level = levelMap[doc.infoLevel] || 1;
+        let lengthStr = 3 + level; // Quanto maior o nivel, mais letras
+        mg2TimeLeft = 8.0 - (level * 0.5); // Quanto maior o nivel, menos tempo
+
+        mg2TargetStr = Math.random().toString(36).substring(2, 2 + lengthStr).toUpperCase();
+        document.getElementById('mg2-target-code').innerText = mg2TargetStr;
+        document.getElementById('mg2-input').value = '';
+        document.getElementById('mg2-timer-ui').innerText = mg2TimeLeft.toFixed(1);
+        
+        openModal('minigame-2-modal');
+        setTimeout(()=> document.getElementById('mg2-input').focus(), 100);
+
+        if(mg2TimerInterval) clearInterval(mg2TimerInterval);
+        mg2TimerInterval = setInterval(() => {
+            mg2TimeLeft -= 0.1;
+            document.getElementById('mg2-timer-ui').innerText = mg2TimeLeft.toFixed(1);
+            if(mg2TimeLeft <= 0) {
+                clearInterval(mg2TimerInterval);
+                handleMinigameFail();
+            }
+        }, 100);
+    }
+
+    function checkMinigame2(val) {
+        if(val.toUpperCase() === mg2TargetStr) {
+            clearInterval(mg2TimerInterval);
+            guestFails = 0;
+            document.getElementById('mg2-target-code').style.color = '#00ff00';
+            setTimeout(() => { 
+                closeModals(); 
+                document.getElementById('mg2-target-code').style.color = 'var(--indigo)';
+                if(mgIsUnitPending) openUnitBypass(mgDocPending); else openDocBypass(mgDocPending);
+            }, 500);
+        }
+    }
+
+    function handleMinigameFail() {
+        guestFails++;
+        if (guestFails >= 4) { closeModals(); startLockoutScreenTimer(30); } 
+        else { alert("DESINCRONIZAÇÃO. Restam: " + (4 - guestFails) + " tentativas."); initiateMinigame(mgDocPending, mgIsUnitPending); }
+    }
+
+    function toggleAdminReaderActions() {
+        let isAdmin = checkAdminPrivileges();
+        document.getElementById('admin-doc-actions').style.display = isAdmin ? 'flex' : 'none';
+        document.getElementById('admin-unit-actions').style.display = isAdmin ? 'flex' : 'none';
     }
 
     function openDoc(doc) {
@@ -1668,21 +1887,18 @@
         document.getElementById('read-id').innerText = doc.id ? doc.id.substring(0,12).toUpperCase() : '0000';
         document.getElementById('read-text').innerText = doc.content;
         
+        document.getElementById('read-author').innerText = (doc.createdBy || 'Sistema').toUpperCase();
+        document.getElementById('read-time-exact').innerText = doc.createdTime || '';
+
         const photoContainer = document.getElementById('read-photo-container');
-        
-        // Renderiza múltiplas mídias se existirem
         let mediaFiles = doc.media || (doc.imageUrl ? [doc.imageUrl] : []);
         
         if(mediaFiles.length > 0) {
             let html = '<div class="media-gallery-grid">';
-            mediaFiles.forEach(m => {
-                html += `<div class="attached-photo-frame">${renderMediaElement(m, false)}</div>`;
-            });
+            mediaFiles.forEach(m => { html += `<div class="attached-photo-frame">${renderMediaElement(m, false)}</div>`; });
             html += '</div>';
             photoContainer.innerHTML = html;
-        } else { 
-            photoContainer.innerHTML = ''; 
-        }
+        } else { photoContainer.innerHTML = ''; }
 
         const infoColor = getInfoColor(doc.infoLevel);
         const infoStamp = document.getElementById('info-lvl-stamp');
@@ -1706,6 +1922,9 @@
         document.getElementById('r-unit-id').innerText = doc.id ? doc.id.substring(0,12).toUpperCase() : '0000';
         document.getElementById('r-unit-date').innerText = doc.dateFormatted || '00/00/0000';
         document.getElementById('r-unit-cat').innerText = doc.category.toUpperCase();
+
+        document.getElementById('r-unit-author').innerText = (doc.createdBy || 'Sistema').toUpperCase();
+        document.getElementById('r-unit-time-exact').innerText = doc.createdTime || '';
         
         const dColor = doc.dangerLevel === 'Neutro' ? '#888' : '#d32f2f';
         const dStamp = document.getElementById('r-unit-danger');
@@ -1775,10 +1994,9 @@
         
         if(!title) return alert("Erro: O título/nome é obrigatório.");
 
-        // Resgatar mídias antigas se for edição
         let mediaArray = currentOpenDocObj && editId && currentOpenDocObj.media ? currentOpenDocObj.media : [];
         if (currentOpenDocObj && editId && currentOpenDocObj.imageUrl && (!currentOpenDocObj.media || currentOpenDocObj.media.length === 0)) {
-            mediaArray = [currentOpenDocObj.imageUrl]; // Migração de dados antigos
+            mediaArray = [currentOpenDocObj.imageUrl]; 
         }
 
         const fileInput = document.getElementById(`${prefix}-image`);
@@ -1789,7 +2007,6 @@
                     let b64 = await convertFileToBase64(fileInput.files[i]);
                     newMediaFiles.push(b64);
                 }
-                // Sobrescreve as mídias com os novos uploads (se quiser somar, mude para concat)
                 mediaArray = newMediaFiles;
             } catch(e) { return alert("Erro na leitura das mídias."); }
         }
@@ -1798,24 +2015,27 @@
             id: editId || Math.random().toString(36).substr(2, 9).toUpperCase(),
             isUnitType: type === 'unit',
             title: title,
-            // Força a categoria Comercial se for do tipo 'comm'
             category: type === 'comm' ? 'Comercial' : (document.getElementById(`${prefix}-category`)?.value || 'Geral'),
             infoLevel: type === 'comm' ? 'Público' : (document.getElementById(`${prefix}-info`)?.value || 'Público'),
             dangerLevel: document.getElementById(`${prefix}-danger`)?.value,
             filial: document.getElementById(`${prefix}-filial`)?.value,
             content: document.getElementById(`${prefix}-content`)?.value || document.getElementById(`${prefix}-desc`)?.value || '',
             obs: document.getElementById(`${prefix}-obs`)?.value,
-            imageUrl: mediaArray.length > 0 ? mediaArray[0] : '', // Mantém p/ grid e unidades
-            media: mediaArray, // Novo array com todas as fotos/videos
+            imageUrl: mediaArray.length > 0 ? mediaArray[0] : '', 
+            media: mediaArray,
+            createdBy: currentUserGlobal || 'Sistema',
+            createdTime: new Date().toLocaleTimeString('pt-BR'),
             dateFormatted: new Date().toLocaleDateString('pt-BR')
         };
 
         if(editId) {
             globalDocs = globalDocs.map(d => d.id === editId ? newDoc : d);
             await syncBackendData(newDoc, 'PUT');
+            logSystemAction(`Operador alterou o registro: [${title}]`);
         } else {
             globalDocs.push(newDoc);
             await syncBackendData(newDoc, 'POST');
+            logSystemAction(`Operador inseriu um novo registro: [${title}]`);
         }
         closeModals(); renderDocs();
     }
@@ -1826,15 +2046,86 @@
 
     async function deleteDocTrigger() {
         if(confirm("ALERTA CRÍTICO: Você está prestes a expurgar este registro permanentemente. Prosseguir?")) {
+            let docTitle = currentOpenDocObj.title;
             globalDocs = globalDocs.filter(doc => doc.id !== currentOpenDocId);
             await syncBackendData({id: currentOpenDocId}, 'DELETE');
+            logSystemAction(`Operador expurgou definitivamente o registro: [${docTitle}]`);
             closeModals(); renderDocs();
         }
     }
 
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); if(mgInterval) clearInterval(mgInterval); }
+    function closeModals() { 
+        document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
+        if(mgInterval) clearInterval(mgInterval); 
+        if(mg2TimerInterval) clearInterval(mg2TimerInterval);
+        stopChatRefresh();
+    }
 
+    // --- SISTEMA DE CHAT ---
+    let chatRefreshInterval;
+    function openChatModal() {
+        openModal('chat-modal');
+        renderChatMessages();
+        chatRefreshInterval = setInterval(fetchData, 3000); // Atualiza globalDocs a cada 3s com o modal aberto
+    }
+    
+    function closeChatModal() {
+        closeModals();
+    }
+
+    function stopChatRefresh() {
+        if(chatRefreshInterval) clearInterval(chatRefreshInterval);
+    }
+
+    function renderChatMessages() {
+        const container = document.getElementById('chat-messages-container');
+        let chats = globalDocs.filter(d => d.type === 'chat_msg').sort((a,b) => a.timestamp - b.timestamp);
+        
+        let html = '';
+        chats.forEach(msg => {
+            let isMe = msg.createdBy === currentUserGlobal;
+            html += `
+            <div class="chat-message-box ${isMe ? 'chat-msg-self' : ''}">
+                <div class="chat-header">
+                    <span><i class="fa-solid fa-user"></i> ${msg.createdBy.toUpperCase()}</span>
+                    <span>${msg.createdTime}</span>
+                </div>
+                <div class="chat-text">${msg.content}</div>
+            </div>`;
+        });
+        
+        if(chats.length === 0) html = `<div style="text-align:center; opacity:0.5; font-family:var(--font-mono); font-size:11px; margin-top: auto; margin-bottom:auto;">Nenhuma comunicação registrada.</div>`;
+        
+        // Auto scroll
+        let isScrolledToBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 1;
+        container.innerHTML = html;
+        if(isScrolledToBottom) container.scrollTop = container.scrollHeight;
+    }
+
+    async function sendChatMessage() {
+        const input = document.getElementById('chat-input-text');
+        const txt = input.value.trim();
+        if(!txt) return;
+
+        const newMsg = {
+            id: 'MSG-' + Date.now() + Math.random().toString(36).substr(2, 5),
+            type: 'chat_msg',
+            category: 'Chat',
+            content: txt,
+            createdBy: currentUserGlobal,
+            createdTime: new Date().toLocaleTimeString('pt-BR'),
+            dateFormatted: new Date().toLocaleDateString('pt-BR'),
+            timestamp: Date.now()
+        };
+
+        input.value = '';
+        globalDocs.push(newMsg);
+        renderChatMessages();
+        await syncBackendData(newMsg, 'POST');
+    }
+
+    // --- SISTEMA DE SOLICITAÇÃO ---
     async function criarSolicitacaoNivel() {
         if(currentUserGlobal === "Visitante") { alert("Visitantes não podem solicitar alteração de nível."); return; }
         
@@ -1873,6 +2164,7 @@
                 alert(`Operador ${username.toUpperCase()} atualizado com sucesso!`);
                 globalDocs = globalDocs.filter(d => d.id !== docId);
                 await fetchBackendUsers();
+                logSystemAction(`Operador autorizou nível [${newRole}] para o usuário [${username}]`);
                 renderDocs('solicitacoes_nivel');
             } else {
                 alert("Erro ao processar a aprovação no servidor.");
@@ -1887,7 +2179,6 @@
         renderDocs('solicitacoes_nivel');
     }
 
-    // A SOLICITAÇÃO ORIGINAL DO MAFRAINF: FORÇAR SINCRONIZAÇÃO TOTAL
     async function forceSyncAll() {
         if(!confirm("ALERTA IMPERIAL: Esta ação irá reescrever completamente o banco de dados do servidor com os dados carregados na sua tela atual. Prosseguir?")) return;
         
@@ -1904,6 +2195,7 @@
             
             if (response.ok) {
                 localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
+                logSystemAction(`Executada sincronização forçada e backup global de todos os sistemas.`);
                 alert("SISTEMA CENTRALIZADO: Backup global e sincronização aplicados com sucesso.");
             } else {
                 alert("FALHA DE COMUNICAÇÃO: O servidor rejeitou a sobreposição de dados.");
@@ -1930,6 +2222,14 @@
 
         let sessionData = JSON.parse(localStorage.getItem('msf_session') || 'null');
         if (sessionData && sessionData.user) {
+            
+            let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
+            if(bannedList.includes(sessionData.user.toLowerCase())) {
+                document.getElementById('entry-screen').style.display = 'none';
+                document.getElementById('banned-screen').style.display = 'flex';
+                return;
+            }
+
             if (Date.now() - sessionData.lastActivity < INACTIVITY_LIMIT) {
                 isLogged = true;
                 currentUserGlobal = sessionData.user;
