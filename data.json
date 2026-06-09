@@ -378,14 +378,5 @@
     "createdTime": "00:36:31",
     "dateFormatted": "09/06/2026",
     "timestamp": 1780976191317
-  },
-  {
-    "id": "REQ-1780976316298",
-    "type": "solicitacao_nivel",
-    "category": "solicitacoes_nivel",
-    "requestedBy": "teste",
-    "requestedRole": "magnitude",
-    "justification": "a",
-    "timestamp": 1780976316298
   }
 ]
