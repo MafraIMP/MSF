@@ -1093,6 +1093,7 @@
 
         let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
         if(bannedList.includes(user.toLowerCase())) {
+            logSystemAction(`[SISTEMA] O operador banido [${user.toUpperCase()}] tentou acessar a rede e foi bloqueado na catraca.`);
             document.getElementById('entry-screen').style.display = 'none';
             document.getElementById('banned-screen').style.display = 'flex';
             return;
@@ -1108,7 +1109,10 @@
                 logSystemAction(`Operador [${user.toUpperCase()}] realizou login na rede.`);
                 startInactivityMonitor();
                 initiateSystemSequence();
-            } else { alert("ACESSO NEGADO: Senha incorreta."); }
+            } else { 
+                logSystemAction(`[ALERTA DE INTRUSÃO] Tentativa de login falha para o operador [${user.toUpperCase()}]. Senha incorreta inserida.`);
+                alert("ACESSO NEGADO: Senha incorreta."); 
+            }
         } else {
             userDB[user.toLowerCase()] = pass;
             rolesDB[user.toLowerCase()] = 'Agente'; 
@@ -1120,7 +1124,7 @@
             
             isLogged = true; currentUserGlobal = user; 
             localStorage.setItem('msf_session', JSON.stringify({ user: user, lastActivity: Date.now() }));
-            logSystemAction(`Novo Operador [${user.toUpperCase()}] foi registrado na rede.`);
+            logSystemAction(`Novo Operador [${user.toUpperCase()}] foi registrado no banco de dados e acessou a rede.`);
             startInactivityMonitor();
             initiateSystemSequence();
         }
@@ -1286,26 +1290,39 @@
 
     function toggleAdminRole(user) {
         let adminList = JSON.parse(localStorage.getItem('msf_admin_users') || '[]');
+        let isNowAdm = false;
         if(adminList.includes(user)) {
             adminList = adminList.filter(u => u !== user);
         } else {
             adminList.push(user);
+            isNowAdm = true;
         }
         localStorage.setItem('msf_admin_users', JSON.stringify(adminList));
-        openUsersModal(); // Recarrega
-        if(user === currentUserGlobal.toLowerCase()) setupInterfaceUI();
+        logSystemAction(`O operador [${user.toUpperCase()}] teve seus privilégios de ADM ${isNowAdm ? 'CONCEDIDOS' : 'REVOGADOS'} pela Gestão.`);
+        openUsersModal(); // Recarrega a view
+        
+        // Se eu acabei de mudar o meu próprio ADM
+        if(user.toLowerCase() === currentUserGlobal.toLowerCase()) {
+            setupInterfaceUI();
+            renderNavigationStructure();
+        }
     }
 
     function toggleBanStatus(user) {
         let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
+        let isBanned = false;
         if(bannedList.includes(user)) {
             bannedList = bannedList.filter(u => u !== user);
         } else {
             if(confirm(`Tem certeza que deseja aplicar o BLOQUEIO PERMANENTE no usuário ${user.toUpperCase()}? Ele não poderá mais logar.`)) {
                 bannedList.push(user);
+                isBanned = true;
+            } else {
+                return; // Cancelou
             }
         }
         localStorage.setItem('msf_banned_users', JSON.stringify(bannedList));
+        logSystemAction(`[SISTEMA] O operador [${user.toUpperCase()}] foi ${isBanned ? 'BANIDO PERMANENTEMENTE' : 'DESBLOQUEADO'} da rede M.G.I.`);
         openUsersModal();
     }
 
@@ -1313,7 +1330,13 @@
         let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
         roles[user] = newRole; localStorage.setItem('msf_account_roles', JSON.stringify(roles));
         updateUserRoleBackend(user, newRole);
-        if(user === currentUserGlobal.toLowerCase()) setupInterfaceUI(); 
+        logSystemAction(`O nível do operador [${user.toUpperCase()}] foi alterado para [${newRole.toUpperCase()}].`);
+        
+        // Se a pessoa alterou o próprio nível na tela de gestão (ex: o próprio ADM)
+        if(user.toLowerCase() === currentUserGlobal.toLowerCase()) {
+            setupInterfaceUI(); 
+            renderNavigationStructure();
+        }
         renderDocs();
     }
 
@@ -1864,8 +1887,16 @@
 
     function handleMinigameFail() {
         guestFails++;
-        if (guestFails >= 4) { closeModals(); startLockoutScreenTimer(30); } 
-        else { alert("DESINCRONIZAÇÃO. Restam: " + (4 - guestFails) + " tentativas."); initiateMinigame(mgDocPending, mgIsUnitPending); }
+        let docName = mgDocPending ? mgDocPending.title : 'Desconhecido';
+        if (guestFails >= 4) { 
+            logSystemAction(`[QUEBRA DE FIREWALL FALHOU] O usuário [${currentUserGlobal.toUpperCase()}] acionou a segurança no arquivo [${docName}] e foi congelado.`);
+            closeModals(); 
+            startLockoutScreenTimer(30); 
+        } 
+        else { 
+            alert("DESINCRONIZAÇÃO. Restam: " + (4 - guestFails) + " tentativas."); 
+            initiateMinigame(mgDocPending, mgIsUnitPending); 
+        }
     }
 
     function toggleAdminReaderActions() {
