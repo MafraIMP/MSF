@@ -313,5 +313,18 @@
     "createdTime": "23:39:26",
     "dateFormatted": "08/06/2026",
     "timestamp": 1780972766908
+  },
+  {
+    "id": "LOG-P1SGCBZ5P",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "O operador [G3ARS] teve seus privilégios de ADM REVOGADOS pela Gestão.",
+    "createdBy": "MafraINF",
+    "createdTime": "23:46:18",
+    "dateFormatted": "08/06/2026",
+    "timestamp": 1780973178527
   }
 ]
