@@ -326,5 +326,18 @@
     "createdTime": "23:46:18",
     "dateFormatted": "08/06/2026",
     "timestamp": 1780973178527
+  },
+  {
+    "id": "LOG-Z0WEU78W6",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "[SISTEMA] O operador [G3ARS] foi BANIDO PERMANENTEMENTE da rede M.G.I.",
+    "createdBy": "MafraINF",
+    "createdTime": "23:46:43",
+    "dateFormatted": "08/06/2026",
+    "timestamp": 1780973203072
   }
 ]
