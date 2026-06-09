@@ -404,5 +404,18 @@
     "createdTime": "00:41:05",
     "dateFormatted": "09/06/2026",
     "timestamp": 1780976465089
+  },
+  {
+    "id": "LOG-GNUQ7LOTC",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "[SISTEMA] O operador [TESTE] foi BANIDO PERMANENTEMENTE da rede M.G.I.",
+    "createdBy": "MafraINF",
+    "createdTime": "00:41:36",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1780976496490
   }
 ]
