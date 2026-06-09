@@ -234,5 +234,15 @@
     "createdTime": "23:26:23",
     "dateFormatted": "08/06/2026",
     "timestamp": 1780971983198
+  },
+  {
+    "id": "MSG-1780972129588bkepo",
+    "type": "chat_msg",
+    "category": "Chat",
+    "content": "Teste",
+    "createdBy": "MafraINF",
+    "createdTime": "23:28:49",
+    "dateFormatted": "08/06/2026",
+    "timestamp": 1780972129588
   }
 ]
