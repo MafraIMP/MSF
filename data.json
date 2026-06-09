@@ -497,5 +497,18 @@
     "createdTime": "18:01:19",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781038879891
+  },
+  {
+    "id": "LOG-NHI0BDVE0",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [[ 🔵 ] Coveiro]",
+    "createdBy": "MafraINF",
+    "createdTime": "18:03:26",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781039006585
   }
 ]
