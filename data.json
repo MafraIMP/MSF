@@ -244,5 +244,18 @@
     "createdTime": "23:28:49",
     "dateFormatted": "08/06/2026",
     "timestamp": 1780972129588
+  },
+  {
+    "id": "LOG-VTL2DMZFF",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador [G3ARS] realizou login na rede.",
+    "createdBy": "g3ars",
+    "createdTime": "23:29:08",
+    "dateFormatted": "08/06/2026",
+    "timestamp": 1780972148148
   }
 ]
