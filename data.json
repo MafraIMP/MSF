@@ -435,5 +435,18 @@
     "createdTime": "17:49:42",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781038182792
+  },
+  {
+    "id": "LOG-8UPEQPK2S",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [[ 🔵 ] Ritzel]",
+    "createdBy": "MafraINF",
+    "createdTime": "17:53:49",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781038429265
   }
 ]
