@@ -391,5 +391,18 @@
     "createdTime": "00:38:47",
     "dateFormatted": "09/06/2026",
     "timestamp": 1780976327043
+  },
+  {
+    "id": "LOG-OLBPA26XU",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "O nível do operador [TESTE] foi alterado para [ARCONTE].",
+    "createdBy": "MafraINF",
+    "createdTime": "00:41:05",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1780976465089
   }
 ]
