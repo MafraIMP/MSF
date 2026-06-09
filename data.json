@@ -300,5 +300,18 @@
     "createdBy": "MafraINF",
     "createdTime": "23:39:24",
     "dateFormatted": "08/06/2026"
+  },
+  {
+    "id": "LOG-BYAII6PIP",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [teste]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:39:26",
+    "dateFormatted": "08/06/2026",
+    "timestamp": 1780972766908
   }
 ]
