@@ -484,5 +484,18 @@
     "createdBy": "MafraINF",
     "createdTime": "18:01:00",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-6UVHFEIN8",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [Rizel (bixorno)]",
+    "createdBy": "MafraINF",
+    "createdTime": "18:01:03",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781038863841
   }
 ]
