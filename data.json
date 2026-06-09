@@ -417,5 +417,18 @@
     "createdTime": "00:41:36",
     "dateFormatted": "09/06/2026",
     "timestamp": 1780976496490
+  },
+  {
+    "id": "LOG-VY3CJACVT",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador [MAFRAINF] realizou login na rede.",
+    "createdBy": "MafraINF",
+    "createdTime": "17:49:42",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781038182792
   }
 ]
