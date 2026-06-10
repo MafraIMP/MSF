@@ -1,18 +1,5 @@
 [
   {
-    "id": "LOG-ECXD4PXC7",
-    "type": "sys_log",
-    "isUnitType": false,
-    "title": "REGISTRO DE AUDITORIA",
-    "category": "Logs do Sistema",
-    "infoLevel": "Arconte",
-    "content": "Operador alterou o registro: [[ 🌑 ] Moon_Rarock (Líder)]",
-    "createdBy": "MafraINF",
-    "createdTime": "22:43:45",
-    "dateFormatted": "09/06/2026",
-    "timestamp": 1781055825411
-  },
-  {
     "id": "B5UXKEDI6",
     "isUnitType": false,
     "title": "Teste",
@@ -57,18 +44,5 @@
     "createdBy": "MafraINF",
     "createdTime": "23:01:09",
     "dateFormatted": "09/06/2026"
-  },
-  {
-    "id": "LOG-EM0M9SMIX",
-    "type": "sys_log",
-    "isUnitType": false,
-    "title": "REGISTRO DE AUDITORIA",
-    "category": "Logs do Sistema",
-    "infoLevel": "Arconte",
-    "content": "Operador inseriu um novo registro: [[ 🟣 ] MafraINF]",
-    "createdBy": "MafraINF",
-    "createdTime": "23:01:11",
-    "dateFormatted": "09/06/2026",
-    "timestamp": 1781056871229
   }
 ]
