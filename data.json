@@ -15,19 +15,6 @@
     "dateFormatted": "09/06/2026"
   },
   {
-    "id": "LOG-4VSJ46YYB",
-    "type": "sys_log",
-    "isUnitType": false,
-    "title": "REGISTRO DE AUDITORIA",
-    "category": "Logs do Sistema",
-    "infoLevel": "Arconte",
-    "content": "Operador [TESTE] realizou login na rede.",
-    "createdBy": "teste",
-    "createdTime": "22:58:53",
-    "dateFormatted": "09/06/2026",
-    "timestamp": 1781056733090
-  },
-  {
     "id": "AJCUU6FQL",
     "isUnitType": true,
     "title": "[ 🟣 ] MafraINF",
@@ -271,18 +258,5 @@
     "createdBy": "MafraINF",
     "createdTime": "23:35:43",
     "dateFormatted": "09/06/2026"
-  },
-  {
-    "id": "LOG-XAL2F5ISF",
-    "type": "sys_log",
-    "isUnitType": false,
-    "title": "REGISTRO DE AUDITORIA",
-    "category": "Logs do Sistema",
-    "infoLevel": "Arconte",
-    "content": "Operador inseriu um novo registro: [Moon_Rarock (Líder)]",
-    "createdBy": "MafraINF",
-    "createdTime": "23:35:46",
-    "dateFormatted": "09/06/2026",
-    "timestamp": 1781058946562
   }
 ]
