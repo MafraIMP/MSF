@@ -1408,6 +1408,59 @@
 
         let mediaPreview = hasAccess && firstMediaUrl ? renderMediaElement(firstMediaUrl, true) : (firstMediaUrl ? `<img class="censored-img" src="${firstMediaUrl}">` : `<i class="fa-solid fa-file-shield"></i>`);
 
+        // INDICADOR DE STATUS DE SINCRONIZAÇÃO (Canto Inferior Direito)
+        let syncIcon = '';
+        if (doc.syncStatus === 'pending') {
+            syncIcon = `<i class="fa-solid fa-circle-notch fa-spin" style="color: #ff8c00; margin-left: 4px; font-size: 10px;" title="Enviando ao servidor M.G.I..."></i>`;
+        } else if (doc.syncStatus === 'error') {
+            syncIcon = `<i class="fa-solid fa-circle-xmark" style="color: #ff0055; margin-left: 4px; font-size: 10px;" title="Falha de Comunicação"></i>`;
+        } else {
+            // Se não tiver status ou for verified, mostra a bolinha verde de legitimação
+            syncIcon = `<i class="fa-solid fa-circle-check" style="color: #00ff00; margin-left: 4px; font-size: 10px;" title="Arquivo Verificado e Legítimo"></i>`;
+        }
+
+        if(doc.isUnitType) {
+            return `
+            <div class="unit-card animated-card" onclick='openUnitBypass(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
+                <div class="unit-card-photo">${mediaPreview}</div>
+                <div class="unit-card-body">
+                    <div class="unit-card-subtitle">${doc.category}</div>
+                    <div class="unit-card-title">${displayTitle}</div>
+                    <div class="unit-card-stats" style="margin-top:auto; display:flex; justify-content:space-between; align-items:end; width:100%;">
+                        <span class="unit-badge" style="color: ${infoColor}; border-color: ${infoColor};">${doc.infoLevel.toUpperCase()}</span>
+                        <div class="card-author-info" style="font-family:var(--font-mono); font-size:8px; opacity:0.6;"><i class="fa-solid fa-user"></i> ${doc.createdBy || 'Sistema'}<br>${doc.dateFormatted} ${syncIcon}</div>
+                    </div>
+                </div>
+            </div>`;
+        } else {
+            return `
+            <div class="doc-card animated-card" onclick='openDocBypass(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
+                ${badgeInfoHTML}
+                <div class="card-header"><div class="card-category">${doc.category}</div><div class="card-title">${displayTitle}</div></div>
+                <div class="card-body">${displayContent}</div>
+                <div class="card-footer">
+                    <span>ID: ${doc.id.substring(0,6)}</span>
+                    <div class="card-author-info"><i class="fa-solid fa-user"></i> ${doc.createdBy || 'Sistema'}<br>${doc.dateFormatted} ${syncIcon}</div>
+                </div>
+            </div>`;
+        }
+    }
+        const hasAccess = checkUserDocAccess(doc.infoLevel);
+        const infoColor = getInfoColor(doc.infoLevel);
+        const badgeInfoHTML = `<div class="card-badge" style="background: ${infoColor}; border-color: ${infoColor}; color:#fff;">${(doc.infoLevel || 'AGENTE').toUpperCase()}</div>`;
+        
+        const displayTitle = !hasAccess ? `<span class="censored-text">████████████</span>` : doc.title;
+        const displayContent = !hasAccess ? 
+            `<span style="font-weight: bold; color: #d32f2f;">[ BLOQUEADO ]</span>` : 
+            (doc.content.substring(0, 100) + (doc.content.length > 100 ? '...' : ''));
+
+        let firstMediaUrl = null;
+        if(doc.mediaObjects && doc.mediaObjects.length > 0) firstMediaUrl = doc.mediaObjects[0].url;
+        else if(doc.media && doc.media.length > 0) firstMediaUrl = doc.media[0];
+        else firstMediaUrl = doc.imageUrl;
+
+        let mediaPreview = hasAccess && firstMediaUrl ? renderMediaElement(firstMediaUrl, true) : (firstMediaUrl ? `<img class="censored-img" src="${firstMediaUrl}">` : `<i class="fa-solid fa-file-shield"></i>`);
+
         if(doc.isUnitType) {
             return `
             <div class="unit-card animated-card" onclick='openUnitBypass(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
@@ -1657,9 +1710,77 @@
         }
     }
 
-    function saveDoc() { processFormSave('doc'); }
-    function saveUnit() { processFormSave('unit'); }
-    function saveCommercial() { processFormSave('comm'); }
+    async function processFormSave(type) {
+        let prefix = type === 'doc' ? 'doc' : (type === 'unit' ? 'unit' : 'comm');
+        const title = document.getElementById(`${prefix}-title`)?.value || document.getElementById(`${prefix}-name`)?.value;
+        const editId = document.getElementById(`${prefix}-edit-id`).value;
+        
+        if(!title) return alert("Erro: O título/nome é obrigatório.");
+
+        let finalMediaArray = [];
+        if (type !== 'comm') {
+            let mediaGroups = document.querySelectorAll(`#media-inputs-container-${prefix} .media-input-group`);
+            for (let group of mediaGroups) {
+                let fileInput = group.querySelector('.media-file-input');
+                let descInput = group.querySelector('.media-desc-input');
+                let existingUrlInput = group.querySelector('.media-existing-url');
+                
+                let finalUrl = null;
+                let finalDesc = descInput.value.trim();
+
+                if (fileInput.files && fileInput.files.length > 0) {
+                    try { finalUrl = await convertFileToBase64(fileInput.files[0]); } catch(e) {}
+                } else if (existingUrlInput && existingUrlInput.value) {
+                    finalUrl = existingUrlInput.value;
+                }
+                if (finalUrl) finalMediaArray.push({ url: finalUrl, desc: finalDesc });
+            }
+        } else {
+            const commFile = document.getElementById('comm-image');
+            if(commFile && commFile.files.length > 0) {
+                try { let b64 = await convertFileToBase64(commFile.files[0]); finalMediaArray.push({url: b64, desc: ''}); } catch(e) {}
+            } else if (currentOpenDocObj && currentOpenDocObj.mediaObjects) {
+                finalMediaArray = currentOpenDocObj.mediaObjects;
+            }
+        }
+
+        const newDoc = {
+            id: editId || 'DOC-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+            isUnitType: type === 'unit',
+            title: title,
+            category: type === 'comm' ? 'Comercial' : (document.getElementById(`${prefix}-category`)?.value || 'Geral'),
+            infoLevel: type === 'comm' ? 'Público' : (document.getElementById(`${prefix}-info`)?.value || 'Público'),
+            dangerLevel: document.getElementById(`${prefix}-danger`)?.value,
+            filial: document.getElementById(`${prefix}-filial`)?.value,
+            content: document.getElementById(`${prefix}-content`)?.value || document.getElementById(`${prefix}-desc`)?.value || '',
+            obs: document.getElementById(`${prefix}-obs`)?.value,
+            mediaObjects: finalMediaArray, 
+            createdBy: currentUserGlobal || 'Sistema',
+            createdTime: new Date().toLocaleTimeString('pt-BR'),
+            dateFormatted: new Date().toLocaleDateString('pt-BR'),
+            syncStatus: 'pending' // <--- STATUS DE SINCRONIZAÇÃO INICIAL
+        };
+
+        // ATUALIZAÇÃO OTIMISTA (Muda a tela do usuário na hora!)
+        if(editId) globalDocs = globalDocs.map(d => d.id === editId ? newDoc : d);
+        else globalDocs.push(newDoc);
+        
+        closeModals(); 
+        renderDocs(); // Mostra o card com a bolinha de carregamento
+
+        let method = editId ? 'PUT' : 'POST';
+        let route = editId ? `/api/docs/${newDoc.id}` : '/api/docs';
+        
+        // ENVIO EM SEGUNDO PLANO (Espera o Render responder no tempo dele)
+        globalBackendSync(route, method, newDoc).then(success => {
+            let docIndex = globalDocs.findIndex(d => d.id === newDoc.id);
+            if(docIndex > -1) {
+                // Atualiza o status baseando-se na resposta do servidor e re-renderiza
+                globalDocs[docIndex].syncStatus = success ? 'verified' : 'error';
+                renderDocs(); 
+            }
+        });
+    }
 
     // EDIÇÃO E VISUALIZAÇÃO
     function openDocBypass(doc) {
