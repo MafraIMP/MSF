@@ -15,6 +15,19 @@
     "dateFormatted": "09/06/2026"
   },
   {
+    "id": "LOG-4VSJ46YYB",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador [TESTE] realizou login na rede.",
+    "createdBy": "teste",
+    "createdTime": "22:58:53",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781056733090
+  },
+  {
     "id": "AJCUU6FQL",
     "isUnitType": true,
     "title": "[ 🟣 ] MafraINF",
@@ -33,6 +46,19 @@
     "dateFormatted": "09/06/2026"
   },
   {
+    "id": "LOG-O45F2ATSU",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "[EXPURGO] O Imperador executou o protocolo de expurgo total dos logs.",
+    "createdBy": "MafraINF",
+    "createdTime": "23:02:00",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781056920728
+  },
+  {
     "id": "1OU7XQT5Y",
     "isUnitType": true,
     "title": "[ 🔵 ] Ritzel",
@@ -49,6 +75,58 @@
     "createdBy": "MafraINF",
     "createdTime": "23:04:20",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-NUPIURPCS",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [[ 🔵 ] Ritzel]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:04:23",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781057063099
+  },
+  {
+    "id": "LOG-6MO0U1NZD",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [[ 🟡 ] Hunter]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:05:32",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781057132201
+  },
+  {
+    "id": "LOG-PZG6VUR7P",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "[ALERTA DE INTRUSÃO] Tentativa de login falha para o operador [MAFRAINF]. Senha incorreta inserida.",
+    "createdBy": "Sistema",
+    "createdTime": "23:26:51",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781058411888
+  },
+  {
+    "id": "LOG-CPICDRPAJ",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador [MAFRAINF] realizou login na rede.",
+    "createdBy": "MafraINF",
+    "createdTime": "23:26:58",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781058418560
   },
   {
     "id": "VWGB9JI39",
@@ -77,6 +155,32 @@
     "createdBy": "MafraINF",
     "createdTime": "23:28:51",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-O5TU7QQUB",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [Governo Imperial - (GIMP) / [ANIQUILADO]]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:28:53",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781058533802
+  },
+  {
+    "id": "LOG-YNUZZLRMP",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [The Blood Moons - [ATIVO]]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:29:09",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781058549587
   },
   {
     "id": "1EBIZ8N48",
@@ -125,19 +229,6 @@
     "dateFormatted": "09/06/2026"
   },
   {
-    "id": "LOG-D3EFWK158",
-    "type": "sys_log",
-    "isUnitType": false,
-    "title": "REGISTRO DE AUDITORIA",
-    "category": "Logs do Sistema",
-    "infoLevel": "Arconte",
-    "content": "Operador inseriu um novo registro: [HAWK (Membro)]",
-    "createdBy": "MafraINF",
-    "createdTime": "23:31:56",
-    "dateFormatted": "09/06/2026",
-    "timestamp": 1781058716025
-  },
-  {
     "id": "LOG-4NLMVA50J",
     "type": "sys_log",
     "isUnitType": false,
@@ -167,5 +258,18 @@
     "createdBy": "MafraINF",
     "createdTime": "23:35:43",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-XAL2F5ISF",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [Moon_Rarock (Líder)]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:35:46",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781058946562
   }
 ]
