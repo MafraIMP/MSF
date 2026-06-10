@@ -784,5 +784,18 @@
     "createdBy": "MafraINF",
     "createdTime": "22:27:56",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-M43OGY2S3",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [MOONS_Phantom]",
+    "createdBy": "MafraINF",
+    "createdTime": "22:28:00",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781054880132
   }
 ]
