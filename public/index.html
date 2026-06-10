@@ -152,7 +152,7 @@
             display: flex; align-items: center; gap: 10px; color: var(--text); cursor: pointer; transition: 0.15s;
         }
         .dropdown-item i { width: 14px; text-align: center; color: var(--item-color, var(--indigo)); }
-        .dropdown-item:hover { background-color: var(--gray-subtle); padding-left: 20px; } /* Efeito Hover animado */
+        .dropdown-item:hover { background-color: var(--gray-subtle); padding-left: 20px; } 
         .dropdown-item.active { background-color: var(--gray-subtle); color: var(--indigo); font-weight: 800; border-left: 3px solid var(--indigo); }
 
         #auth-status-ui { margin-left: auto; display: flex; align-items: center; gap: 10px; }
@@ -160,12 +160,6 @@
         /* PAINEL PRINCIPAL DE CONTEÚDO */
         main { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
         .content-wrapper { flex: 1; padding: 40px; overflow-y: auto; background-color: rgba(255,255,255,0.05); backdrop-filter: blur(2px); }
-        
-        /* PAINEL DE INFORMAÇÕES (VISITANTE) */
-        #guest-info-panel { display: none; margin-bottom: 30px; border: 2px solid var(--border); background: var(--card-bg); padding: 25px; box-shadow: 5px 5px 0px rgba(0,0,0,0.1); }
-        .guest-title { font-family: var(--font-mono); color: var(--indigo); font-size: 20px; font-weight: 900; margin-bottom: 12px; }
-        .guest-desc { font-size: 14px; line-height: 1.6; opacity: 0.9; margin-bottom: 15px; }
-        .guest-warning { font-size: 11px; font-family: var(--font-mono); font-weight: bold; color: #d32f2f; background: rgba(211,47,47,0.1); padding: 8px 12px; border-left: 4px solid #d32f2f; display: inline-block; }
 
         .view-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 4px solid var(--border); padding-bottom: 10px; }
         .view-header h2 { font-family: var(--font-mono); font-size: 24px; text-transform: uppercase; color: var(--text); }
@@ -200,7 +194,7 @@
         .censored-img { filter: blur(10px) grayscale(100%); opacity: 0.5; }
 
         /* LAYOUT DE LEITURA UNIDADE */
-        .read-unit-layout { display: flex; gap: 30px; align-items: flex-start; }
+        .read-unit-layout { display: flex; gap: 30px; align-items: flex-start; position: relative; z-index: 2; }
         .read-unit-info { flex: 1; }
         .read-unit-photo { width: 280px; flex-shrink: 0; border: 4px double var(--border); padding: 5px; background: var(--card-bg); box-shadow: 5px 5px 0px rgba(0,0,0,0.15); text-align: center; }
         .read-unit-photo img, .read-unit-photo video { max-width: 100%; display: block; margin: 0 auto; object-fit: contain; }
@@ -266,9 +260,9 @@
 
         /* MODAIS */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-box { background: var(--card-bg); border: 4px solid var(--border); width: 700px; max-width: 95%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 15px 15px 0px rgba(0,0,0,0.3); color: var(--text); animation: fadeIn 0.3s ease-out; }
-        .modal-header { padding: 20px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--gray-subtle); }
-        .modal-body { padding: 30px; overflow-y: auto; }
+        .modal-box { background: var(--card-bg); border: 4px solid var(--border); width: 700px; max-width: 95%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 15px 15px 0px rgba(0,0,0,0.3); color: var(--text); animation: fadeIn 0.3s ease-out; position: relative; }
+        .modal-header { padding: 20px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--gray-subtle); z-index: 10; }
+        .modal-body { padding: 30px; overflow-y: auto; position: relative; }
 
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
@@ -281,16 +275,19 @@
         input[type="file"]::file-selector-button:hover { background: var(--indigo); color: #fff; }
 
         /* LEITOR DE DOCUMENTO E MULTIMÍDIA */
-        .reader-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; position: relative;}
+        .reader-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; position: relative; z-index: 2; }
         .reader-stamps { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
         .stamp { border: 2px solid var(--border); padding: 4px 12px; font-family: var(--font-mono); font-weight: bold; font-size: 12px; text-transform: uppercase; }
-        .stamp.secret { border-color: #d32f2f; color: #d32f2f; transform: rotate(-2deg); }
         .stamp.info-lvl { border-color: var(--info-color, var(--border)); color: var(--info-color, var(--text)); background: var(--card-bg); }
-        #read-text { font-size: 15px; line-height: 1.8; white-space: pre-wrap; font-family: 'Times New Roman', serif; }
+        #read-text { font-size: 15px; line-height: 1.8; white-space: pre-wrap; font-family: 'Times New Roman', serif; position: relative; z-index: 2; }
         
-        .media-gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; justify-items: center; align-items: start; margin-bottom: 25px; }
+        .media-gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; justify-items: center; align-items: start; margin-bottom: 25px; position: relative; z-index: 2; }
         .attached-photo-frame { border: 4px double var(--border); padding: 5px; background: var(--card-bg); box-shadow: 5px 5px 0px rgba(0,0,0,0.15); width: 100%; display: flex; justify-content: center; }
         .attached-photo-frame img, .attached-photo-frame video { max-width: 100%; max-height: 380px; object-fit: contain; display: block; }
+        .attached-photo-frame audio { width: 100%; display: block; }
+
+        /* MARCA D'ÁGUA MGI */
+        .watermark-logo { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 350px; opacity: 0.05; filter: invert(1); pointer-events: none; z-index: 0; }
 
         /* PALETA VISUAL PANEL */
         .color-picker-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
@@ -385,11 +382,8 @@
                 <input type="password" id="gate-key" class="form-control" style="background:#201a2e; color:#fff; border-color:var(--indigo);" placeholder="Insira a chave (Apenas Criadores)">
             </div>
             
-            <button class="btn btn-indigo" style="width: 100%; margin-bottom: 12px; font-size: 12px;" onclick="validateGateLogin(false)">
+            <button class="btn btn-indigo" style="width: 100%; margin-bottom: 12px; font-size: 12px;" onclick="validateGateLogin()">
                 <i class="fa-solid fa-key"></i> Autenticar / Registrar Operador
-            </button>
-            <button class="btn" style="width: 100%; background: transparent; color: #a99ec2; border-color: #44345e; font-size: 11px;" onclick="validateGateLogin(true)">
-                <i class="fa-solid fa-eye"></i> Entrar como Visitante
             </button>
         </div>
     </div>
@@ -449,14 +443,6 @@
 
     <main>
         <div class="content-wrapper">
-            
-            <div id="guest-info-panel">
-                <h2 class="guest-title">M.S.F // MAFRA SEARCH FACILITY</h2>
-                <p class="guest-desc">Base científica e estratégica da M.G.I responsável pela pesquisa, estudo e análise detalhada de todas as variáveis, indivíduos e incidentes que possam ser úteis aos nossos propósitos, ou que representem ameaças que devam ser cirurgicamente aniquiladas pela Ordem.</p>
-                <div class="guest-warning">
-                    <i class="fa-solid fa-lock"></i> MODO VISITANTE: INFORMAÇÕES CRIPTOGRAFADAS. QUEBRA DE FIREWALL NECESSÁRIA PARA LEITURA.
-                </div>
-            </div>
 
             <div class="view-header" id="view-header-container">
                 <h2 id="view-title">Todos os Arquivos</h2>
@@ -471,8 +457,8 @@
                     <button id="btn-gestao-mgi" class="btn" style="border-color: #ff8c00; color: #ff8c00; display: none;" onclick="openUsersModal()">
                         <i class="fa-solid fa-users-gear"></i> Gestão M.G.I
                     </button>
-                    <button id="btn-visual-studio" class="btn" style="border-color: var(--indigo); color: var(--indigo); display: none;" onclick="openModal('customizer-modal')">
-                        <i class="fa-solid fa-palette"></i> Visual Studio
+                    <button id="btn-purge-logs" class="btn" style="border-color: #ff0055; color: #ff0055; display: none;" onclick="purgeAllLogs()">
+                        <i class="fa-solid fa-fire"></i> Expurgar Logs
                     </button>
                     <button id="btn-create-commercial" class="btn" style="border-color: #00ff00; color: #008000; display: none;" onclick="openModalCommercial()">
                         <i class="fa-solid fa-bullhorn"></i> Anunciar Comercial
@@ -528,51 +514,6 @@
             <i class="fa-solid fa-volume-low" style="color: var(--text)"></i>
             <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4" oninput="changeVolume(this.value)">
             <i class="fa-solid fa-volume-high" style="color: var(--text)"></i>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="minigame-modal">
-        <div class="modal-box" style="width: 500px; text-align:center;">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-crosshairs"></i> DESCRIPTOGRAFIA REQUERIDA</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
-            </div>
-            <div class="modal-body">
-                <p style="margin-bottom:20px; font-family:var(--font-mono); font-size:12px; color: var(--text);">
-                    Sincronize o pulso na área demarcada para quebrar o firewall de segurança.
-                </p>
-                <div style="font-family: var(--font-mono); font-size: 11px; color: #d32f2f; margin-bottom: 10px; font-weight: bold;">
-                    TENTATIVAS RESTANTES: <span id="mg-tries-ui">4</span>
-                </div>
-                <div id="mg-area" style="position:relative; width:100%; height:40px; background:var(--gray-subtle); border:2px solid var(--border); overflow:hidden; border-radius: 4px;">
-                    <div id="mg-target" style="position:absolute; height:100%; background:rgba(75,0,130,0.4); border-left:2px solid var(--indigo); border-right:2px solid var(--indigo);"></div>
-                    <div id="mg-cursor" style="position:absolute; width:4px; height:100%; background:#d32f2f; left:0; box-shadow: 0 0 8px #d32f2f;"></div>
-                </div>
-                <button class="btn btn-indigo" style="margin-top:25px; width:100%; padding: 15px;" onclick="stopMinigameCursor()">
-                    <i class="fa-solid fa-fingerprint"></i> INJETAR BYPASS (ESPAÇO)
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="minigame-2-modal">
-        <div class="modal-box" style="width: 500px; text-align:center;">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-terminal"></i> INJEÇÃO DE MATRIZ</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
-            </div>
-            <div class="modal-body">
-                <p style="margin-bottom:20px; font-family:var(--font-mono); font-size:12px; color: var(--text);">
-                    Sobrescreva o código de bloqueio copiando exatamente a sequência alfanumérica abaixo antes que o temporizador expire.
-                </p>
-                <div style="font-family: var(--font-mono); font-size: 11px; color: #d32f2f; margin-bottom: 10px; font-weight: bold;">
-                    TEMPO RESTANTE: <span id="mg2-timer-ui">8.0</span>s
-                </div>
-                <div id="mg2-target-code" style="font-size: 32px; font-weight: 900; font-family: var(--font-mono); letter-spacing: 10px; color: var(--indigo); background: var(--gray-subtle); padding: 20px; border: 2px dashed var(--border); margin-bottom: 15px; user-select: none;">
-                    X7A9
-                </div>
-                <input type="text" id="mg2-input" class="form-control" style="text-align: center; font-size: 24px; font-weight: bold; font-family: var(--font-mono); letter-spacing: 5px; text-transform: uppercase;" placeholder="DIGITE AQUI" onkeyup="checkMinigame2(this.value)">
-            </div>
         </div>
     </div>
 
@@ -679,8 +620,8 @@
                         </select>
                     </div>
                     <div class="form-group" style="flex:1">
-                        <label><i class="fa-solid fa-image"></i> Identificação (Foto/Vídeo)</label>
-                        <input type="file" id="unit-image" class="form-control" accept="image/*,video/*">
+                        <label><i class="fa-solid fa-upload"></i> Identificação (Fotos/Vídeos/Áudios)</label>
+                        <input type="file" id="unit-image" class="form-control" accept="image/*,video/*,audio/*" multiple>
                     </div>
                 </div>
 
@@ -755,6 +696,7 @@
                 <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
             </div>
             <div class="modal-body">
+                <img src="LOGO MSF.png" class="watermark-logo" alt="MGI Watermark">
                 <div class="reader-header">
                     <div style="position: absolute; right: 0; top: 0; text-align: right; font-family: var(--font-mono); font-size: 11px; opacity: 0.7;">
                         <i class="fa-solid fa-user-pen" style="color: var(--indigo);"></i> <span id="read-author">Autor</span><br>
@@ -762,7 +704,6 @@
                     </div>
 
                     <div class="reader-stamps">
-                        <div class="stamp secret">TOP SECRET</div>
                         <div id="info-lvl-stamp" class="stamp info-lvl">LVL</div>
                     </div>
                     <h1 id="read-title" style="font-size: 32px; font-weight: 900; margin-bottom: 5px;">TÍTULO</h1>
@@ -774,7 +715,7 @@
                 <div id="read-photo-container"></div>
                 <div id="read-text"></div>
                 
-                <div id="admin-doc-actions" style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px; display: none; gap: 10px; flex-wrap: wrap;">
+                <div id="admin-doc-actions" style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px; display: none; gap: 10px; flex-wrap: wrap; position: relative; z-index: 2;">
                     <button class="btn" style="color: var(--indigo); border-color: var(--indigo);" onclick="editCurrentDoc()">
                         <i class="fa-solid fa-pen"></i> Editar Registro
                     </button>
@@ -793,6 +734,7 @@
                 <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
             </div>
             <div class="modal-body">
+                <img src="LOGO MSF.png" class="watermark-logo" alt="MGI Watermark">
                 <div class="read-unit-layout">
                     <div class="read-unit-info">
                         <div class="reader-header" style="margin-bottom: 15px; padding-bottom: 15px;">
@@ -837,7 +779,7 @@
                     </div>
                 </div>
 
-                <div id="admin-unit-actions" style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px; display: none; gap: 10px; flex-wrap: wrap;">
+                <div id="admin-unit-actions" style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px; display: none; gap: 10px; flex-wrap: wrap; position: relative; z-index: 2;">
                     <button class="btn" style="color: var(--indigo); border-color: var(--indigo);" onclick="editCurrentDoc()">
                         <i class="fa-solid fa-pen"></i> Editar Ficha
                     </button>
@@ -845,71 +787,6 @@
                         <i class="fa-solid fa-trash"></i> Eliminar Registro da Unidade
                     </button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="customizer-modal">
-        <div class="modal-box" style="width: 700px;">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-palette"></i> MAFRAINF // VISUAL STUDIO</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
-            </div>
-            <div class="modal-body">
-                
-                <h4 style="font-family: var(--font-mono); font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">1. CORES & ELEMENTOS BASE</h4>
-                <div class="color-picker-grid">
-                    <div class="color-field">
-                        <label style="font-size:11px; font-weight:bold;">COR SUPREMA (Destaques):</label>
-                        <input type="color" id="theme-indigo" onchange="previewRealtimeTheme()">
-                    </div>
-                    <div class="color-field">
-                        <label style="font-size:11px; font-weight:bold;">COR DAS BORDAS/LINHAS:</label>
-                        <input type="color" id="theme-border" onchange="previewRealtimeTheme()">
-                    </div>
-                    <div class="color-field">
-                        <label style="font-size:11px; font-weight:bold;">COR DO TEXTO GERAL:</label>
-                        <input type="color" id="theme-text" onchange="previewRealtimeTheme()">
-                    </div>
-                    <div class="color-field">
-                        <label style="font-size:11px; font-weight:bold;">COR DE FUNDO (Background):</label>
-                        <input type="color" id="theme-bg" onchange="previewRealtimeTheme()">
-                    </div>
-                    <div class="color-field">
-                        <label style="font-size:11px; font-weight:bold;">COR DOS CARTÕES (Modais/Cards):</label>
-                        <input type="color" id="theme-card-bg" onchange="previewRealtimeTheme()">
-                    </div>
-                    <div class="color-field">
-                        <label style="font-size:11px; font-weight:bold;">COR DE MENUS/DETALHES (Secundária):</label>
-                        <input type="color" id="theme-gray" onchange="previewRealtimeTheme()">
-                    </div>
-                    <div class="color-field">
-                        <label style="font-size:11px; font-weight:bold;">FUNDO DO CABEÇALHO (Header):</label>
-                        <input type="color" id="theme-header" onchange="previewRealtimeTheme()">
-                    </div>
-                    <div class="color-field">
-                        <label style="font-size:11px; font-weight:bold;">TEXTO DO CABEÇALHO:</label>
-                        <input type="color" id="theme-header-text" onchange="previewRealtimeTheme()">
-                    </div>
-                </div>
-
-                <h4 style="font-family: var(--font-mono); font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-top: 15px;">2. IMAGEM DE FUNDO (WALLPAPER)</h4>
-                <div class="form-group">
-                    <label>URL da Imagem de Fundo (Deixe vazio para usar apenas a cor base)</label>
-                    <input type="url" id="theme-bg-img" class="form-control" placeholder="Ex: https://imagem.com/fundo.jpg" oninput="previewRealtimeTheme()">
-                </div>
-
-                <h4 style="font-family: var(--font-mono); font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-top: 25px;">3. ARQUITETURA DE DIRETÓRIOS (TÓPICOS)</h4>
-                <div class="form-group" style="display: flex; gap: 10px;">
-                    <input type="text" id="new-category-name" class="form-control" placeholder="Ex: Operações Secretas, Relatórios Fiscais...">
-                    <button class="btn btn-indigo" style="padding: 0 15px;" onclick="addCategoryEngine()">Adicionar</button>
-                </div>
-                <div id="category-manager-list" style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border); padding: 10px; background: var(--card-bg);">
-                </div>
-
-                <button class="btn btn-indigo" style="width:100%; margin-top:25px; font-size: 12px; padding: 12px;" onclick="saveMafraEngineSettings()">
-                    <i class="fa-solid fa-floppy-disk"></i> Aplicar e Fixar Todas as Alterações
-                </button>
             </div>
         </div>
     </div>
@@ -927,8 +804,7 @@
     let alarmInterval = null;
     let loadingLoopInterval = null;
     let isLogged = false;
-    let currentUserGlobal = "Visitante";
-    let guestFails = 0;
+    let currentUserGlobal = "";
     
     let currentOpenDocId = null;
     let currentOpenDocObj = null;
@@ -947,7 +823,7 @@
     let currentTrackIndex = 0;
 
     function updateActivityTimestamp() {
-        if (isLogged && currentUserGlobal !== "Visitante") {
+        if (isLogged) {
             let session = JSON.parse(localStorage.getItem('msf_session') || '{}');
             if(session.user) {
                 session.lastActivity = Date.now();
@@ -963,8 +839,15 @@
     function startInactivityMonitor() {
         if(inactivityTimer) clearInterval(inactivityTimer);
         inactivityTimer = setInterval(() => {
-            if (isLogged && currentUserGlobal !== "Visitante") {
+            if (isLogged) {
                 let session = JSON.parse(localStorage.getItem('msf_session') || '{}');
+                let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
+
+                if (bannedList.includes(currentUserGlobal.toLowerCase())) {
+                    localStorage.removeItem('msf_session');
+                    location.reload();
+                }
+
                 if (session.lastActivity && (Date.now() - session.lastActivity > INACTIVITY_LIMIT)) {
                     alert("SESSÃO EXPIRADA: 10 minutos de inatividade detectados. Desconectando por segurança.");
                     localStorage.removeItem('msf_session');
@@ -985,7 +868,7 @@
     let defaultCategories = ['Execução', 'Extermínio', 'Juízo', 'Informação', 'Financeiro', 'Clãs', 'Documentos Gerais', 'Logs do Sistema'];
     let currentCategories = JSON.parse(localStorage.getItem('msf_custom_categories')) || defaultCategories;
 
-    // Garante que Logs do Sistema existe para a nova feature
+    // Garante que Logs do Sistema existe
     if(!currentCategories.includes('Logs do Sistema')) currentCategories.push('Logs do Sistema');
 
     document.getElementById('terminal-audio').volume = 0.4;
@@ -1078,12 +961,7 @@
         syncBackendData(logDoc, 'POST');
     }
 
-    function validateGateLogin(isGuest) {
-        if (isGuest) {
-            isLogged = false; currentUserGlobal = "Visitante";
-            initiateSystemSequence(); return;
-        }
-
+    function validateGateLogin() {
         const user = document.getElementById('gate-user').value.trim();
         const pass = document.getElementById('gate-pass').value;
         const key = document.getElementById('gate-key').value.trim();
@@ -1191,11 +1069,10 @@
     function setupInterfaceUI() {
         const authStatusUi = document.getElementById('auth-status-ui');
         const adminActions = document.getElementById('admin-actions');
-        const guestPanel = document.getElementById('guest-info-panel');
         
         const btnForceSync = document.getElementById('btn-force-sync');
         const btnGestao = document.getElementById('btn-gestao-mgi');
-        const btnVisual = document.getElementById('btn-visual-studio');
+        const btnPurgeLogs = document.getElementById('btn-purge-logs');
         const btnCommercial = document.getElementById('btn-create-commercial');
 
         if (isLogged) {
@@ -1216,25 +1093,14 @@
                 </div>`;
                 
             adminActions.style.display = 'flex';
-            guestPanel.style.display = 'none';
 
             btnGestao.style.display = isAdmin ? 'inline-flex' : 'none';
-            btnVisual.style.display = isAdmin ? 'inline-flex' : 'none';
             btnCommercial.style.display = isAdmin ? 'inline-flex' : 'none';
+            btnPurgeLogs.style.display = (currentUserGlobal.toLowerCase() === 'mafrainf') ? 'inline-flex' : 'none';
             
             if (btnForceSync) {
                 btnForceSync.style.display = isAdmin ? 'inline-flex' : 'none';
             }
-
-            setupCustomizerModalFields();
-        } else {
-            authStatusUi.innerHTML = `
-                <div style="display:flex; align-items:center; justify-content: center; gap: 8px; padding: 6px 12px; background: var(--gray-subtle); border: 1px solid var(--border); border-radius: 4px;">
-                    <i class="fa-solid fa-eye" style="color: var(--text)"></i>
-                    <span style="font-size:11px; font-family:var(--font-mono); font-weight:bold; color:var(--text)">MODO VISITANTE</span>
-                </div>`;
-            adminActions.style.display = 'none';
-            guestPanel.style.display = 'block';
         }
     }
 
@@ -1259,7 +1125,7 @@
             let role = roles[user] || 'Agente';
             let isAdm = adminList.includes(user);
             let isBan = bannedList.includes(user);
-            let isMafra = (user === 'mafrainf');
+            let isMafra = (user.toLowerCase() === 'mafrainf');
 
             html += `
             <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--border); background: ${isBan ? 'rgba(211,47,47,0.1)' : 'transparent'};">
@@ -1299,9 +1165,8 @@
         }
         localStorage.setItem('msf_admin_users', JSON.stringify(adminList));
         logSystemAction(`O operador [${user.toUpperCase()}] teve seus privilégios de ADM ${isNowAdm ? 'CONCEDIDOS' : 'REVOGADOS'} pela Gestão.`);
-        openUsersModal(); // Recarrega a view
+        openUsersModal(); 
         
-        // Se eu acabei de mudar o meu próprio ADM
         if(user.toLowerCase() === currentUserGlobal.toLowerCase()) {
             setupInterfaceUI();
             renderNavigationStructure();
@@ -1318,7 +1183,7 @@
                 bannedList.push(user);
                 isBanned = true;
             } else {
-                return; // Cancelou
+                return; 
             }
         }
         localStorage.setItem('msf_banned_users', JSON.stringify(bannedList));
@@ -1332,12 +1197,24 @@
         updateUserRoleBackend(user, newRole);
         logSystemAction(`O nível do operador [${user.toUpperCase()}] foi alterado para [${newRole.toUpperCase()}].`);
         
-        // Se a pessoa alterou o próprio nível na tela de gestão (ex: o próprio ADM)
         if(user.toLowerCase() === currentUserGlobal.toLowerCase()) {
             setupInterfaceUI(); 
             renderNavigationStructure();
         }
         renderDocs();
+    }
+
+    async function purgeAllLogs() {
+        if(!confirm("AUTORIDADE SUPREMA: Deseja expurgar permanentemente todos os registros de auditoria e logs do sistema?")) return;
+        const logsToDelete = globalDocs.filter(d => d.type === 'sys_log');
+        globalDocs = globalDocs.filter(d => d.type !== 'sys_log');
+        for(let log of logsToDelete) {
+            try { await fetch(`/api/docs/${log.id}`, { method: 'DELETE' }); } catch(e) {}
+        }
+        localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
+        logSystemAction(`[EXPURGO] O Imperador executou o protocolo de expurgo total dos logs.`);
+        renderDocs();
+        alert("EXPURGO CONCLUÍDO COM SUCESSO.");
     }
 
     function renderNavigationStructure() {
@@ -1375,76 +1252,6 @@
 
         dropdown.innerHTML = dropdownHTML;
         if(createSelect) createSelect.innerHTML = selectHTML;
-    }
-
-    function rgb2hex(rgb) {
-        if(!rgb || rgb.indexOf('rgb') === -1) return rgb;
-        rgb = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
-        function hex(x) { return ("0" + parseInt(x).toString(16)).slice(-2); }
-        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
-    }
-
-    function setupCustomizerModalFields() {
-        const root = document.documentElement;
-        const style = getComputedStyle(root);
-        document.getElementById('theme-indigo').value = rgb2hex(style.getPropertyValue('--indigo').trim()) || '#4B0082';
-        document.getElementById('theme-border').value = rgb2hex(style.getPropertyValue('--border').trim()) || '#000000';
-        document.getElementById('theme-text').value = rgb2hex(style.getPropertyValue('--text').trim()) || '#000000';
-        document.getElementById('theme-bg').value = rgb2hex(style.getPropertyValue('--bg').trim()) || '#ffffff';
-        document.getElementById('theme-card-bg').value = rgb2hex(style.getPropertyValue('--card-bg').trim()) || '#ffffff';
-        document.getElementById('theme-gray').value = rgb2hex(style.getPropertyValue('--gray-subtle').trim()) || '#f8f9fa';
-        document.getElementById('theme-header').value = rgb2hex(style.getPropertyValue('--header-bg').trim()) || '#1a1525';
-        document.getElementById('theme-header-text').value = rgb2hex(style.getPropertyValue('--header-text').trim()) || '#ffffff';
-        
-        let bgImg = style.getPropertyValue('--bg-image').trim();
-        if(bgImg && bgImg !== 'none') document.getElementById('theme-bg-img').value = bgImg.replace(/url\(['"]?(.*?)['"]?\)/i, '$1');
-        renderCustomizerCategoryList();
-    }
-
-    function renderCustomizerCategoryList() {
-        const list = document.getElementById('category-manager-list');
-        list.innerHTML = '';
-        currentCategories.forEach((cat, index) => {
-            if(cat === 'Logs do Sistema') return; // Hide system reserved folder
-            list.innerHTML += `
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:6px; border-bottom:1px solid var(--border); font-family:var(--font-mono); font-size:11px;">
-                    <span>${cat}</span><i class="fa-solid fa-trash-can" style="color:#d32f2f; cursor:pointer;" onclick="removeCategoryEngine(${index})"></i>
-                </div>`;
-        });
-    }
-
-    function previewRealtimeTheme() {
-        const root = document.documentElement;
-        root.style.setProperty('--indigo', document.getElementById('theme-indigo').value);
-        root.style.setProperty('--border', document.getElementById('theme-border').value);
-        root.style.setProperty('--text', document.getElementById('theme-text').value);
-        root.style.setProperty('--bg', document.getElementById('theme-bg').value);
-        root.style.setProperty('--card-bg', document.getElementById('theme-card-bg').value);
-        root.style.setProperty('--gray-subtle', document.getElementById('theme-gray').value);
-        root.style.setProperty('--header-bg', document.getElementById('theme-header').value);
-        root.style.setProperty('--header-text', document.getElementById('theme-header-text').value);
-        const imgUrl = document.getElementById('theme-bg-img').value.trim();
-        if(imgUrl) root.style.setProperty('--bg-image', `url('${imgUrl}')`); else root.style.setProperty('--bg-image', 'none');
-    }
-
-    function addCategoryEngine() {
-        const nameInput = document.getElementById('new-category-name'); const name = nameInput.value.trim();
-        if(!name) return; if(currentCategories.includes(name)) return alert("Este tópico já existe.");
-        currentCategories.push(name); nameInput.value = ''; renderCustomizerCategoryList();
-    }
-    function removeCategoryEngine(index) { currentCategories.splice(index, 1); renderCustomizerCategoryList(); }
-
-    function saveMafraEngineSettings() {
-        const themeConfig = {
-            indigo: document.getElementById('theme-indigo').value, border: document.getElementById('theme-border').value,
-            text: document.getElementById('theme-text').value, bg: document.getElementById('theme-bg').value,
-            cardBg: document.getElementById('theme-card-bg').value, graySubtle: document.getElementById('theme-gray').value,
-            headerBg: document.getElementById('theme-header').value, headerText: document.getElementById('theme-header-text').value,
-            bgImage: document.getElementById('theme-bg-img').value.trim()
-        };
-        localStorage.setItem('msf_engine_theme', JSON.stringify(themeConfig));
-        localStorage.setItem('msf_custom_categories', JSON.stringify(currentCategories));
-        alert("Alterações gravadas."); renderNavigationStructure(); renderDocs(); closeModals();
     }
 
     function toggleDropdown(element) {
@@ -1579,9 +1386,13 @@
 
     function renderMediaElement(url, isGridCard = false) {
         if(!url) return '';
-        if(url.startsWith('data:video')) return `<video src="${url}" ${isGridCard ? 'muted loop onmouseover="this.play()" onmouseout="this.pause()"' : 'controls'} style="max-width:100%; max-height:380px;"></video>`;
-        if(url.startsWith('data:audio')) return isGridCard ? `<i class="fa-solid fa-file-audio" style="font-size: 40px; color: var(--border); opacity: 0.3;"></i>` : `<audio src="${url}" controls style="width:100%; max-width: 400px; margin: 15px 0;"></audio>`;
-        return `<img src="${url}" style="max-width:100%; max-height:380px; object-fit:contain;">`;
+        if(url.startsWith('data:video')) {
+            return `<video src="${url}" ${isGridCard ? 'muted loop onmouseover="this.play()" onmouseout="this.pause()"' : 'controls'} style="width:100%; max-height:380px; object-fit:contain;"></video>`;
+        }
+        if(url.startsWith('data:audio')) {
+            return isGridCard ? `<i class="fa-solid fa-file-audio" style="font-size: 40px; color: var(--border); opacity: 0.3;"></i>` : `<audio src="${url}" controls style="width:100%; max-width: 400px; margin: 15px auto; display:block;"></audio>`;
+        }
+        return `<img src="${url}" style="width:100%; max-height:380px; object-fit:contain;">`;
     }
 
     // LOGICA DA BARRA DO COMERCIAL ESTILO YOUTUBE
@@ -1769,16 +1580,6 @@
         renderDocs();
     }
 
-    // MINIGAME 1
-    let mgInterval; let mgPosition = 0; let mgDirection = 1; let mgTargetStart = 40; let mgTargetWidth = 20;
-    
-    // MINIGAME 2
-    let mg2TimerInterval; let mg2TargetStr = ""; let mg2TimeLeft = 8.0;
-
-    let mgDocPending = null; let mgIsUnitPending = false;
-
-    window.addEventListener('keydown', function(e) { if(e.code === 'Space' && document.getElementById('minigame-modal').style.display === 'flex') { e.preventDefault(); stopMinigameCursor(); }});
-
     function startLockoutScreenTimer(seconds) {
         localStorage.setItem('msf_lockout', Date.now() + (seconds * 1000));
         const lockScreen = document.getElementById('lockout-screen');
@@ -1793,110 +1594,9 @@
             if(counter <= 0) {
                 clearInterval(timer); stopSoftAlarm();
                 lockScreen.style.display = 'none';
-                guestFails = 0; localStorage.removeItem('msf_lockout');
+                localStorage.removeItem('msf_lockout');
             }
         }, 1000);
-    }
-
-    function initiateMinigame(doc, isUnit) {
-        let lockout = localStorage.getItem('msf_lockout');
-        if (lockout && Date.now() < parseInt(lockout)) { return startLockoutScreenTimer(Math.ceil((parseInt(lockout) - Date.now()) / 1000)); }
-        if (lockout && Date.now() >= parseInt(lockout)) { localStorage.removeItem('msf_lockout'); guestFails = 0; }
-
-        mgDocPending = doc; mgIsUnitPending = isUnit;
-        
-        // Randomiza qual minigame vai aparecer (50% de chance para cada)
-        if(Math.random() > 0.5) {
-            startMinigame1(doc);
-        } else {
-            startMinigame2(doc);
-        }
-    }
-
-    function startMinigame1(doc) {
-        let level = levelMap[doc.infoLevel] || 1; 
-        let mgSpeed = 3 + (level * 2); 
-        mgTargetWidth = 35 - (level * 5); 
-        mgTargetStart = Math.random() * (100 - mgTargetWidth);
-        
-        document.getElementById('mg-target').style.left = mgTargetStart + '%';
-        document.getElementById('mg-target').style.width = mgTargetWidth + '%';
-        document.getElementById('mg-tries-ui').innerText = (4 - guestFails);
-        
-        mgPosition = 0; openModal('minigame-modal');
-        if(mgInterval) clearInterval(mgInterval);
-        mgInterval = setInterval(() => {
-            mgPosition += mgSpeed * mgDirection;
-            if(mgPosition >= 100) { mgPosition = 100; mgDirection = -1; }
-            if(mgPosition <= 0) { mgPosition = 0; mgDirection = 1; }
-            document.getElementById('mg-cursor').style.left = mgPosition + '%';
-        }, 20);
-    }
-
-    function stopMinigameCursor() {
-        clearInterval(mgInterval);
-        let cursorPct = mgPosition; let min = mgTargetStart; let max = mgTargetStart + mgTargetWidth;
-        
-        if(cursorPct >= min && cursorPct <= max) {
-            guestFails = 0;
-            document.getElementById('mg-cursor').style.background = "#00ff00"; document.getElementById('mg-cursor').style.boxShadow = "0 0 8px #00ff00";
-            setTimeout(() => { closeModals(); document.getElementById('mg-cursor').style.background = "#d32f2f"; document.getElementById('mg-cursor').style.boxShadow = "0 0 8px #d32f2f";
-                if(mgIsUnitPending) openUnitBypass(mgDocPending); else openDocBypass(mgDocPending);
-            }, 500);
-        } else {
-            handleMinigameFail();
-        }
-    }
-
-    function startMinigame2(doc) {
-        let level = levelMap[doc.infoLevel] || 1;
-        let lengthStr = 3 + level; // Quanto maior o nivel, mais letras
-        mg2TimeLeft = 8.0 - (level * 0.5); // Quanto maior o nivel, menos tempo
-
-        mg2TargetStr = Math.random().toString(36).substring(2, 2 + lengthStr).toUpperCase();
-        document.getElementById('mg2-target-code').innerText = mg2TargetStr;
-        document.getElementById('mg2-input').value = '';
-        document.getElementById('mg2-timer-ui').innerText = mg2TimeLeft.toFixed(1);
-        
-        openModal('minigame-2-modal');
-        setTimeout(()=> document.getElementById('mg2-input').focus(), 100);
-
-        if(mg2TimerInterval) clearInterval(mg2TimerInterval);
-        mg2TimerInterval = setInterval(() => {
-            mg2TimeLeft -= 0.1;
-            document.getElementById('mg2-timer-ui').innerText = mg2TimeLeft.toFixed(1);
-            if(mg2TimeLeft <= 0) {
-                clearInterval(mg2TimerInterval);
-                handleMinigameFail();
-            }
-        }, 100);
-    }
-
-    function checkMinigame2(val) {
-        if(val.toUpperCase() === mg2TargetStr) {
-            clearInterval(mg2TimerInterval);
-            guestFails = 0;
-            document.getElementById('mg2-target-code').style.color = '#00ff00';
-            setTimeout(() => { 
-                closeModals(); 
-                document.getElementById('mg2-target-code').style.color = 'var(--indigo)';
-                if(mgIsUnitPending) openUnitBypass(mgDocPending); else openDocBypass(mgDocPending);
-            }, 500);
-        }
-    }
-
-    function handleMinigameFail() {
-        guestFails++;
-        let docName = mgDocPending ? mgDocPending.title : 'Desconhecido';
-        if (guestFails >= 4) { 
-            logSystemAction(`[QUEBRA DE FIREWALL FALHOU] O usuário [${currentUserGlobal.toUpperCase()}] acionou a segurança no arquivo [${docName}] e foi congelado.`);
-            closeModals(); 
-            startLockoutScreenTimer(30); 
-        } 
-        else { 
-            alert("DESINCRONIZAÇÃO. Restam: " + (4 - guestFails) + " tentativas."); 
-            initiateMinigame(mgDocPending, mgIsUnitPending); 
-        }
     }
 
     function toggleAdminReaderActions() {
@@ -1906,7 +1606,10 @@
     }
 
     function openDoc(doc) {
-        if (!checkUserDocAccess(doc.infoLevel)) { initiateMinigame(doc, false); return; }
+        if (!checkUserDocAccess(doc.infoLevel)) { 
+            alert("ACESSO NEGADO: Seu Nível de Informação é insuficiente para visualizar este registro.");
+            return; 
+        }
         openDocBypass(doc);
     }
 
@@ -1941,7 +1644,10 @@
     }
 
     function openUnit(doc) {
-        if (!checkUserDocAccess(doc.infoLevel)) { initiateMinigame(doc, true); return; }
+        if (!checkUserDocAccess(doc.infoLevel)) { 
+            alert("ACESSO NEGADO: Nível de acesso rejeitado para leitura desta Unidade.");
+            return; 
+        }
         openUnitBypass(doc);
     }
 
@@ -1968,10 +1674,13 @@
         document.getElementById('r-unit-obs').innerText = doc.obs || 'Nenhuma observação documentada.';
 
         const photoContainer = document.getElementById('r-unit-photo-container');
-        let firstMedia = doc.media && doc.media.length > 0 ? doc.media[0] : doc.imageUrl;
+        let mediaFiles = doc.media || (doc.imageUrl ? [doc.imageUrl] : []);
         
-        if(firstMedia) {
-            photoContainer.innerHTML = renderMediaElement(firstMedia, false);
+        if(mediaFiles.length > 0) {
+            let html = '<div class="media-gallery-grid" style="grid-template-columns: 1fr;">';
+            mediaFiles.forEach(m => { html += `<div class="attached-photo-frame" style="width: 100%;">${renderMediaElement(m, false)}</div>`; });
+            html += '</div>';
+            photoContainer.innerHTML = html;
         } else {
             photoContainer.innerHTML = `<div id="r-unit-no-img" style="padding: 100px 20px; text-align: center; color: var(--text); opacity: 0.3; font-family: var(--font-mono); font-size: 12px;"><i class="fa-solid fa-user-secret" style="font-size: 40px; margin-bottom:10px;"></i><br>[ SEM IMAGEM ]</div>`;
         }
@@ -2088,8 +1797,6 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModals() { 
         document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
-        if(mgInterval) clearInterval(mgInterval); 
-        if(mg2TimerInterval) clearInterval(mg2TimerInterval);
         stopChatRefresh();
     }
 
@@ -2098,7 +1805,7 @@
     function openChatModal() {
         openModal('chat-modal');
         renderChatMessages();
-        chatRefreshInterval = setInterval(fetchData, 3000); // Atualiza globalDocs a cada 3s com o modal aberto
+        chatRefreshInterval = setInterval(fetchData, 3000); 
     }
     
     function closeChatModal() {
@@ -2158,8 +1865,6 @@
 
     // --- SISTEMA DE SOLICITAÇÃO ---
     async function criarSolicitacaoNivel() {
-        if(currentUserGlobal === "Visitante") { alert("Visitantes não podem solicitar alteração de nível."); return; }
-        
         const nivelDesejado = prompt("Digite o nível que você precisa (Agente, Regente, Flagelo, Arconte, Magnitude):");
         if(!nivelDesejado) return;
         
