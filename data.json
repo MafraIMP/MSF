@@ -258,5 +258,18 @@
     "createdTime": "23:35:46",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781058946562
+  },
+  {
+    "id": "LOG-VFZVVK9JQ",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "[EXPURGO] O Imperador executou o protocolo de expurgo total dos logs.",
+    "createdBy": "MafraINF",
+    "createdTime": "23:36:46",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781059006401
   }
 ]
