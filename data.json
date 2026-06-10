@@ -44,5 +44,18 @@
     "createdBy": "MafraINF",
     "createdTime": "23:01:09",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-O45F2ATSU",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "[EXPURGO] O Imperador executou o protocolo de expurgo total dos logs.",
+    "createdBy": "MafraINF",
+    "createdTime": "23:02:00",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781056920728
   }
 ]
