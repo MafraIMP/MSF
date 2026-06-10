@@ -284,5 +284,18 @@
     "createdTime": "23:37:10",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781059030266
+  },
+  {
+    "id": "LOG-IRBRW7B4N",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador [MAFRAINF] realizou login na rede.",
+    "createdBy": "MafraINF",
+    "createdTime": "23:55:03",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781060103367
   }
 ]
