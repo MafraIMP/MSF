@@ -24,5 +24,18 @@
     "createdTime": "22:40:50",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781055650382
+  },
+  {
+    "id": "LOG-KBW91N9ZN",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador expurgou definitivamente o registro: [REGISTRO DE AUDITORIA]",
+    "createdBy": "MafraINF",
+    "createdTime": "22:42:08",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781055728496
   }
 ]
