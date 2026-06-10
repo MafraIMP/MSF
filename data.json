@@ -443,5 +443,14 @@
     "createdBy": "mafrainf",
     "createdTime": "01:16:03",
     "dateFormatted": "10/06/2026"
+  },
+  {
+    "id": "REQ-1781083478359",
+    "type": "solicitacao_nivel",
+    "category": "solicitacoes_nivel",
+    "requestedBy": "hunterzao",
+    "requestedRole": "FLAGELO",
+    "justification": "perdi minha outra conta",
+    "timestamp": 1781083478359
   }
 ]
