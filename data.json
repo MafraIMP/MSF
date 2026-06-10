@@ -57,5 +57,18 @@
     "createdBy": "MafraINF",
     "createdTime": "23:01:09",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-EM0M9SMIX",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [[ 🟣 ] MafraINF]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:01:11",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781056871229
   }
 ]
