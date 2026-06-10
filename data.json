@@ -106,5 +106,18 @@
     "createdTime": "23:05:05",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781057105770
+  },
+  {
+    "id": "LOG-N4YXWZ5WT",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [[ 🟡 ] Hunter]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:05:22",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781057122573
   }
 ]
