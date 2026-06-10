@@ -101,5 +101,18 @@
     "createdTime": "23:05:32",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781057132201
+  },
+  {
+    "id": "LOG-PZG6VUR7P",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "[ALERTA DE INTRUSÃO] Tentativa de login falha para o operador [MAFRAINF]. Senha incorreta inserida.",
+    "createdBy": "Sistema",
+    "createdTime": "23:26:51",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781058411888
   }
 ]
