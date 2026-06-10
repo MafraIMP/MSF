@@ -51,19 +51,6 @@
     "dateFormatted": "09/06/2026"
   },
   {
-    "id": "LOG-NUPIURPCS",
-    "type": "sys_log",
-    "isUnitType": false,
-    "title": "REGISTRO DE AUDITORIA",
-    "category": "Logs do Sistema",
-    "infoLevel": "Arconte",
-    "content": "Operador inseriu um novo registro: [[ 🔵 ] Ritzel]",
-    "createdBy": "MafraINF",
-    "createdTime": "23:04:23",
-    "dateFormatted": "09/06/2026",
-    "timestamp": 1781057063099
-  },
-  {
     "id": "LOG-6MO0U1NZD",
     "type": "sys_log",
     "isUnitType": false,
