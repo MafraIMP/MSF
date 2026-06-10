@@ -753,5 +753,18 @@
     "createdTime": "22:17:34",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781054254046
+  },
+  {
+    "id": "LOG-AWG4CK0R4",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [The Blood Moons - [ATIVO]]",
+    "createdBy": "MafraINF",
+    "createdTime": "22:20:30",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781054430808
   }
 ]
