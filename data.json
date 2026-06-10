@@ -51,19 +51,6 @@
     "dateFormatted": "09/06/2026"
   },
   {
-    "id": "LOG-6MO0U1NZD",
-    "type": "sys_log",
-    "isUnitType": false,
-    "title": "REGISTRO DE AUDITORIA",
-    "category": "Logs do Sistema",
-    "infoLevel": "Arconte",
-    "content": "Operador alterou o registro: [[ 🟡 ] Hunter]",
-    "createdBy": "MafraINF",
-    "createdTime": "23:05:32",
-    "dateFormatted": "09/06/2026",
-    "timestamp": 1781057132201
-  },
-  {
     "id": "LOG-PZG6VUR7P",
     "type": "sys_log",
     "isUnitType": false,
