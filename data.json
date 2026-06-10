@@ -240,5 +240,18 @@
     "createdTime": "23:31:56",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781058716025
+  },
+  {
+    "id": "LOG-4NLMVA50J",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [The Blood Moons - [ATIVO]]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:33:17",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781058797147
   }
 ]
