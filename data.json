@@ -1,18 +1,5 @@
 [
   {
-    "id": "LOG-X8UJ9DAVQ",
-    "type": "sys_log",
-    "isUnitType": false,
-    "title": "REGISTRO DE AUDITORIA",
-    "category": "Logs do Sistema",
-    "infoLevel": "Arconte",
-    "content": "Operador alterou o registro: [[ 🌑 ]  HAWK]",
-    "createdBy": "MafraINF",
-    "createdTime": "22:40:40",
-    "dateFormatted": "09/06/2026",
-    "timestamp": 1781055640647
-  },
-  {
     "id": "LOG-UD1VN8XD4",
     "type": "sys_log",
     "isUnitType": false,
