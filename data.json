@@ -93,5 +93,18 @@
     "createdBy": "MafraINF",
     "createdTime": "23:05:03",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-B7F47R38I",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [🟡Hunter (Nathan)]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:05:05",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781057105770
   }
 ]
