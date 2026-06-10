@@ -31,18 +31,23 @@ const VALID_ADMIN_PASSWORDS = [
 // FUNÇÕES DE BANCO DE DADOS (ASSÍNCRONAS)
 // ==========================================
 
-// Função inteligente para ler JSON (com proteção contra quebras)
+// Função inteligente para ler JSON (com proteção rigorosa contra quebras)
 async function getDatabase(filePath) {
     try {
         const data = await fs.readFile(filePath, 'utf8');
         return JSON.parse(data);
     } catch (error) {
-        if (error.code === 'ENOENT' || error.name === 'SyntaxError') {
+        if (error.code === 'ENOENT') {
+            // Apenas recria se o arquivo fisicamente não existir
             await fs.writeFile(filePath, '[]');
             return [];
+        } else if (error.name === 'SyntaxError') {
+            // Se estiver corrompido, NÃO sobrescreve. Trava a execução e avisa.
+            console.error(`[ERRO CRÍTICO] O arquivo ${filePath} está corrompido (SyntaxError). NÃO foi sobrescrito para evitar perda de dados. Verifique o arquivo manualmente.`);
+            throw error; 
         }
         console.error(`[ERRO] Falha ao ler ${filePath}:`, error);
-        return [];
+        throw error;
     }
 }
 
@@ -129,25 +134,30 @@ app.get('/api/users', async (req, res) => {
     res.json(users);
 });
 
-// Criar novo usuário
+// Criar novo usuário (Com padronização toLowerCase)
 app.post('/api/users', async (req, res) => {
     const users = await getDatabase(USERS_FILE);
     const newUser = req.body;
     
-    if (!users.find(u => u.username === newUser.username)) {
+    // Padroniza o nome de usuário que está chegando
+    if (newUser.username) {
+        newUser.username = newUser.username.toLowerCase();
+    }
+    
+    if (!users.find(u => u.username.toLowerCase() === newUser.username)) {
         users.push(newUser);
         await saveDatabase(USERS_FILE, users);
     }
     res.status(201).json({ success: true });
 });
 
-// Atualizar cargo do usuário (Gestão M.G.I)
+// Atualizar cargo do usuário (Gestão M.G.I - Com padronização toLowerCase)
 app.put('/api/users/:username', async (req, res) => {
     const users = await getDatabase(USERS_FILE);
-    const username = req.params.username;
+    const username = req.params.username.toLowerCase(); // Padroniza a busca
     const newRole = req.body.role;
 
-    const userIndex = users.findIndex(u => u.username === username);
+    const userIndex = users.findIndex(u => u.username.toLowerCase() === username);
     if (userIndex !== -1) {
         users[userIndex].role = newRole;
         await saveDatabase(USERS_FILE, users);
@@ -159,6 +169,8 @@ app.put('/api/users/:username', async (req, res) => {
 
 // Aprovar alteração de nível pelo administrador mafrainf
 app.post('/api/admin/approve-level', async (req, res) => {
+    console.log("[DEBUG ADM] Recebido em /api/admin/approve-level:", req.body); // DEBUG ADICIONADO
+    
     const { username, newRole, docId } = req.body;
     
     if (!username || !newRole || !docId) {
@@ -166,13 +178,15 @@ app.post('/api/admin/approve-level', async (req, res) => {
     }
 
     const users = await getDatabase(USERS_FILE);
-    const userIndex = users.findIndex(u => u.username.toLowerCase() === username.toLowerCase());
+    const normalizedUsername = username.toLowerCase(); // Padroniza
+    
+    const userIndex = users.findIndex(u => u.username.toLowerCase() === normalizedUsername);
     
     if (userIndex !== -1) {
         users[userIndex].role = newRole;
         await saveDatabase(USERS_FILE, users);
     } else {
-        users.push({ username: username.toLowerCase(), role: newRole });
+        users.push({ username: normalizedUsername, role: newRole });
         await saveDatabase(USERS_FILE, users);
     }
 
@@ -180,7 +194,7 @@ app.post('/api/admin/approve-level', async (req, res) => {
     db = db.filter(doc => doc.id !== docId);
     await saveDatabase(DATA_FILE, db);
 
-    console.log(`[ADMIN] Nível de ${username} atualizado para ${newRole}. Solicitação aprovada.`);
+    console.log(`[ADMIN] Nível de ${normalizedUsername} atualizado para ${newRole}. Solicitação aprovada.`);
     res.json({ success: true, message: "Nível atualizado com sucesso!" });
 });
 
@@ -245,6 +259,7 @@ app.delete('/api/docs/:id', async (req, res) => {
 
 // Sincronização Forçada (Overwrite Completo)
 app.post('/api/docs/sync-all', async (req, res) => {
+    console.log("[DEBUG ADM] Recebido em /api/docs/sync-all"); // DEBUG ADICIONADO
     const allDocs = req.body;
     
     if (!Array.isArray(allDocs)) {
