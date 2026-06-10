@@ -24,5 +24,18 @@
     "createdTime": "22:42:52",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781055772834
+  },
+  {
+    "id": "LOG-WLQMEG8O0",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador expurgou definitivamente o registro: [REGISTRO DE AUDITORIA]",
+    "createdBy": "MafraINF",
+    "createdTime": "22:43:03",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781055783782
   }
 ]
