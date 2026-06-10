@@ -28,16 +28,16 @@
     "dateFormatted": "09/06/2026"
   },
   {
-    "id": "LOG-9RDD05QVS",
+    "id": "LOG-4VSJ46YYB",
     "type": "sys_log",
     "isUnitType": false,
     "title": "REGISTRO DE AUDITORIA",
     "category": "Logs do Sistema",
     "infoLevel": "Arconte",
-    "content": "Operador inseriu um novo registro: [Teste]",
-    "createdBy": "MafraINF",
-    "createdTime": "22:58:04",
+    "content": "Operador [TESTE] realizou login na rede.",
+    "createdBy": "teste",
+    "createdTime": "22:58:53",
     "dateFormatted": "09/06/2026",
-    "timestamp": 1781056684790
+    "timestamp": 1781056733090
   }
 ]
