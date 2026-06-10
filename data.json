@@ -634,5 +634,18 @@
     "createdTime": "22:02:30",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781053350999
+  },
+  {
+    "id": "LOG-WOSUAJ5GT",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [The Blood Moons - [ATIVO]]",
+    "createdBy": "MafraINF",
+    "createdTime": "22:06:56",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781053616462
   }
 ]
