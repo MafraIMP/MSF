@@ -140,5 +140,18 @@
     "createdBy": "MafraINF",
     "createdTime": "23:28:15",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-392NEZIYY",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [RLK - [ATIVO]]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:28:17",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781058497833
   }
 ]
