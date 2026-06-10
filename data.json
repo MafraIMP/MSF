@@ -652,5 +652,18 @@
     "createdTime": "22:06:56",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781053616462
+  },
+  {
+    "id": "LOG-GHDTFD5M4",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [Mafra Grandioso Império - (M.G.I) [ATIVO]]",
+    "createdBy": "MafraINF",
+    "createdTime": "22:08:54",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781053734914
   }
 ]
