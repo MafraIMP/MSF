@@ -841,5 +841,18 @@
     "createdTime": "22:30:36",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781055036481
+  },
+  {
+    "id": "LOG-SSMBVSCWM",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [[ 🌑 ] Moon_Rarock (Líder)]",
+    "createdBy": "MafraINF",
+    "createdTime": "22:32:22",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781055142657
   }
 ]
