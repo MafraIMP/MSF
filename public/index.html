@@ -996,6 +996,7 @@
             rolesDB[user.toLowerCase()] = 'Agente'; 
             localStorage.setItem('msf_local_accounts', JSON.stringify(userDB));
             localStorage.setItem('msf_account_roles', JSON.stringify(rolesDB));
+            // Força a conversão para minúscula antes do envio backend
             registerUserBackend(user.toLowerCase(), pass, 'Agente');
             
             alert(`[NOVO OPERADOR]: A conta "${user.toUpperCase()}" foi registrada. Nível de Informação padrão: Agente.`);
@@ -1194,6 +1195,7 @@
     function updateUserRole(user, newRole) {
         let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
         roles[user] = newRole; localStorage.setItem('msf_account_roles', JSON.stringify(roles));
+        // Garante envio de dados normalizados
         updateUserRoleBackend(user, newRole);
         logSystemAction(`O nível do operador [${user.toUpperCase()}] foi alterado para [${newRole.toUpperCase()}].`);
         
@@ -1311,9 +1313,16 @@
     async function fetchData() {
         try {
             const res = await fetch('/api/docs');
-            globalDocs = await res.json();
+            const data = await res.json();
+            // Verifica se o backend devolveu um formato aceitável
+            if (Array.isArray(data)) {
+                globalDocs = data;
+            } else {
+                console.error("Erro Crítico de Fetch: Servidor retornou um formato inesperado para a rota /api/docs", data);
+                globalDocs = JSON.parse(localStorage.getItem('msf_local_database') || '[]');
+            }
         } catch(e) {
-            console.log("Aviso: Fallback para LocalStorage ativado (Sem resposta do servidor).");
+            console.error("Aviso: Fallback para LocalStorage ativado (Sem resposta do servidor).", e);
             globalDocs = JSON.parse(localStorage.getItem('msf_local_database') || '[]');
         }
         renderDocs();
@@ -1323,8 +1332,10 @@
     async function syncBackendData(doc, method) {
         try {
             const url = method === 'POST' ? '/api/docs' : `/api/docs/${doc.id}`;
-            await fetch(url, { method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(doc) });
+            const res = await fetch(url, { method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(doc) });
+            if (!res.ok) console.error(`Falha no Sync de Dados HTTP ${res.status} - Rota: ${url}`);
         } catch(e) {
+            console.error("Erro na comunicação com o servidor. Fazendo cache local.", e);
             localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
         }
     }
@@ -1332,41 +1343,52 @@
     async function fetchBackendUsers() {
         try {
             const res = await fetch('/api/users');
+            if (!res.ok) throw new Error(`HTTP Erro Status: ${res.status} - ${res.statusText}`);
+            
             const usersFromServer = await res.json();
             
-            let localAccs = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
-            let localRoles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
-            
-            usersFromServer.forEach(u => {
-                localAccs[u.username] = u.password;
-                localRoles[u.username] = u.role;
-            });
-            
-            localStorage.setItem('msf_local_accounts', JSON.stringify(localAccs));
-            localStorage.setItem('msf_account_roles', JSON.stringify(localRoles));
+            // Garantia de proteção contra retornos de HTML ou null via error 500 do backend
+            if (Array.isArray(usersFromServer)) {
+                let localAccs = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
+                let localRoles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
+                
+                usersFromServer.forEach(u => {
+                    // Força a inserção padronizada localmente também
+                    localAccs[u.username.toLowerCase()] = u.password;
+                    localRoles[u.username.toLowerCase()] = u.role;
+                });
+                
+                localStorage.setItem('msf_local_accounts', JSON.stringify(localAccs));
+                localStorage.setItem('msf_account_roles', JSON.stringify(localRoles));
+            } else {
+                console.error("Erro de Backend: Servidor não retornou um Array JSON para /api/users", usersFromServer);
+            }
         } catch(e) {
-            console.log("Aviso: Backend de usuários offline. Usando apenas contas locais.");
+            console.error("Aviso: Backend de usuários offline ou inoperante. Carregando instâncias em cache.", e);
         }
     }
 
     async function registerUserBackend(username, password, role) {
         try {
-            await fetch('/api/users', {
+            const res = await fetch('/api/users', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ username, password, role })
+                // Força envio em minúsculas
+                body: JSON.stringify({ username: username.toLowerCase(), password, role })
             });
-        } catch(e) { console.log("Erro ao salvar usuário no backend."); }
+            if (!res.ok) console.error(`Erro ao Registrar Usuário Backend: HTTP ${res.status}`);
+        } catch(e) { console.error("Erro de conexão ao salvar usuário no backend.", e); }
     }
 
     async function updateUserRoleBackend(username, role) {
         try {
-            await fetch(`/api/users/${username}`, {
+            const res = await fetch(`/api/users/${username.toLowerCase()}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ role })
             });
-        } catch(e) { console.log("Erro ao atualizar cargo no backend."); }
+            if (!res.ok) console.error(`Erro na Atualização de Papel Backend: HTTP ${res.status}`);
+        } catch(e) { console.error("Erro de conexão ao atualizar cargo no backend.", e); }
     }
 
     function getInfoColor(level) {
@@ -1893,7 +1915,7 @@
             const response = await fetch('/api/admin/approve-level', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, newRole, docId })
+                body: JSON.stringify({ username: username.toLowerCase(), newRole, docId })
             });
             
             if(response.ok) {
@@ -1903,9 +1925,13 @@
                 logSystemAction(`Operador autorizou nível [${newRole}] para o usuário [${username}]`);
                 renderDocs('solicitacoes_nivel');
             } else {
-                alert("Erro ao processar a aprovação no servidor.");
+                console.error(`Erro Crítico na requisição (/api/admin/approve-level): Status ${response.status} - ${response.statusText}`);
+                alert(`Erro de conexão com o servidor de validação central (Código: ${response.status}). Operação abortada.`);
             }
-        } catch(err) { console.error(err); }
+        } catch(err) { 
+            console.error("Falha fatal de rede ao tentar processar aprovação:", err); 
+            alert("A comunicação com a infraestrutura principal falhou.");
+        }
     }
 
     async function rejectLevelRequest(docId) {
