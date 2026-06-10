@@ -271,5 +271,18 @@
     "createdBy": "MafraINF",
     "createdTime": "23:35:43",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-XAL2F5ISF",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [Moon_Rarock (Líder)]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:35:46",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781058946562
   }
 ]
