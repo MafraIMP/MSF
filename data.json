@@ -196,5 +196,18 @@
     "createdBy": "MafraINF",
     "createdTime": "23:30:38",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-AXQADC6M0",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [The Blood Moons - [ATIVO]]",
+    "createdBy": "MafraINF",
+    "createdTime": "23:30:42",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781058642203
   }
 ]
