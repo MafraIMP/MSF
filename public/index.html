@@ -4,32 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>MSF // TERMINAL GATEWAY</title>
+    <title>S.G.I. // SISTEMA DE GESTÃO DE INTELIGÊNCIA</title>
     <link rel="icon" href="LOGO MSF.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* VARIAVEIS GLOBAIS DE DESIGN (ALTERÁVEIS PELO PAINEL) */
-            --bg: #ffffff;
+            /* PALETA GOVERNAMENTAL MINIMALISTA E TÁTICA */
+            --bg: #0a0a0a;
             --bg-image: none;
-            --text: #000000;
-            --indigo: #4B0082;
-            --border: #000000;
-            --gray-subtle: #f8f9fa;
-            --header-bg: #1a1525;
+            --text: #e5e5e5;
+            --text-muted: #888888;
+            --indigo: #3b82f6; /* Azul tático */
+            --danger: #ef4444; /* Vermelho alerta */
+            --border: #27272a;
+            --gray-subtle: #18181b;
+            --header-bg: #000000;
             --header-text: #ffffff;
-            --card-bg: #ffffff;
-            --font-mono: 'Space Mono', 'Courier New', monospace;
-            --font-sans: 'Inter', 'Segoe UI', Arial, sans-serif;
+            --card-bg: #09090b;
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-sans: 'Inter', Arial, sans-serif;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             background-color: var(--bg); 
-            background-image: var(--bg-image);
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
             color: var(--text); 
             font-family: var(--font-sans); 
             display: flex; 
@@ -37,405 +35,197 @@
             height: 100vh; 
             overflow: hidden; 
             user-select: none;
-            transition: filter 0.3s ease;
         }
 
-        /* ANIMAÇÕES GERAIS E APRIMORADAS */
+        /* TIPOGRAFIA E ESTILOS BASE */
+        .mono-text { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 1px; }
+        .version-tag { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); border: 1px solid var(--border); padding: 2px 6px; }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes pulseSoft { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-        
-        .animated-card { animation: slideInUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
-
-        /* EASTER EGG GLITCH EFFECTS */
-        @keyframes glitch-anim-purple {
-            0% { transform: translate(0); filter: drop-shadow(0 0 0px var(--indigo)); }
-            20% { transform: translate(-2px, 2px); filter: drop-shadow(5px 0 10px var(--indigo)) hue-rotate(90deg); }
-            40% { transform: translate(-2px, -2px); filter: invert(10%); }
-            60% { transform: translate(2px, 2px); filter: drop-shadow(-5px 0 15px var(--indigo)); }
-            80% { transform: translate(2px, -2px); filter: drop-shadow(0 0 20px var(--indigo)); }
-            100% { transform: translate(0); filter: drop-shadow(0 0 0px var(--indigo)); }
-        }
-        .glitch-purple-heavy { animation: glitch-anim-purple 0.15s linear infinite; }
-        .glitch-purple-subtle { animation: glitch-anim-purple 4s ease-in-out infinite alternate; opacity: 0.97; }
-
-        @keyframes glitch-anim-white {
-            0% { filter: grayscale(0); transform: skew(0deg); }
-            20% { filter: grayscale(100%) contrast(200%); transform: skew(2deg); }
-            40% { filter: invert(100%); transform: skew(-2deg); }
-            60% { filter: grayscale(100%) brightness(200%); }
-            100% { filter: grayscale(0); transform: skew(0deg); }
-        }
-        .glitch-white-heavy { animation: glitch-anim-white 0.15s linear infinite; }
-        .glitch-white-subtle { animation: glitch-anim-white 5s ease-in-out infinite alternate; filter: grayscale(15%) contrast(110%); }
 
         /* TELA DE ENTRADA / COMPACT LOGIN PORTAL */
         #entry-screen {
-            position: fixed; inset: 0; background: var(--header-bg); z-index: 10000;
+            position: fixed; inset: 0; background: #000; z-index: 10000;
             display: flex; align-items: center; justify-content: center;
             flex-direction: column; transition: opacity 0.5s ease;
         }
         .login-gate-box {
-            background: #110d1a; border: 2px solid var(--indigo); width: 380px; padding: 30px;
-            box-shadow: 0 0 30px rgba(75, 0, 130, 0.4); text-align: center; color: #fff;
-            animation: fadeIn 1s ease-out;
+            background: #09090b; border: 1px solid var(--border); width: 400px; padding: 40px;
+            text-align: center; color: #fff;
         }
-        .login-gate-box h2 { font-family: var(--font-mono); font-size: 18px; letter-spacing: 2px; margin-top: 10px; color: var(--indigo); }
+        .login-gate-box h2 { font-family: var(--font-mono); font-size: 18px; letter-spacing: 2px; margin-top: 15px; color: var(--text); }
         
-        /* TELA DE INTRODUÇÃO (ANIMAÇÃO DE CARGA) */
-        #intro-screen {
-            position: fixed; inset: 0; background: var(--header-bg); z-index: 9999;
-            display: none; align-items: center; justify-content: center;
-            transition: opacity 0.5s ease, visibility 0.5s;
-        }
-        .intro-content { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        .loader-container {
-            position: relative; width: 120px; height: 120px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .loader-container img { height: 60px; object-fit: contain; z-index: 2; }
-        .spinner {
-            position: absolute; inset: 0; border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--indigo); border-radius: 50%;
-            animation: spin 1s linear infinite; transition: border-color 0.3s;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        #intro-text { font-family: var(--font-mono); color: #fff; font-size: 14px; letter-spacing: 2px; transition: color 0.3s; }
-
         /* CABEÇALHO SUPERIOR (HEADER) */
-        header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: var(--header-bg); border-bottom: 2px solid var(--border); height: 70px; flex-shrink: 0; z-index: 20; color: var(--header-text); }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: var(--header-bg); border-bottom: 1px solid var(--border); height: 70px; flex-shrink: 0; z-index: 20; }
         .brand { display: flex; align-items: center; gap: 15px; }
-        .brand img { height: 40px; object-fit: contain; }
-        .brand h1 { font-family: var(--font-mono); font-size: 18px; letter-spacing: 2px; margin: 0; color: var(--header-text); }
-        .brand span { color: var(--indigo); }
+        .brand img { height: 35px; object-fit: contain; filter: grayscale(100%) contrast(200%); }
+        .brand h1 { font-family: var(--font-mono); font-size: 16px; letter-spacing: 2px; margin: 0; color: var(--header-text); font-weight: normal; }
 
-        .system-status { display: flex; gap: 20px; font-family: var(--font-mono); font-size: 11px; align-items: center; }
+        .system-status { display: flex; gap: 20px; font-family: var(--font-mono); font-size: 11px; align-items: center; color: var(--text-muted); }
         .status-indicator { display: flex; align-items: center; gap: 6px; }
-        .dot { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; box-shadow: 0 0 5px #00ff00; }
-
-        .search-container { position: relative; width: 250px; margin-left: 10px; }
-        .search-container input { width: 100%; padding: 8px 35px 8px 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.1); color: var(--header-text); font-size: 12px; outline: none; transition: 0.3s; }
-        .search-container input:focus { border-color: var(--indigo); background: rgba(255,255,255,0.2); }
-        .search-container input::placeholder { color: rgba(255,255,255,0.5); }
-        .search-container i { position: absolute; right: 12px; top: 10px; color: rgba(255,255,255,0.5); }
+        .dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; }
 
         /* BARRA HORIZONTAL DE NAVEGAÇÃO */
         nav.horizontal-nav { 
-            display: flex; align-items: center; background: var(--gray-subtle); 
-            border-bottom: 3px solid var(--border); padding: 0 30px; 
-            flex-shrink: 0; z-index: 100; min-height: 55px; gap: 10px;
-            position: relative;
+            display: flex; align-items: center; background: var(--header-bg); 
+            border-bottom: 1px solid var(--border); padding: 0 30px; 
+            flex-shrink: 0; z-index: 100; min-height: 45px; gap: 10px;
         }
 
-        .nav-group-dropdown { position: relative; display: inline-block; }
         .dropdown-trigger { 
-            padding: 12px 18px; cursor: pointer; font-size: 12px; font-weight: 800; 
+            padding: 8px 15px; cursor: pointer; font-size: 11px; font-weight: normal; 
             display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; 
-            color: var(--text); font-family: var(--font-mono); text-transform: uppercase;
-            border: 1px solid transparent;
+            color: var(--text-muted); font-family: var(--font-mono); text-transform: uppercase;
         }
-        .dropdown-trigger:hover, .nav-group-dropdown.active .dropdown-trigger { background: var(--bg); border: 1px solid var(--border); }
-        .dropdown-trigger i.chevron { font-size: 10px; transition: transform 0.2s; }
-        .nav-group-dropdown.active .dropdown-trigger i.chevron { transform: rotate(180deg); }
-
+        .dropdown-trigger:hover { color: var(--text); background: var(--gray-subtle); }
+        
+        .nav-group-dropdown { position: relative; display: inline-block; }
         .dropdown-content { 
             display: none; position: absolute; top: 100%; left: 0; 
-            background-color: var(--card-bg); min-width: 220px; 
-            box-shadow: 4px 4px 0px var(--border); border: 2px solid var(--border); 
-            z-index: 200; flex-direction: column; padding: 5px 0;
-            animation: fadeIn 0.2s ease-out;
+            background-color: var(--card-bg); min-width: 240px; 
+            border: 1px solid var(--border); z-index: 200; flex-direction: column; padding: 5px 0;
         }
         .nav-group-dropdown.active .dropdown-content { display: flex; }
-
         .dropdown-item { 
-            padding: 10px 15px; font-size: 12px; font-weight: 600; text-decoration: none; 
-            display: flex; align-items: center; gap: 10px; color: var(--text); cursor: pointer; transition: 0.15s;
+            padding: 10px 15px; font-size: 11px; text-decoration: none; font-family: var(--font-mono);
+            display: flex; align-items: center; gap: 10px; color: var(--text-muted); cursor: pointer;
         }
-        .dropdown-item i { width: 14px; text-align: center; color: var(--item-color, var(--indigo)); }
-        .dropdown-item:hover { background-color: var(--gray-subtle); padding-left: 20px; } 
-        .dropdown-item.active { background-color: var(--gray-subtle); color: var(--indigo); font-weight: 800; border-left: 3px solid var(--indigo); }
+        .dropdown-item:hover { background-color: var(--gray-subtle); color: var(--text); } 
+        .dropdown-item.active { background-color: var(--gray-subtle); color: var(--text); border-left: 2px solid var(--text); }
 
-        #auth-status-ui { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+        #auth-status-ui { margin-left: auto; display: flex; align-items: center; gap: 15px; }
 
         /* PAINEL PRINCIPAL DE CONTEÚDO */
-        main { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
-        .content-wrapper { flex: 1; padding: 40px; overflow-y: auto; background-color: rgba(255,255,255,0.05); backdrop-filter: blur(2px); }
+        main { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; background: var(--bg); }
+        .content-wrapper { flex: 1; padding: 40px; overflow-y: auto; }
 
-        .view-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 4px solid var(--border); padding-bottom: 10px; }
-        .view-header h2 { font-family: var(--font-mono); font-size: 24px; text-transform: uppercase; color: var(--text); }
+        .view-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .view-header h2 { font-family: var(--font-mono); font-size: 20px; font-weight: normal; text-transform: uppercase; color: var(--text); letter-spacing: 1px; }
 
-        /* GRIDS DE DOCUMENTOS PADRÃO E UNIDADES */
-        .docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; grid-auto-flow: dense; }
+        /* GRIDS DE DOCUMENTOS PADRÃO (MINIMALISTA) */
+        .docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
         
-        .doc-card { background: var(--card-bg); border: 2px solid var(--border); padding: 0; cursor: pointer; transition: 0.2s; position: relative; display: flex; flex-direction: column; color: var(--text); }
-        .doc-card:hover { transform: translate(-4px, -4px); box-shadow: 6px 6px 0px var(--border); border-color: var(--indigo); }
-        .card-badge { position: absolute; top: -10px; right: 10px; background: var(--text); color: var(--card-bg); font-family: var(--font-mono); font-size: 9px; padding: 2px 8px; border: 1px solid var(--card-bg); font-weight: bold; z-index: 10; }
-        .card-header { padding: 15px; border-bottom: 1px solid var(--border); background: var(--gray-subtle); }
-        .card-category { font-size: 10px; font-weight: 800; color: var(--indigo); text-transform: uppercase; margin-bottom: 5px; }
-        .card-title { font-size: 15px; font-weight: 800; line-height: 1.2; }
-        .card-body { padding: 15px; font-size: 12px; opacity: 0.8; line-height: 1.5; flex: 1; word-wrap: break-word; }
-        .card-footer { padding: 10px 15px; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 9px; display: flex; justify-content: space-between; opacity: 0.6; align-items: center;}
-        .card-author-info { text-align: right; line-height: 1.2;}
+        .doc-card { 
+            background: var(--card-bg); border: 1px solid var(--border); padding: 0; cursor: pointer; 
+            display: flex; flex-direction: column; color: var(--text); transition: border-color 0.2s;
+            position: relative;
+        }
+        .doc-card:hover { border-color: var(--text-muted); }
+        
+        .card-header { padding: 15px; border-bottom: 1px dashed var(--border); background: var(--gray-subtle); }
+        .card-category { font-size: 9px; font-family: var(--font-mono); color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        .card-title { font-size: 14px; font-weight: bold; line-height: 1.3; font-family: var(--font-mono); text-transform: uppercase; }
+        .card-body { padding: 15px; font-size: 12px; color: var(--text-muted); line-height: 1.6; flex: 1; font-family: 'Times New Roman', Times, serif; }
+        .card-footer { 
+            padding: 10px 15px; border-top: 1px solid var(--border); font-family: var(--font-mono); 
+            font-size: 9px; display: flex; justify-content: space-between; color: var(--text-muted); align-items: center;
+        }
 
-        /* CARDS DE UNIDADES (VERTICAL) */
-        .unit-card { background: var(--card-bg); border: 2px solid var(--border); display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; position: relative; color: var(--text); height: 420px; }
-        .unit-card:hover { transform: translate(-4px, -4px); box-shadow: 6px 6px 0px var(--border); border-color: var(--indigo); }
-        .unit-card-photo { height: 220px; width: 100%; border-bottom: 2px solid var(--border); background: var(--gray-subtle); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-        .unit-card-photo img, .unit-card-photo video { width: 100%; height: 100%; object-fit: cover; }
-        .unit-card-photo i { font-size: 40px; color: var(--border); opacity: 0.3; }
-        .unit-card-body { padding: 15px; flex: 1; display: flex; flex-direction: column; }
-        .unit-card-title { font-size: 18px; font-weight: 900; font-family: var(--font-mono); margin-bottom: 5px; text-transform: uppercase; line-height: 1.1; }
-        .unit-card-subtitle { font-size: 10px; font-weight: 800; color: var(--indigo); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
-        .unit-card-stats { display: flex; gap: 5px; flex-wrap: wrap; margin-top: auto; }
-        .unit-badge { font-family: var(--font-mono); font-size: 9px; font-weight: bold; padding: 3px 6px; background: var(--gray-subtle); border: 1px solid var(--border); color: var(--text); }
-
-        /* CENSURA VISUAL */
-        .censored-text { background-color: var(--text); color: var(--text); user-select: none; }
-        .censored-img { filter: blur(10px) grayscale(100%); opacity: 0.5; }
-
-        /* LAYOUT DE LEITURA UNIDADE */
-        .read-unit-layout { display: flex; gap: 30px; align-items: flex-start; position: relative; z-index: 2; }
-        .read-unit-info { flex: 1; }
-        .read-unit-photo { width: 280px; flex-shrink: 0; border: 4px double var(--border); padding: 5px; background: var(--card-bg); box-shadow: 5px 5px 0px rgba(0,0,0,0.15); text-align: center; }
-        .read-unit-photo img, .read-unit-photo video { max-width: 100%; display: block; margin: 0 auto; object-fit: contain; }
-        .unit-meta-field { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
-        .unit-meta-label { font-family: var(--font-mono); font-size: 10px; color: var(--indigo); font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
-        .unit-meta-value { font-size: 14px; font-weight: 600; line-height: 1.5;}
+        .lvl-badge { font-family: var(--font-mono); font-size: 9px; padding: 2px 6px; border: 1px solid currentColor; display: inline-block; font-weight: bold;}
 
         /* BOTÕES */
-        .btn { border: 2px solid var(--border); background: var(--card-bg); padding: 10px 20px; font-family: var(--font-mono); font-size: 11px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: var(--text); transition: all 0.2s ease; }
-        .btn:hover { background: var(--text); color: var(--card-bg); animation: pulseSoft 0.4s ease; }
-        .btn-indigo { background: var(--indigo); color: #fff; border-color: var(--indigo); }
-        .btn-indigo:hover { background: var(--text); border-color: var(--text); color: var(--card-bg); }
+        .btn { 
+            border: 1px solid var(--border); background: transparent; padding: 8px 16px; 
+            font-family: var(--font-mono); font-size: 10px; cursor: pointer; text-transform: uppercase; 
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: var(--text); transition: 0.2s; 
+        }
+        .btn:hover { background: var(--text); color: var(--bg); }
+        .btn-danger { color: var(--danger); border-color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: #fff; }
+        .btn-primary { color: var(--indigo); border-color: var(--indigo); }
+        .btn-primary:hover { background: var(--indigo); color: #fff; }
+
+        /* MODAIS REFINADOS */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        .modal-box { background: var(--card-bg); border: 1px solid var(--border); width: 750px; max-width: 95%; max-height: 90vh; display: flex; flex-direction: column; color: var(--text); }
+        .modal-header { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--header-bg); }
+        .modal-header h3 { font-family: var(--font-mono); font-size: 14px; font-weight: normal; letter-spacing: 1px; }
+        .modal-body { padding: 30px; overflow-y: auto; }
+
+        /* FORMULÁRIOS MINIMALISTAS */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px;}
+        .form-control { 
+            width: 100%; padding: 10px; border: 1px solid var(--border); font-size: 12px; 
+            outline: none; background: var(--gray-subtle); color: var(--text); font-family: var(--font-sans);
+        }
+        .form-control:focus { border-color: var(--text-muted); }
+        textarea.form-control { min-height: 150px; font-family: 'Times New Roman', Times, serif; font-size: 14px; line-height: 1.6;}
         
-        /* CONTROLE DE ÁUDIO AVANÇADO */
-        #music-control-panel {
-            position: fixed; bottom: 15px; right: 15px; z-index: 999;
-            background: var(--card-bg); border: 2px solid var(--border); padding: 8px 12px;
-            box-shadow: 3px 3px 0px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px;
-        }
-        .btn-music { background: transparent; border: none; cursor: pointer; font-size: 12px; font-family: var(--font-mono); font-weight: bold; display: flex; align-items: center; gap: 5px; outline: none; color: var(--text); }
-        .btn-music i:hover { color: var(--indigo); transform: scale(1.1); transition: 0.2s; }
-        .track-info-container { width: 120px; overflow: hidden; white-space: nowrap; border-left: 1px solid var(--border); padding-left: 10px; display: flex; flex-direction: column; }
-        .track-name-scroll { display: inline-block; font-size: 9px; font-family: var(--font-mono); font-weight: bold; color: var(--indigo); animation: scrollText 5s linear infinite; }
-        @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .media-input-group { border: 1px dashed var(--border); padding: 15px; margin-bottom: 10px; background: var(--bg); position: relative;}
+        .remove-media-btn { position: absolute; top: 10px; right: 10px; color: var(--danger); cursor: pointer; font-size: 12px; background: none; border: none; font-family: var(--font-mono);}
+
+        /* LEITOR DE DOCUMENTO */
+        .reader-header { border-bottom: 1px dashed var(--border); padding-bottom: 20px; margin-bottom: 20px; }
+        #read-title { font-family: var(--font-mono); font-size: 24px; font-weight: normal; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;}
+        #read-text { font-size: 15px; line-height: 1.8; white-space: pre-wrap; font-family: 'Times New Roman', serif; color: #d4d4d8; margin-top: 20px; text-align: justify;}
         
-        .visualizer-container { display: flex; align-items: flex-end; gap: 2px; height: 12px; margin-top: 3px; }
-        .vis-bar { width: 3px; background: var(--indigo); animation: vis-bounce 0.5s infinite alternate ease-in; }
-        .vis-bar:nth-child(1) { animation-delay: 0.1s; height: 40%; }
-        .vis-bar:nth-child(2) { animation-delay: 0.3s; height: 80%; }
-        .vis-bar:nth-child(3) { animation-delay: 0.2s; height: 60%; }
-        .vis-bar:nth-child(4) { animation-delay: 0.4s; height: 100%; }
-        .vis-bar:nth-child(5) { animation-delay: 0.15s; height: 50%; }
-        @keyframes vis-bounce { from { transform: scaleY(0.3); } to { transform: scaleY(1); } }
-        .visualizer-container.paused .vis-bar { animation-play-state: paused; transform: scaleY(0.2); }
-        
-        .volume-container { display: flex; align-items: center; gap: 5px; border-left: 1px solid var(--border); padding-left: 12px; }
-        .volume-container i { font-size: 10px; opacity: 0.6; }
-        input[type=range] { width: 60px; accent-color: var(--indigo); cursor: pointer; }
-
-        /* BANNER COMERCIAL ESTILO YOUTUBE */
-        .mgi-banner {
-            position: fixed; bottom: 70px; right: 15px; width: 380px; max-width: 90vw;
-            background: var(--card-bg); border: 2px solid var(--indigo);
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.4); z-index: 990;
-            display: flex; flex-direction: row; align-items: center; padding: 10px; gap: 12px;
-            border-radius: 4px; animation: slideUpBanner 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            color: var(--text);
-        }
-        @keyframes slideUpBanner { from { transform: translateY(150%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .mgi-banner .close-banner {
-            position: absolute; top: -10px; right: -10px; background: var(--indigo); color: #fff;
-            border: 2px solid var(--border); border-radius: 50%; width: 24px; height: 24px;
-            cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center;
-            transition: 0.2s; box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
-        }
-        .mgi-banner .close-banner:hover { background: #ff0055; transform: scale(1.1); }
-        .banner-media { width: 70px; height: 70px; flex-shrink: 0; background: var(--gray-subtle); border: 1px solid var(--border); overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .banner-media img, .banner-media video { width: 100%; height: 100%; object-fit: cover; }
-        .banner-info { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .banner-tag { font-family: var(--font-mono); font-size: 9px; color: #fff; background: var(--indigo); padding: 2px 6px; font-weight: bold; align-self: flex-start; margin-bottom: 5px; border-radius: 2px; }
-        .banner-info h4 { font-size: 13px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
-        .banner-info p { font-size: 10px; opacity: 0.8; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
-
-        /* MODAIS */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-box { background: var(--card-bg); border: 4px solid var(--border); width: 700px; max-width: 95%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 15px 15px 0px rgba(0,0,0,0.3); color: var(--text); animation: fadeIn 0.3s ease-out; position: relative; }
-        .modal-header { padding: 20px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--gray-subtle); z-index: 10; }
-        .modal-body { padding: 30px; overflow-y: auto; position: relative; }
-
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
-        .form-control { width: 100%; padding: 10px; border: 2px solid var(--border); font-size: 13px; outline: none; background: var(--card-bg); color: var(--text); }
-        .form-control:focus { border-color: var(--indigo); }
-        textarea.form-control { min-height: 120px; font-family: var(--font-mono); }
-        
-        input[type="file"].form-control { padding: 7px; cursor: pointer; }
-        input[type="file"]::file-selector-button { border: 1px solid var(--border); background: var(--gray-subtle); padding: 5px 10px; font-family: var(--font-mono); font-size: 10px; cursor: pointer; margin-right: 10px; transition: 0.2s; color: var(--text); }
-        input[type="file"]::file-selector-button:hover { background: var(--indigo); color: #fff; }
-
-        /* LEITOR DE DOCUMENTO E MULTIMÍDIA */
-        .reader-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; position: relative; z-index: 2; }
-        .reader-stamps { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-        .stamp { border: 2px solid var(--border); padding: 4px 12px; font-family: var(--font-mono); font-weight: bold; font-size: 12px; text-transform: uppercase; }
-        .stamp.info-lvl { border-color: var(--info-color, var(--border)); color: var(--info-color, var(--text)); background: var(--card-bg); }
-        #read-text { font-size: 15px; line-height: 1.8; white-space: pre-wrap; font-family: 'Times New Roman', serif; position: relative; z-index: 2; }
-        
-        .media-gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; justify-items: center; align-items: start; margin-bottom: 25px; position: relative; z-index: 2; }
-        .attached-photo-frame { border: 4px double var(--border); padding: 5px; background: var(--card-bg); box-shadow: 5px 5px 0px rgba(0,0,0,0.15); width: 100%; display: flex; justify-content: center; }
-        .attached-photo-frame img, .attached-photo-frame video { max-width: 100%; max-height: 380px; object-fit: contain; display: block; }
-        .attached-photo-frame audio { width: 100%; display: block; }
-
-        /* MARCA D'ÁGUA MGI */
-        .watermark-logo { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 350px; opacity: 0.05; filter: invert(1); pointer-events: none; z-index: 0; }
-
-        /* PALETA VISUAL PANEL */
-        .color-picker-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-        .color-field { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); padding: 8px; background: var(--card-bg); }
-        .color-field input[type="color"] { border: none; width: 30px; height: 30px; cursor: pointer; background: none; }
-
-        /* CANAL DE CHAT */
-        .chat-message-box { padding: 10px; margin-bottom: 10px; border: 1px solid var(--border); background: var(--card-bg); border-radius: 4px; }
-        .chat-header { font-family: var(--font-mono); font-size: 10px; margin-bottom: 5px; color: var(--indigo); font-weight: bold; display: flex; justify-content: space-between;}
-        .chat-text { font-size: 13px; line-height: 1.4; word-wrap: break-word;}
-        .chat-msg-self { background: rgba(75,0,130,0.05); border-color: var(--indigo); }
-
-        /* BLOQUEIO TERMINAL MGI (TEMPORÁRIO) */
-        #lockout-screen {
-            position: fixed; inset: 0; background-color: #0b0713; z-index: 500000;
-            display: none; align-items: center; justify-content: center;
-            flex-direction: column; font-family: var(--font-mono); overflow: hidden;
-        }
-        .lockout-horizontal-band {
-            position: absolute; left: 0; right: 0; height: 90px;
-            background: linear-gradient(90deg, rgba(211,47,47,0.2) 0%, rgba(75,0,130,0.25) 100%);
-            border-top: 3px solid #ff0055; border-bottom: 3px solid #ff0055;
-            box-shadow: 0 0 25px rgba(255, 0, 85, 0.4); z-index: 1;
-            animation: bandPulse 2s infinite alternate ease-in-out;
-        }
-        .lockout-isolated-center {
-            position: relative; z-index: 2; background-color: #0b0713;
-            padding: 30px 60px; border: 2px solid #ff0055;
-            box-shadow: 0 0 40px rgba(255, 0, 85, 0.3); text-align: center;
-            display: flex; flex-direction: column; align-items: center; gap: 15px;
-        }
-        .lockout-logo { height: 110px; object-fit: contain; animation: pulseGlow 1.2s infinite ease-in-out; }
-        
-        @keyframes bandPulse { 0% { opacity: 0.7; } 100% { opacity: 1; } }
-        @keyframes pulseGlow {
-            0% { transform: scale(1); filter: drop-shadow(0 0 5px #ff0055); }
-            50% { transform: scale(1.04); filter: drop-shadow(0 0 25px #4B0082); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 5px #ff0055); }
-        }
+        .media-render-container { margin-bottom: 30px; border: 1px solid var(--border); background: #000; padding: 10px;}
+        .media-render-container img, .media-render-container video { width: 100%; max-height: 500px; object-fit: contain; display: block; }
+        .media-render-desc { padding: 10px; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); border-top: 1px dashed var(--border); margin-top: 10px; background: var(--gray-subtle);}
 
         /* BANIDO PERMANENTEMENTE */
         #banned-screen {
-            display:none; position:fixed; inset:0; background:#0f0518; z-index:999999; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#fff; font-family:var(--font-mono);
+            display:none; position:fixed; inset:0; background:#000; z-index:999999; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#fff; font-family:var(--font-mono);
         }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--gray-subtle); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); }
-        ::-webkit-scrollbar-thumb:hover { background: var(--indigo); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
     </style>
 </head>
 <body>
 
-    <div id="gears-message" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:99999; color:white; font-family:var(--font-mono); font-size:32px; font-weight:bold; letter-spacing: 5px; text-transform:uppercase; text-shadow: 2px 2px 0px #000, 0 0 20px #fff; opacity:0; transition: opacity 1.5s ease-in-out;">
-        Oque em mim te interessa?
-    </div>
-
     <div id="banned-screen">
-        <i class="fa-solid fa-ban" style="font-size: 80px; color: #ff0055; margin-bottom: 20px;"></i>
-        <h1 style="color: #ff0055; font-size: 32px; text-transform: uppercase;">Acesso Bloqueado</h1>
-        <p style="margin-top: 10px; max-width: 500px; line-height: 1.5; color: #d8b4e2;">Sua credencial foi irrevogavelmente banida do sistema.<br><b style="color:#fff;">A Autoridade Imperial (MAFRA) bloqueou sua existência neste terminal.</b></p>
-    </div>
-
-    <div id="lockout-screen">
-        <div class="lockout-horizontal-band"></div>
-        <div class="lockout-isolated-center">
-            <img src="LOGO MSF.png" alt="Logo MGI" class="lockout-logo">
-            <h1 style="color: #ff0055; font-size: 22px; letter-spacing: 3px; font-weight: 900; text-shadow: 0 0 10px #ff0055;">SISTEMA CONGELADO</h1>
-            <p style="color: #ffffff; font-size: 12px; max-width: 400px; line-height: 1.5; opacity: 0.9;">
-                Múltiplas violações de quebra de firewall detectadas. Este terminal foi bloqueado temporariamente por razões de contra-inteligência estratégica.
-            </p>
-            <div style="font-size: 36px; font-weight: bold; color: #ff0055; margin-top: 5px; font-family: var(--font-mono);" id="lockout-countdown">30s</div>
-        </div>
+        <i class="fa-solid fa-ban" style="font-size: 60px; color: var(--danger); margin-bottom: 20px;"></i>
+        <h1 style="color: var(--danger); font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">Acesso Revogado</h1>
+        <p style="margin-top: 15px; max-width: 500px; line-height: 1.6; color: var(--text-muted); font-size: 12px;">
+            Sua credencial foi irrevogavelmente banida do Sistema de Gestão de Inteligência.<br>
+            <b style="color:#fff;">O Comando bloqueou sua existência neste terminal global.</b>
+        </p>
     </div>
 
     <div id="entry-screen">
         <div class="login-gate-box">
-            <img src="LOGO MSF.png" alt="Logo MSF" style="height: 55px; object-fit: contain;">
-            <h2>M.S.F // TERMINAL GATEWAY</h2>
-            <p style="font-family: var(--font-mono); font-size: 10px; color: #888; margin-bottom: 20px; letter-spacing: 1px;">SISTEMA DE CREDENCIAIS INTEGRADO</p>
+            <h2 style="margin-bottom: 5px;">S.G.I // TERMINAL GATEWAY</h2>
+            <p style="font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); margin-bottom: 30px; letter-spacing: 1px;">SISTEMA DE GESTÃO DE INTELIGÊNCIA - ACESSO RESTRITO</p>
             
             <div class="form-group" style="text-align: left;">
-                <label style="color: #bbb; font-family: var(--font-mono);">Operador ID</label>
-                <input type="text" id="gate-user" class="form-control" style="background:#201a2e; color:#fff; border-color:var(--indigo);" placeholder="Digite seu operador">
-            </div>
-            <div class="form-group" style="text-align: left;">
-                <label style="color: #bbb; font-family: var(--font-mono);">Access Key (Senha)</label>
-                <input type="password" id="gate-pass" class="form-control" style="background:#201a2e; color:#fff; border-color:var(--indigo);" placeholder="Digite sua senha secreta">
+                <label>Identificação de Operador</label>
+                <input type="text" id="gate-user" class="form-control" placeholder="ID.Operador">
             </div>
             <div class="form-group" style="text-align: left; margin-bottom: 25px;">
-                <label style="color: #bbb; font-family: var(--font-mono);">Chave Imperial de Validação</label>
-                <input type="password" id="gate-key" class="form-control" style="background:#201a2e; color:#fff; border-color:var(--indigo);" placeholder="Insira a chave (Apenas Criadores)">
+                <label>Credencial Criptografada</label>
+                <input type="password" id="gate-pass" class="form-control" placeholder="******">
             </div>
             
-            <button class="btn btn-indigo" style="width: 100%; margin-bottom: 12px; font-size: 12px;" onclick="validateGateLogin()">
-                <i class="fa-solid fa-key"></i> Autenticar / Registrar Operador
+            <button class="btn btn-primary" style="width: 100%;" onclick="validateGateLogin()">
+                AUTENTICAR CONEXÃO
             </button>
-        </div>
-    </div>
-
-    <div id="intro-screen">
-        <div class="intro-content">
-            <div class="loader-container">
-                <img src="LOGO MSF.png" alt="Logo MSF">
-                <div class="spinner" id="intro-spinner"></div>
+            <div style="margin-top: 15px; font-family: var(--font-mono); font-size: 9px; color: var(--text-muted);">
+                Acesso não autorizado constitui crime federal militar. Atividade monitorada.
             </div>
-            <p id="intro-text">INICIALIZANDO CONEXÃO...</p>
         </div>
     </div>
-
-    <audio id="terminal-audio" src="musica2.mp3" loop></audio>
 
     <header id="main-header">
         <div class="brand">
-            <img src="LOGO MSF.png" alt="Logo MSF">
-            <h1>M.S.F. <span>//</span> Mafra Search Facility</h1>
+            <h1>S.G.I. <span style="color: var(--text-muted);">// SISTEMA DE GESTÃO DE INTELIGÊNCIA</span></h1>
         </div>
         <div class="system-status">
-            <div class="status-indicator"><div class="dot"></div> DB_CONNECTED</div>
-            <div class="status-indicator" id="current-time-ui">00:00:00</div>
-            <div class="search-container">
-                <input type="text" placeholder="Filtrar por título..." onkeyup="searchDocs(this.value)">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </div>
+            <span class="version-tag">v3.1.0-SECURE</span>
+            <div class="status-indicator"><div class="dot" id="db-status-dot"></div> <span id="db-status-text">CONECTADO</span></div>
+            <div id="current-time-ui">00:00:00</div>
         </div>
     </header>
 
     <nav class="horizontal-nav" id="main-navbar">
         <div class="nav-group-dropdown">
             <div class="dropdown-trigger" onclick="toggleDropdown(this)">
-                <i class="fa-solid fa-folder"></i> Diretórios M.S.F <i class="fa-solid fa-chevron-down chevron"></i>
+                [ DIRETÓRIOS CLASSIFICADOS ] <i class="fa-solid fa-chevron-down" style="font-size: 9px;"></i>
             </div>
-            <div class="dropdown-content" id="dynamic-categories-dropdown">
-            </div>
-        </div>
-
-        <div class="nav-group-dropdown">
-            <div class="dropdown-trigger" onclick="toggleDropdown(this)">
-                <i class="fa-solid fa-users-viewfinder"></i> Unidades <i class="fa-solid fa-chevron-down chevron"></i>
-            </div>
-            <div class="dropdown-content">
-                <div class="dropdown-item" onclick="filterDocs('Membros da M.G.I', this)">
-                    <i class="fa-solid fa-user-shield"></i> Membros da M.G.I
-                </div>
-                <div class="dropdown-item" onclick="filterDocs('Alvos', this)">
-                    <i class="fa-solid fa-crosshairs"></i> Alvos
-                </div>
-            </div>
+            <div class="dropdown-content" id="dynamic-categories-dropdown"></div>
         </div>
 
         <div id="auth-status-ui"></div>
@@ -443,348 +233,129 @@
 
     <main>
         <div class="content-wrapper">
-
             <div class="view-header" id="view-header-container">
-                <h2 id="view-title">Todos os Arquivos</h2>
+                <h2 id="view-title">Todos os Registros</h2>
                 
-                <div id="admin-actions" style="display: none; gap: 10px; align-items: center; flex-wrap: wrap;">
-                    <button class="btn" style="border-color: #00bcd4; color: #00bcd4;" onclick="openChatModal()">
-                        <i class="fa-solid fa-walkie-talkie"></i> Comunicação Segura
+                <div id="admin-actions" style="display: none; gap: 10px; align-items: center;">
+                    <button id="btn-gestao-mgi" class="btn" onclick="openUsersModal()">
+                        <i class="fa-solid fa-users-gear"></i> Controle de Operadores
                     </button>
-                    <button id="btn-force-sync" class="btn" style="border-color: #ff0055; color: #ff0055; display: none;" onclick="forceSyncAll()">
-                        <i class="fa-solid fa-server"></i> Forçar Backup
-                    </button>
-                    <button id="btn-gestao-mgi" class="btn" style="border-color: #ff8c00; color: #ff8c00; display: none;" onclick="openUsersModal()">
-                        <i class="fa-solid fa-users-gear"></i> Gestão M.G.I
-                    </button>
-                    <button id="btn-purge-logs" class="btn" style="border-color: #ff0055; color: #ff0055; display: none;" onclick="purgeAllLogs()">
-                        <i class="fa-solid fa-fire"></i> Expurgar Logs
-                    </button>
-                    <button id="btn-create-commercial" class="btn" style="border-color: #00ff00; color: #008000; display: none;" onclick="openModalCommercial()">
-                        <i class="fa-solid fa-bullhorn"></i> Anunciar Comercial
-                    </button>
-                    <button class="btn" style="border-color: var(--text); color: var(--text);" onclick="openModalUnit()">
-                        <i class="fa-solid fa-id-badge"></i> Nova Ficha
-                    </button>
-                    <button class="btn btn-indigo" style="width: auto;" onclick="openModalDoc()">
-                        <i class="fa-solid fa-plus"></i> Novo Registro
+                    <button class="btn btn-primary" onclick="openModalDoc()">
+                        <i class="fa-solid fa-plus"></i> Inserir Novo Relatório
                     </button>
                 </div>
             </div>
 
-            <div class="docs-grid" id="docs-container">
-            </div>
+            <div class="docs-grid" id="docs-container"></div>
         </div>
     </main>
 
-    <div id="mgi-commercial-banner" class="mgi-banner" style="display:none;">
-        <button class="close-banner" onclick="document.getElementById('mgi-commercial-banner').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
-        <div class="banner-media" id="banner-media"></div>
-        <div class="banner-info">
-            <span class="banner-tag"><i class="fa-solid fa-satellite-dish"></i> M.G.I COMUNICA</span>
-            <h4 id="banner-title">Título</h4>
-            <p id="banner-desc">Descrição do comunicado ou anúncio aparecerá aqui.</p>
-        </div>
-        <div class="banner-actions" id="banner-admin-actions" style="display:none;">
-            <button class="btn" style="font-size: 9px; padding: 4px 8px; border-color: #d32f2f; color: #d32f2f; background: transparent;" onclick="deleteCommercial()">
-                <i class="fa-solid fa-trash"></i> Retirar do Ar
-            </button>
-        </div>
-    </div>
-
-    <div id="music-control-panel">
-        <button class="btn-music" onclick="changeTrack(-1)" title="Música Anterior"><i class="fa-solid fa-backward-step"></i></button>
-        <button class="btn-music" onclick="toggleMusic()" style="font-size: 16px;">
-            <i id="music-icon" class="fa-solid fa-circle-play" style="color: var(--text);"></i> 
-        </button>
-        <button class="btn-music" onclick="changeTrack(1)" title="Próxima Música"><i class="fa-solid fa-forward-step"></i></button>
-        
-        <div class="track-info-container">
-            <div class="track-name-scroll" id="track-name-ui">MÚSICA PAUSADA...</div>
-            <div class="visualizer-container paused" id="music-visualizer">
-                <div class="vis-bar"></div>
-                <div class="vis-bar"></div>
-                <div class="vis-bar"></div>
-                <div class="vis-bar"></div>
-                <div class="vis-bar"></div>
-            </div>
-        </div>
-
-        <div class="volume-container">
-            <i class="fa-solid fa-volume-low" style="color: var(--text)"></i>
-            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4" oninput="changeVolume(this.value)">
-            <i class="fa-solid fa-volume-high" style="color: var(--text)"></i>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="chat-modal">
-        <div class="modal-box" style="width: 600px;">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-walkie-talkie"></i> COMUNICAÇÃO SEGURA</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeChatModal()"></i>
-            </div>
-            <div class="modal-body" style="padding: 20px; display: flex; flex-direction: column; height: 500px;">
-                <div id="chat-messages-container" style="flex: 1; overflow-y: auto; background: var(--gray-subtle); border: 1px solid var(--border); padding: 15px; margin-bottom: 15px; display: flex; flex-direction: column;">
-                    </div>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="chat-input-text" class="form-control" placeholder="Transmitir mensagem na frequência..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
-                    <button class="btn btn-indigo" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal-overlay" id="users-modal">
-        <div class="modal-box" style="width: 700px;">
+        <div class="modal-box" style="width: 800px;">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-users-gear"></i> GESTÃO DE OPERADORES M.G.I</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+                <h3>CONTROLE DE OPERADORES REGISTRADOS</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; color: var(--text-muted);" onclick="closeModals()"></i>
             </div>
             <div class="modal-body">
-                <p style="font-size: 11px; font-family: var(--font-mono); opacity: 0.8; margin-bottom: 15px;">
-                    Atribua os Níveis de Informação, conceda privilégios de ADM ou execute o Bloqueio Permanente de credenciais indesejadas.
+                <p style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-bottom: 20px;">
+                    ATENÇÃO: Operadores com nível 'Arconte' ou 'Magnitude' herdam automaticamente privilégios totais de Administração.
                 </p>
-                <div id="users-manager-list" style="background: var(--gray-subtle); border: 1px solid var(--border); padding: 10px; max-height: 400px; overflow-y: auto;">
-                </div>
+                <div id="users-manager-list" style="border: 1px solid var(--border); padding: 0; max-height: 450px; overflow-y: auto;">
+                    </div>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="create-modal">
-        <div class="modal-box">
+        <div class="modal-box" style="width: 850px;">
             <div class="modal-header">
-                <h3 id="doc-modal-title">GERAR NOVO REGISTRO OFICIAL</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+                <h3 id="doc-modal-title">GERAR RELATÓRIO DE INTELIGÊNCIA</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; color: var(--text-muted);" onclick="closeModals()"></i>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="doc-edit-id">
                 <div class="form-group">
-                    <label>Título do Dossiê</label>
-                    <input type="text" id="doc-title" class="form-control">
+                    <label>Título do Relatório / Alvo</label>
+                    <input type="text" id="doc-title" class="form-control" autocomplete="off">
                 </div>
                 <div style="display:flex; gap:20px">
                     <div class="form-group" style="flex:1">
-                        <label>Divisão / Tópico Vinculado</label>
+                        <label>Divisão Operacional</label>
                         <select id="doc-category" class="form-control"></select>
                     </div>
                     <div class="form-group" style="flex:1">
-                        <label>Nível de Informação (Sigilo)</label>
+                        <label>Nível de Sigilo Exigido</label>
                         <select id="doc-info" class="form-control">
-                            <option value="Agente">Agente (Cinza)</option>
-                            <option value="Regente">Regente (Amarelo)</option>
-                            <option value="Flagelo">Flagelo (Laranja Forte)</option>
-                            <option value="Arconte">Arconte (Vermelho)</option>
-                            <option value="Magnitude">Magnitude (Roxo)</option>
+                            <option value="Agente">Nível 1 - Agente (Geral)</option>
+                            <option value="Regente">Nível 2 - Regente (Restrito)</option>
+                            <option value="Flagelo">Nível 3 - Flagelo (Confidencial)</option>
+                            <option value="Arconte">Nível 4 - Arconte (Secreto)</option>
+                            <option value="Magnitude">Nível 5 - Magnitude (Top Secret)</option>
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-upload"></i> Carregar Mídias (Fotos/Vídeos/Áudios)</label>
-                    <input type="file" id="doc-image" class="form-control" accept="image/*,video/*,audio/*" multiple>
-                    <small style="font-family: var(--font-mono); font-size: 9px; opacity: 0.7;">Você pode selecionar vários arquivos ao mesmo tempo.</small>
+
+                <div style="border-top: 1px dashed var(--border); padding-top: 20px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <label style="margin: 0; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">ANEXOS TÁTICOS (FOTOS/VÍDEOS/ÁUDIOS)</label>
+                        <button type="button" class="btn" style="font-size: 9px; padding: 4px 8px;" onclick="addMediaInput('doc')">+ ADICIONAR ANEXO</button>
+                    </div>
+                    <div id="media-inputs-container-doc">
+                        </div>
                 </div>
+
                 <div class="form-group">
-                    <label>Conteúdo Relatado</label>
+                    <label>Corpo do Relatório (Detalhes da Operação)</label>
                     <textarea id="doc-content" class="form-control"></textarea>
                 </div>
-                <button class="btn btn-indigo" style="width:100%" onclick="saveDoc()">Transmitir ao Banco de Dados</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="create-unit-modal">
-        <div class="modal-box" style="width: 750px;">
-            <div class="modal-header">
-                <h3 id="unit-modal-title"><i class="fa-solid fa-id-badge"></i> GERAR NOVA FICHA DE UNIDADE</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="unit-edit-id">
-                <div style="display:flex; gap:20px">
-                    <div class="form-group" style="flex:1">
-                        <label>Nome da Unidade / Indivíduo</label>
-                        <input type="text" id="unit-name" class="form-control">
-                    </div>
-                    <div class="form-group" style="flex:1">
-                        <label>Filial / Afiliação</label>
-                        <input type="text" id="unit-filial" class="form-control" placeholder="Ex: M.G.I, Clã Aliado...">
-                    </div>
-                </div>
-
-                <div style="display:flex; gap:20px">
-                    <div class="form-group" style="flex:1">
-                        <label>Classificação</label>
-                        <select id="unit-category" class="form-control">
-                            <option value="Membros da M.G.I">Membros da M.G.I</option>
-                            <option value="Alvos">Alvos</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex:1">
-                        <label><i class="fa-solid fa-upload"></i> Identificação (Fotos/Vídeos/Áudios)</label>
-                        <input type="file" id="unit-image" class="form-control" accept="image/*,video/*,audio/*" multiple>
-                    </div>
-                </div>
-
-                <div style="display:flex; gap:20px">
-                    <div class="form-group" style="flex:1">
-                        <label>Status de Sigilo</label>
-                        <select id="unit-info" class="form-control">
-                            <option value="Agente">Agente</option>
-                            <option value="Regente">Regente</option>
-                            <option value="Flagelo">Flagelo</option>
-                            <option value="Arconte">Arconte</option>
-                            <option value="Magnitude">Magnitude</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex:1">
-                        <label>Nível de Perigo</label>
-                        <select id="unit-danger" class="form-control">
-                            <option value="Neutro">Neutro / Aliado</option>
-                            <option value="Baixo">Baixo</option>
-                            <option value="Médio">Médio</option>
-                            <option value="Alto">Alto</option>
-                            <option value="Crítico">Crítico</option>
-                        </select>
-                    </div>
-                </div>
-
                 <div class="form-group">
-                    <label>Descrição Tática / Biografia</label>
-                    <textarea id="unit-desc" class="form-control" style="min-height: 80px;"></textarea>
+                    <label>Observações Adicionais (OBS)</label>
+                    <textarea id="doc-obs" class="form-control" style="min-height: 60px; font-family: var(--font-mono); font-size: 11px;"></textarea>
                 </div>
-                <div class="form-group">
-                    <label>Observações Adicionais (Obs)</label>
-                    <textarea id="unit-obs" class="form-control" style="min-height: 50px;"></textarea>
-                </div>
-                <button class="btn btn-indigo" style="width:100%" onclick="saveUnit()">Arquivar Ficha de Unidade</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="create-commercial-modal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3 id="comm-modal-title"><i class="fa-solid fa-bullhorn"></i> TRANSMITIR COMUNICADO / COMERCIAL</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
-            </div>
-            <div class="modal-body">
-                <p style="font-size: 11px; font-family: var(--font-mono); opacity: 0.8; margin-bottom: 15px;">
-                    Este conteúdo aparecerá como um banner flutuante para todos os usuários do terminal, semelhante a um anúncio em vídeo.
-                </p>
-                <input type="hidden" id="comm-edit-id">
-                <div class="form-group">
-                    <label>Título / Chamada Curta</label>
-                    <input type="text" id="comm-title" class="form-control" placeholder="Ex: NOVA OPERAÇÃO INICIADA">
-                </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-upload"></i> Carregar Mídia Promocional (Foto/Vídeo)</label>
-                    <input type="file" id="comm-image" class="form-control" accept="image/*,video/*">
-                </div>
-                <div class="form-group">
-                    <label>Descrição Curta / Mensagem</label>
-                    <textarea id="comm-content" class="form-control" style="min-height: 80px;" placeholder="Digite o aviso..."></textarea>
-                </div>
-                <button class="btn btn-indigo" style="width:100%" onclick="saveCommercial()">Colocar no Ar</button>
+                <button class="btn btn-primary" style="width:100%" onclick="saveDoc()">ARQUIVAR NO BANCO CENTRAL</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="read-modal">
-        <div class="modal-box" style="width: 800px;">
+        <div class="modal-box" style="width: 850px;">
             <div class="modal-header">
-                <h3>VISUALIZADOR DE ARQUIVO</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
+                <h3>VISUALIZADOR DE ARQUIVO CLASSIFICADO</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; color: var(--text-muted);" onclick="closeModals()"></i>
             </div>
             <div class="modal-body">
-                <img src="LOGO MSF.png" class="watermark-logo" alt="MGI Watermark">
                 <div class="reader-header">
-                    <div style="position: absolute; right: 0; top: 0; text-align: right; font-family: var(--font-mono); font-size: 11px; opacity: 0.7;">
-                        <i class="fa-solid fa-user-pen" style="color: var(--indigo);"></i> <span id="read-author">Autor</span><br>
-                        <span id="read-time-exact">00:00:00</span>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <div>
+                            <div id="info-lvl-stamp" class="lvl-badge" style="margin-bottom: 10px;">LVL</div><br>
+                            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">REF_ID: <span id="read-id">0000</span></span>
+                        </div>
+                        <div style="text-align: right; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">
+                            ARQUIVADO POR: <span id="read-author" style="color: var(--text);">Autor</span><br>
+                            DATA: <span id="read-date">00/00/0000</span> às <span id="read-time-exact">00:00:00</span>
+                        </div>
                     </div>
-
-                    <div class="reader-stamps">
-                        <div id="info-lvl-stamp" class="stamp info-lvl">LVL</div>
-                    </div>
-                    <h1 id="read-title" style="font-size: 32px; font-weight: 900; margin-bottom: 5px;">TÍTULO</h1>
-                    <div style="font-family: var(--font-mono); font-size: 11px; opacity: 0.6;">
-                        REF_ID: <span id="read-id">0000</span> | REGISTRO: <span id="read-date">00/00/0000</span>
-                    </div>
+                    <h1 id="read-title">TÍTULO DO RELATÓRIO</h1>
                 </div>
 
                 <div id="read-photo-container"></div>
-                <div id="read-text"></div>
                 
-                <div id="admin-doc-actions" style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px; display: none; gap: 10px; flex-wrap: wrap; position: relative; z-index: 2;">
-                    <button class="btn" style="color: var(--indigo); border-color: var(--indigo);" onclick="editCurrentDoc()">
-                        <i class="fa-solid fa-pen"></i> Editar Registro
-                    </button>
-                    <button class="btn" style="color: #d32f2f; border-color: #d32f2f;" onclick="deleteDocTrigger()">
-                        <i class="fa-solid fa-trash"></i> Expurgar Registro Permanentemente
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="read-unit-modal">
-        <div class="modal-box" style="width: 850px;">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-address-card"></i> FICHA DE UNIDADE</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="closeModals()"></i>
-            </div>
-            <div class="modal-body">
-                <img src="LOGO MSF.png" class="watermark-logo" alt="MGI Watermark">
-                <div class="read-unit-layout">
-                    <div class="read-unit-info">
-                        <div class="reader-header" style="margin-bottom: 15px; padding-bottom: 15px;">
-                             <div style="position: absolute; right: 0; top: 0; text-align: right; font-family: var(--font-mono); font-size: 11px; opacity: 0.7;">
-                                <i class="fa-solid fa-user-pen" style="color: var(--indigo);"></i> <span id="r-unit-author">Autor</span><br>
-                                <span id="r-unit-time-exact">00:00:00</span>
-                            </div>
-
-                            <h1 id="r-unit-name" style="font-size: 32px; font-weight: 900; margin-bottom: 5px; text-transform: uppercase;">NOME</h1>
-                            <div style="font-family: var(--font-mono); font-size: 11px; opacity: 0.6;">
-                                REGISTRO: <span id="r-unit-id">0000</span> | DATA: <span id="r-unit-date">00/00/0000</span>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
-                            <div class="stamp" id="r-unit-cat" style="border-color: var(--indigo); color: var(--indigo);">CATEGORIA</div>
-                            <div class="stamp" id="r-unit-danger" style="border-color: #d32f2f; color: #d32f2f;">PERIGO</div>
-                        </div>
-
-                        <div class="unit-meta-field">
-                            <div class="unit-meta-label">FILIAL / AFILIAÇÃO</div>
-                            <div class="unit-meta-value" id="r-unit-filial">...</div>
-                        </div>
-                        <div class="unit-meta-field">
-                            <div class="unit-meta-label">STATUS DE SIGILO</div>
-                            <div class="unit-meta-value" id="r-unit-info">...</div>
-                        </div>
-                        <div class="unit-meta-field">
-                            <div class="unit-meta-label">DESCRIÇÃO</div>
-                            <div class="unit-meta-value" id="r-unit-desc" style="font-weight: normal; font-family: 'Times New Roman', serif; line-height: 1.6;">...</div>
-                        </div>
-                        <div class="unit-meta-field" style="border-bottom: none;">
-                            <div class="unit-meta-label">OBSERVAÇÕES (OBS)</div>
-                            <div class="unit-meta-value" id="r-unit-obs" style="font-weight: normal; font-size: 13px; opacity: 0.8; font-style: italic;">...</div>
-                        </div>
-                    </div>
-
-                    <div class="read-unit-photo" id="r-unit-photo-container">
-                        <div id="r-unit-no-img" style="padding: 100px 20px; text-align: center; color: var(--text); opacity: 0.3; font-family: var(--font-mono); font-size: 12px; display: none;">
-                            <i class="fa-solid fa-user-secret" style="font-size: 40px; margin-bottom:10px;"></i><br>[ SEM IMAGEM ]
-                        </div>
-                    </div>
+                <div style="margin-top: 20px;">
+                    <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 5px; display: block; margin-bottom: 10px;">RELATO OFICIAL:</span>
+                    <div id="read-text"></div>
                 </div>
 
-                <div id="admin-unit-actions" style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px; display: none; gap: 10px; flex-wrap: wrap; position: relative; z-index: 2;">
-                    <button class="btn" style="color: var(--indigo); border-color: var(--indigo);" onclick="editCurrentDoc()">
-                        <i class="fa-solid fa-pen"></i> Editar Ficha
+                <div id="read-obs-container" style="margin-top: 30px; display: none;">
+                    <span style="font-family: var(--font-mono); font-size: 10px; color: var(--danger); text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 5px; display: block; margin-bottom: 10px;">OBSERVAÇÕES (OBS):</span>
+                    <div id="read-obs" style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); font-style: italic; line-height: 1.5;"></div>
+                </div>
+                
+                <div id="admin-doc-actions" style="margin-top: 40px; border-top: 1px dashed var(--border); padding-top: 20px; display: none; gap: 10px;">
+                    <button class="btn" onclick="editCurrentDoc()">
+                        <i class="fa-solid fa-pen"></i> Retificar Documento
                     </button>
-                    <button class="btn" style="color: #d32f2f; border-color: #d32f2f;" onclick="deleteDocTrigger()">
-                        <i class="fa-solid fa-trash"></i> Eliminar Registro da Unidade
+                    <button class="btn btn-danger" onclick="deleteDocTrigger()">
+                        <i class="fa-solid fa-trash"></i> Expurgar Arquivo da Base
                     </button>
                 </div>
             </div>
@@ -792,465 +363,290 @@
     </div>
 
 <script>
-    // BLOQUEIO DE INSPECIONAR CÓDIGO
+    // BLOQUEIO DE INSPECIONAR CÓDIGO (MANTIDO E SIMPLIFICADO)
     document.addEventListener('contextmenu', event => event.preventDefault());
-    document.onkeydown = function(e) {
-        if(e.keyCode == 123) return false; 
-        if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 67 || e.keyCode == 74)) return false; 
-        if(e.ctrlKey && e.keyCode == 85) return false; 
-    }
 
-    let audioCtx;
-    let alarmInterval = null;
-    let loadingLoopInterval = null;
+    // SISTEMA CORE E ESTADOS GLOBAIS
     let isLogged = false;
     let currentUserGlobal = "";
-    
+    let globalDocs = [];
+    let globalUsers = []; 
     let currentOpenDocId = null;
     let currentOpenDocObj = null;
-    let currentCommercialId = null; 
-    
-    // --- SISTEMA DE SESSÃO E INATIVIDADE ---
-    const INACTIVITY_LIMIT = 10 * 60 * 1000;
-    let inactivityTimer = null;
+    let currentFilter = 'Todos';
 
-    // --- SISTEMA DE PLAYLIST ---
-    const musicPlaylist = [
-        { file: 'musica2.mp3', name: 'TEMA M.S.F - INICIAL' },
-        { file: 'musica3.mp3', name: 'OPERAÇÃO TÁTICA' }, 
-        { file: 'musica4.mp3', name: 'AMBIENTE SECRETO' }
+    // CATEGORIAS FIXAS DA AGÊNCIA
+    const agencyCategories = [
+        'Relatórios de Operação', 
+        'Dossiês de Alvos', 
+        'Inteligência Financeira', 
+        'Contra-Inteligência', 
+        'Auditoria Interna'
     ];
-    let currentTrackIndex = 0;
-
-    function updateActivityTimestamp() {
-        if (isLogged) {
-            let session = JSON.parse(localStorage.getItem('msf_session') || '{}');
-            if(session.user) {
-                session.lastActivity = Date.now();
-                localStorage.setItem('msf_session', JSON.stringify(session));
-            }
-        }
-    }
-
-    window.addEventListener('mousemove', updateActivityTimestamp);
-    window.addEventListener('keydown', updateActivityTimestamp);
-    window.addEventListener('click', updateActivityTimestamp);
-
-    function startInactivityMonitor() {
-        if(inactivityTimer) clearInterval(inactivityTimer);
-        inactivityTimer = setInterval(() => {
-            if (isLogged) {
-                let session = JSON.parse(localStorage.getItem('msf_session') || '{}');
-                let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
-
-                if (bannedList.includes(currentUserGlobal.toLowerCase())) {
-                    localStorage.removeItem('msf_session');
-                    location.reload();
-                }
-
-                if (session.lastActivity && (Date.now() - session.lastActivity > INACTIVITY_LIMIT)) {
-                    alert("SESSÃO EXPIRADA: 10 minutos de inatividade detectados. Desconectando por segurança.");
-                    localStorage.removeItem('msf_session');
-                    location.reload();
-                }
-            }
-        }, 30000);
-    }
 
     const levelMap = {
-        'Agente': 1, 'Público': 1,
-        'Regente': 2, 'Restrito': 2,
-        'Flagelo': 3, 'Confidencial': 3,
-        'Arconte': 4, 'Altamente Secreto': 4,
-        'Magnitude': 5
+        'Agente': 1, 'Regente': 2, 'Flagelo': 3, 'Arconte': 4, 'Magnitude': 5, 'BANIDO': -1
     };
 
-    let defaultCategories = ['Execução', 'Extermínio', 'Juízo', 'Informação', 'Financeiro', 'Clãs', 'Documentos Gerais', 'Logs do Sistema'];
-    let currentCategories = JSON.parse(localStorage.getItem('msf_custom_categories')) || defaultCategories;
+    // FUNÇÕES DE TEMPO E STATUS
+    setInterval(() => { document.getElementById('current-time-ui').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
 
-    // Garante que Logs do Sistema existe
-    if(!currentCategories.includes('Logs do Sistema')) currentCategories.push('Logs do Sistema');
-
-    document.getElementById('terminal-audio').volume = 0.4;
-
-    (function applySavedEngineTheme() {
-        const theme = JSON.parse(localStorage.getItem('msf_engine_theme') || '{}');
-        const root = document.documentElement;
-        if(theme.indigo) root.style.setProperty('--indigo', theme.indigo);
-        if(theme.border) root.style.setProperty('--border', theme.border);
-        if(theme.text) root.style.setProperty('--text', theme.text);
-        if(theme.bg) root.style.setProperty('--bg', theme.bg);
-        if(theme.cardBg) root.style.setProperty('--card-bg', theme.cardBg);
-        if(theme.graySubtle) root.style.setProperty('--gray-subtle', theme.graySubtle);
-        if(theme.headerBg) root.style.setProperty('--header-bg', theme.headerBg);
-        if(theme.headerText) root.style.setProperty('--header-text', theme.headerText);
-        if(theme.bgImage && theme.bgImage.trim() !== "") {
-            root.style.setProperty('--bg-image', `url('${theme.bgImage}')`);
-        } else {
-            root.style.setProperty('--bg-image', 'none');
-        }
-    })();
-
-    function playLoadingSound() {
-        loadingLoopInterval = setInterval(() => {
-            if(!audioCtx) return;
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(800, audioCtx.currentTime); 
-            gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.08);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.08);
-        }, 120);
-    }
-
-    function playPlimSound() {
-        if(loadingLoopInterval) clearInterval(loadingLoopInterval);
-        setTimeout(() => playTone(523.25, 0.15, 0.05), 0);
-        setTimeout(() => playTone(659.25, 0.3, 0.05), 100);
-    }
-
-    function playTone(freq, duration, volume) {
-        if(!audioCtx) return;
-        let osc = audioCtx.createOscillator();
-        let gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-    }
-
-    function startSoftAlarm() {
-        if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if(audioCtx.state === 'suspended') audioCtx.resume();
-        
-        alarmInterval = setInterval(() => {
-            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
-            osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.4);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-        }, 1000);
-    }
-    function stopSoftAlarm() { if(alarmInterval) clearInterval(alarmInterval); }
-
-    function logSystemAction(actionDescription) {
-        const logDoc = {
-            id: 'LOG-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-            type: 'sys_log',
-            isUnitType: false,
-            title: 'REGISTRO DE AUDITORIA',
-            category: 'Logs do Sistema',
-            infoLevel: 'Arconte',
-            content: actionDescription,
-            createdBy: currentUserGlobal || 'Sistema',
-            createdTime: new Date().toLocaleTimeString('pt-BR'),
-            dateFormatted: new Date().toLocaleDateString('pt-BR'),
-            timestamp: Date.now()
-        };
-        globalDocs.push(logDoc);
-        syncBackendData(logDoc, 'POST');
-    }
-
-    function validateGateLogin() {
-        const user = document.getElementById('gate-user').value.trim();
-        const pass = document.getElementById('gate-pass').value;
-        const key = document.getElementById('gate-key').value.trim();
-
-        if (!user || !pass) { alert("ERRO DE AUTENTICAÇÃO: Os campos Operador e Senha são obrigatórios."); return; }
-        if (key !== "MSF01") { alert("CHAVE DE VALIDAÇÃO INVÁLIDA: Privilégios negados."); return; }
-
-        let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
-        if(bannedList.includes(user.toLowerCase())) {
-            logSystemAction(`[SISTEMA] O operador banido [${user.toUpperCase()}] tentou acessar a rede e foi bloqueado na catraca.`);
-            document.getElementById('entry-screen').style.display = 'none';
-            document.getElementById('banned-screen').style.display = 'flex';
-            return;
-        }
-
-        let userDB = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
-        let rolesDB = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
-
-        if (userDB[user.toLowerCase()]) {
-            if (userDB[user.toLowerCase()] === pass) {
-                isLogged = true; currentUserGlobal = user; 
-                localStorage.setItem('msf_session', JSON.stringify({ user: user, lastActivity: Date.now() }));
-                logSystemAction(`Operador [${user.toUpperCase()}] realizou login na rede.`);
-                startInactivityMonitor();
-                initiateSystemSequence();
-            } else { 
-                logSystemAction(`[ALERTA DE INTRUSÃO] Tentativa de login falha para o operador [${user.toUpperCase()}]. Senha incorreta inserida.`);
-                alert("ACESSO NEGADO: Senha incorreta."); 
-            }
-        } else {
-            userDB[user.toLowerCase()] = pass;
-            rolesDB[user.toLowerCase()] = 'Agente'; 
-            localStorage.setItem('msf_local_accounts', JSON.stringify(userDB));
-            localStorage.setItem('msf_account_roles', JSON.stringify(rolesDB));
-            // Força a conversão para minúscula antes do envio backend
-            registerUserBackend(user.toLowerCase(), pass, 'Agente');
-            
-            alert(`[NOVO OPERADOR]: A conta "${user.toUpperCase()}" foi registrada. Nível de Informação padrão: Agente.`);
-            
-            isLogged = true; currentUserGlobal = user; 
-            localStorage.setItem('msf_session', JSON.stringify({ user: user, lastActivity: Date.now() }));
-            logSystemAction(`Novo Operador [${user.toUpperCase()}] foi registrado no banco de dados e acessou a rede.`);
-            startInactivityMonitor();
-            initiateSystemSequence();
-        }
-    }
-
+    // FUNÇÃO CENTRAL: VERIFICAÇÃO DE PRIVILÉGIOS (O Segredo do ADM automático)
     function checkAdminPrivileges() {
         if(!isLogged) return false;
-        if(currentUserGlobal.toLowerCase() === 'mafrainf') return true;
-        let adminList = JSON.parse(localStorage.getItem('msf_admin_users') || '[]');
-        if(adminList.includes(currentUserGlobal.toLowerCase())) return true;
+        // Puxa o cargo diretamente do banco global em memória
+        let userRecord = globalUsers.find(u => u.username === currentUserGlobal);
+        let role = userRecord ? userRecord.role : 'Agente';
         
-        let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
-        return roles[currentUserGlobal.toLowerCase()] === 'Magnitude';
+        // Se for MafraINF, Arconte ou Magnitude = É ADMIN TOTAL.
+        return role === 'Magnitude' || role === 'Arconte' || currentUserGlobal === 'mafrainf';
     }
 
-    function initiateSystemSequence() {
-        const entryScreen = document.getElementById('entry-screen');
-        entryScreen.style.opacity = '0';
-        setTimeout(() => entryScreen.style.display = 'none', 500);
+    // LOGIN E SESSÃO GLOBAIS (SEM DEPENDER DO LOCALSTORAGE PARA VERIFICAÇÃO DE SENHA)
+    async function validateGateLogin() {
+        const user = document.getElementById('gate-user').value.trim().toLowerCase();
+        const pass = document.getElementById('gate-pass').value;
 
-        const introScreen = document.getElementById('intro-screen');
-        introScreen.style.display = 'flex';
+        if (!user || !pass) { alert("[ERRO] Identificação e credencial requeridas."); return; }
+        
+        // Primeiro, busca a lista real de usuários do backend
+        document.getElementById('gate-user').disabled = true;
+        document.getElementById('gate-pass').disabled = true;
 
-        if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-
-        playLoadingSound();
-
-        setTimeout(() => {
-            const introText = document.getElementById('intro-text');
-            const introSpinner = document.getElementById('intro-spinner');
+        try {
+            const res = await fetch('/api/users');
+            if(!res.ok) throw new Error("Falha no servidor");
+            globalUsers = await res.json();
             
-            introText.innerText = "CONEXÃO ESTABELECIDA!";
-            introText.style.color = "#00ff00";
-            introSpinner.style.borderTopColor = "#00ff00";
+            let existingUser = globalUsers.find(u => u.username === user);
             
-            playPlimSound();
-
-            const audio = document.getElementById('terminal-audio');
-            const icon = document.getElementById('music-icon');
-            const trackText = document.getElementById('track-name-ui');
-            const visualizer = document.getElementById('music-visualizer');
-            
-            audio.src = musicPlaylist[currentTrackIndex].file;
-            
-            audio.play().then(() => {
-                icon.className = "fa-solid fa-circle-pause";
-                icon.style.color = "var(--indigo)";
-                trackText.innerText = "TOCANDO: " + musicPlaylist[currentTrackIndex].name;
-                visualizer.classList.remove('paused');
-            }).catch(err => {
-                console.log("Áudio bloqueado preventivamente.");
-                trackText.innerText = "MÚSICA PAUSADA...";
-            });
-
-            setTimeout(() => {
-                introScreen.style.opacity = '0'; introScreen.style.visibility = 'hidden';
-                setupInterfaceUI(); renderNavigationStructure(); fetchData();
-                setTimeout(() => introScreen.remove(), 500);
-            }, 1000);
-        }, 2500);
+            if(existingUser) {
+                if(existingUser.role === 'BANIDO') {
+                    showBannedScreen();
+                    return;
+                }
+                
+                if(existingUser.password === pass) {
+                    processSuccessfulLogin(user);
+                } else {
+                    alert("[ACESSO NEGADO] Credencial inválida.");
+                    resetLoginForm();
+                }
+            } else {
+                // Cria novo usuário globalmente
+                await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ username: user, password: pass, role: 'Agente' })
+                });
+                alert(`[SISTEMA] Credencial ${user.toUpperCase()} gerada. Nível: Agente.`);
+                processSuccessfulLogin(user);
+            }
+        } catch(e) {
+            alert("[ERRO CRÍTICO] Falha de comunicação com o servidor central S.G.I.");
+            resetLoginForm();
+        }
     }
 
-    function setupInterfaceUI() {
+    function processSuccessfulLogin(user) {
+        isLogged = true;
+        currentUserGlobal = user;
+        localStorage.setItem('msf_session_token', user); // Mantemos apenas quem está logado para F5
+        document.getElementById('entry-screen').style.opacity = '0';
+        setTimeout(() => { 
+            document.getElementById('entry-screen').style.display = 'none'; 
+            initSystemEnvironment();
+        }, 500);
+    }
+
+    function resetLoginForm() {
+        document.getElementById('gate-user').disabled = false;
+        document.getElementById('gate-pass').disabled = false;
+        document.getElementById('gate-pass').value = '';
+    }
+
+    function showBannedScreen() {
+        document.getElementById('entry-screen').style.display = 'none';
+        document.getElementById('banned-screen').style.display = 'flex';
+        localStorage.removeItem('msf_session_token');
+    }
+
+    // INICIALIZAÇÃO DO AMBIENTE INTERNO
+    async function initSystemEnvironment() {
+        renderNavigation();
+        await fetchDatabaseGlobal();
+        await fetchUsersGlobal();
+        setupUserInterface();
+    }
+
+    function setupUserInterface() {
         const authStatusUi = document.getElementById('auth-status-ui');
         const adminActions = document.getElementById('admin-actions');
         
-        const btnForceSync = document.getElementById('btn-force-sync');
-        const btnGestao = document.getElementById('btn-gestao-mgi');
-        const btnPurgeLogs = document.getElementById('btn-purge-logs');
-        const btnCommercial = document.getElementById('btn-create-commercial');
+        let userRecord = globalUsers.find(u => u.username === currentUserGlobal);
+        let myRole = userRecord ? userRecord.role : 'Agente';
+        let isAdmin = checkAdminPrivileges();
 
-        if (isLogged) {
-            let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
-            let myRole = roles[currentUserGlobal.toLowerCase()] || 'Agente';
+        // Se após um refresh a pessoa estiver banida no servidor, chuta ela
+        if(myRole === 'BANIDO') {
+            showBannedScreen();
+            return;
+        }
+
+        authStatusUi.innerHTML = `
+            <div style="font-family: var(--font-mono); font-size: 10px; border: 1px solid var(--border); padding: 5px 10px;">
+                <i class="fa-solid fa-user-secret" style="color: ${isAdmin ? 'var(--danger)' : 'var(--text-muted)'}; margin-right: 5px;"></i>
+                OP: ${currentUserGlobal.toUpperCase()} // CLASS: ${myRole.toUpperCase()}
+            </div>
+            <button onclick="logout()" class="btn" style="border-color: var(--danger); color: var(--danger); padding: 5px 10px;">SAIR</button>
+        `;
             
-            let isAdmin = checkAdminPrivileges();
+        adminActions.style.display = 'flex';
+        document.getElementById('btn-gestao-mgi').style.display = isAdmin ? 'inline-flex' : 'none';
+    }
 
-            authStatusUi.innerHTML = `
-                <button onclick="criarSolicitacaoNivel()" style="background: transparent; border: 1px solid var(--indigo); color: var(--text); padding: 5px 10px; font-size:10px; font-family: var(--font-mono); font-weight: bold; cursor:pointer; border-radius: 4px; margin-right: 10px; transition: 0.2s;" onmouseover="this.style.background='var(--indigo)'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.color='var(--text)';">
-                    <i class="fa-solid fa-key"></i> Pedir Nível
-                </button>
-                <div style="display:flex; align-items:center; justify-content: center; gap: 8px; padding: 6px 12px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px;">
-                    <i class="fa-solid ${isAdmin ? 'fa-crown' : 'fa-user-shield'}" style="color: var(--indigo)"></i>
-                    <span style="font-size:11px; font-family:var(--font-mono); font-weight:bold; color:var(--text)">
-                        ${currentUserGlobal.toUpperCase()} // LVL: ${myRole.toUpperCase()}
-                    </span>
-                </div>`;
-                
-            adminActions.style.display = 'flex';
+    function logout() {
+        localStorage.removeItem('msf_session_token');
+        location.reload();
+    }
 
-            btnGestao.style.display = isAdmin ? 'inline-flex' : 'none';
-            btnCommercial.style.display = isAdmin ? 'inline-flex' : 'none';
-            btnPurgeLogs.style.display = (currentUserGlobal.toLowerCase() === 'mafrainf') ? 'inline-flex' : 'none';
-            
-            if (btnForceSync) {
-                btnForceSync.style.display = isAdmin ? 'inline-flex' : 'none';
+    // BUSCA DE DADOS GLOBAIS (SEM FALLBACK DE LOCALSTORAGE QUE GERA PERDA DE DADOS)
+    function updateDbStatus(isOnline) {
+        const dot = document.getElementById('db-status-dot');
+        const txt = document.getElementById('db-status-text');
+        dot.style.background = isOnline ? '#22c55e' : '#ef4444';
+        txt.innerText = isOnline ? 'CONECTADO' : 'OFFLINE / ERRO';
+        txt.style.color = isOnline ? 'var(--text-muted)' : '#ef4444';
+    }
+
+    async function fetchDatabaseGlobal() {
+        try {
+            const res = await fetch('/api/docs');
+            if(!res.ok) throw new Error("Erro de HTTP");
+            const data = await res.json();
+            if(Array.isArray(data)) {
+                globalDocs = data;
+                updateDbStatus(true);
+            } else {
+                throw new Error("Formato inválido");
             }
+        } catch(e) {
+            console.error("FALHA DE SINCRONIZAÇÃO DA BASE GERAL", e);
+            updateDbStatus(false);
+            document.getElementById('docs-container').innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--danger); font-family: var(--font-mono); padding: 40px; border: 1px dashed var(--danger);">[ FALHA CRÍTICA ] SERVIDOR INACESSÍVEL. OS DADOS NÃO PUDERAM SER CARREGADOS.</div>`;
+            return; // Impede renderização de tela em branco que sobrescreveria arquivos depois
+        }
+        renderDocs();
+    }
+
+    async function fetchUsersGlobal() {
+        try {
+            const res = await fetch('/api/users');
+            if(res.ok) {
+                let data = await res.json();
+                if(Array.isArray(data)) globalUsers = data;
+            }
+        } catch(e) { console.error("Erro na busca de usuários", e); }
+    }
+
+    async function globalBackendSync(route, method, payload) {
+        try {
+            const res = await fetch(route, {
+                method: method,
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if(!res.ok) alert("[ERRO DO SERVIDOR] A alteração não pôde ser consolidada globalmente.");
+            return res.ok;
+        } catch(e) {
+            alert("[FALHA DE REDE] O servidor não responde. Alteração abortada.");
+            return false;
         }
     }
 
+    // CONTROLE DE OPERADORES E BANIMENTO
     async function openUsersModal() {
-        let container = document.getElementById('users-manager-list');
-        container.innerHTML = `<div style="padding: 30px; text-align: center; color: var(--indigo); font-family: var(--font-mono); font-size: 13px;">
-            <i class="fa-solid fa-satellite-dish fa-beat" style="margin-bottom: 10px; font-size: 20px;"></i><br>
-            Sincronizando Base Central...
-        </div>`;
+        const container = document.getElementById('users-manager-list');
+        container.innerHTML = `<div style="padding:20px; text-align:center; font-family:var(--font-mono); font-size:11px;">Carregando dados da inteligência...</div>`;
         openModal('users-modal');
         
-        await fetchBackendUsers(); 
+        await fetchUsersGlobal(); 
         
-        let accounts = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
-        let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
-        let adminList = JSON.parse(localStorage.getItem('msf_admin_users') || '[]');
-        let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
-
         let html = '';
-        
-        for(let user in accounts) {
-            let role = roles[user] || 'Agente';
-            let isAdm = adminList.includes(user);
-            let isBan = bannedList.includes(user);
-            let isMafra = (user.toLowerCase() === 'mafrainf');
-
+        globalUsers.forEach(u => {
+            let isBan = u.role === 'BANIDO';
+            let isCreator = u.username === 'mafrainf';
+            
             html += `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--border); background: ${isBan ? 'rgba(211,47,47,0.1)' : 'transparent'};">
-                <span style="font-weight:bold; font-family:var(--font-mono); font-size: 13px; text-transform:uppercase; text-decoration: ${isBan ? 'line-through' : 'none'}; color: ${isBan ? '#d32f2f' : 'var(--text)'};">
-                    <i class="fa-solid ${isAdm || isMafra ? 'fa-crown' : 'fa-user'}" style="color:var(--indigo); margin-right:5px;"></i> ${user}
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 15px; border-bottom:1px solid var(--border); background: ${isBan ? 'rgba(239, 68, 68, 0.05)' : 'transparent'};">
+                <span style="font-family:var(--font-mono); font-size: 12px; text-transform:uppercase; text-decoration: ${isBan ? 'line-through' : 'none'}; color: ${isBan ? 'var(--danger)' : 'var(--text)'};">
+                    <i class="fa-solid fa-user" style="margin-right:8px; color: ${isBan ? 'var(--danger)' : 'var(--text-muted)'};"></i> ${u.username}
                 </span>
                 
-                <div style="display: flex; gap: 8px; align-items: center;">
-                    ${!isMafra ? `
-                        <button class="btn" style="padding: 4px 8px; font-size: 9px; background: ${isAdm ? 'var(--indigo)' : 'var(--card-bg)'}; color: ${isAdm ? '#fff' : 'var(--text)'}; border-color: var(--indigo);" onclick="toggleAdminRole('${user}')" title="Dar/Tirar ADM">ADM</button>
-                        <button class="btn" style="padding: 4px 8px; font-size: 9px; background: ${isBan ? '#d32f2f' : 'var(--card-bg)'}; color: ${isBan ? '#fff' : 'var(--text)'}; border-color: #d32f2f;" onclick="toggleBanStatus('${user}')" title="Bloquear/Desbloquear"><i class="fa-solid fa-ban"></i></button>
-                    ` : '<span style="font-size:10px; font-family:var(--font-mono); color:var(--indigo); font-weight:bold;">[CRIADOR]</span>'}
-                    
-                    <select class="form-control" style="width:120px; font-size:11px; padding: 4px;" onchange="updateUserRole('${user}', this.value)" ${isMafra ? 'disabled' : ''}>
-                        <option value="Agente" ${role==='Agente'?'selected':''}>Agente</option>
-                        <option value="Regente" ${role==='Regente'?'selected':''}>Regente</option>
-                        <option value="Flagelo" ${role==='Flagelo'?'selected':''}>Flagelo</option>
-                        <option value="Arconte" ${role==='Arconte'?'selected':''}>Arconte</option>
-                        <option value="Magnitude" ${role==='Magnitude'?'selected':''}>Magnitude</option>
-                    </select>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    ${!isCreator ? `
+                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 9px;" onclick="globalBanAction('${u.username}')" title="Aplicar/Remover Banimento">
+                            <i class="fa-solid ${isBan ? 'fa-unlock' : 'fa-ban'}"></i> ${isBan ? 'LIBERAR' : 'BANIR'}
+                        </button>
+                        <select class="form-control" style="width:140px; padding: 4px; font-size: 10px; background: var(--bg);" onchange="changeUserRoleGlobal('${u.username}', this.value)" ${isBan ? 'disabled' : ''}>
+                            <option value="Agente" ${u.role==='Agente'?'selected':''}>Agente</option>
+                            <option value="Regente" ${u.role==='Regente'?'selected':''}>Regente</option>
+                            <option value="Flagelo" ${u.role==='Flagelo'?'selected':''}>Flagelo</option>
+                            <option value="Arconte" ${u.role==='Arconte'?'selected':''}>Arconte</option>
+                            <option value="Magnitude" ${u.role==='Magnitude'?'selected':''}>Magnitude</option>
+                        </select>
+                    ` : '<span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted);">[ AUTORIDADE SUPREMA ]</span>'}
                 </div>
             </div>`;
-        }
+        });
         
-        if (Object.keys(accounts).length === 0) container.innerHTML = `<p style="font-family:var(--font-mono); font-size:11px; padding: 10px;">Nenhum operador registrado no sistema local.</p>`;
-        else container.innerHTML = html;
+        container.innerHTML = html;
     }
 
-    function toggleAdminRole(user) {
-        let adminList = JSON.parse(localStorage.getItem('msf_admin_users') || '[]');
-        let isNowAdm = false;
-        if(adminList.includes(user)) {
-            adminList = adminList.filter(u => u !== user);
-        } else {
-            adminList.push(user);
-            isNowAdm = true;
-        }
-        localStorage.setItem('msf_admin_users', JSON.stringify(adminList));
-        logSystemAction(`O operador [${user.toUpperCase()}] teve seus privilégios de ADM ${isNowAdm ? 'CONCEDIDOS' : 'REVOGADOS'} pela Gestão.`);
-        openUsersModal(); 
-        
-        if(user.toLowerCase() === currentUserGlobal.toLowerCase()) {
-            setupInterfaceUI();
-            renderNavigationStructure();
+    async function changeUserRoleGlobal(username, newRole) {
+        let success = await globalBackendSync(`/api/users/${username}`, 'PUT', { role: newRole });
+        if(success) {
+            let uIndex = globalUsers.findIndex(u => u.username === username);
+            if(uIndex > -1) globalUsers[uIndex].role = newRole;
+            
+            if(username === currentUserGlobal) setupUserInterface(); // Atualiza a si mesmo
+            
+            // Adiciona a versão ao log ou algo se quisesse, mas manteremos silencioso pro design.
         }
     }
 
-    function toggleBanStatus(user) {
-        let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
-        let isBanned = false;
-        if(bannedList.includes(user)) {
-            bannedList = bannedList.filter(u => u !== user);
-        } else {
-            if(confirm(`Tem certeza que deseja aplicar o BLOQUEIO PERMANENTE no usuário ${user.toUpperCase()}? Ele não poderá mais logar.`)) {
-                bannedList.push(user);
-                isBanned = true;
-            } else {
-                return; 
+    async function globalBanAction(username) {
+        let uRecord = globalUsers.find(u => u.username === username);
+        if(!uRecord) return;
+        
+        let isCurrentlyBanned = uRecord.role === 'BANIDO';
+        let targetRole = isCurrentlyBanned ? 'Agente' : 'BANIDO';
+        let actionTxt = isCurrentlyBanned ? 'LIBERAR o acesso de' : 'BLOQUEAR PERMANENTEMENTE o acesso de';
+        
+        if(confirm(`[DIRETIVA DE SEGURANÇA] Deseja ${actionTxt} ${username.toUpperCase()} globalmente?`)) {
+            let success = await globalBackendSync(`/api/users/${username}`, 'PUT', { role: targetRole });
+            if(success) {
+                uRecord.role = targetRole;
+                openUsersModal(); // Recarrega a lista
             }
         }
-        localStorage.setItem('msf_banned_users', JSON.stringify(bannedList));
-        logSystemAction(`[SISTEMA] O operador [${user.toUpperCase()}] foi ${isBanned ? 'BANIDO PERMANENTEMENTE' : 'DESBLOQUEADO'} da rede M.G.I.`);
-        openUsersModal();
     }
 
-    function updateUserRole(user, newRole) {
-        let roles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
-        roles[user] = newRole; localStorage.setItem('msf_account_roles', JSON.stringify(roles));
-        // Garante envio de dados normalizados
-        updateUserRoleBackend(user, newRole);
-        logSystemAction(`O nível do operador [${user.toUpperCase()}] foi alterado para [${newRole.toUpperCase()}].`);
-        
-        if(user.toLowerCase() === currentUserGlobal.toLowerCase()) {
-            setupInterfaceUI(); 
-            renderNavigationStructure();
-        }
-        renderDocs();
-    }
-
-    async function purgeAllLogs() {
-        if(!confirm("AUTORIDADE SUPREMA: Deseja expurgar permanentemente todos os registros de auditoria e logs do sistema?")) return;
-        const logsToDelete = globalDocs.filter(d => d.type === 'sys_log');
-        globalDocs = globalDocs.filter(d => d.type !== 'sys_log');
-        for(let log of logsToDelete) {
-            try { await fetch(`/api/docs/${log.id}`, { method: 'DELETE' }); } catch(e) {}
-        }
-        localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
-        logSystemAction(`[EXPURGO] O Imperador executou o protocolo de expurgo total dos logs.`);
-        renderDocs();
-        alert("EXPURGO CONCLUÍDO COM SUCESSO.");
-    }
-
-    function renderNavigationStructure() {
+    // SISTEMA DE NAVEGAÇÃO E CORES
+    function renderNavigation() {
         const dropdown = document.getElementById('dynamic-categories-dropdown');
         const createSelect = document.getElementById('doc-category');
 
         let dropdownHTML = `
-            <div class="dropdown-item active" id="default-nav-item" onclick="filterDocs('Todos', this)">
-                <i class="fa-solid fa-layer-group"></i> Todos os Arquivos
-            </div>
-            <hr style="border:0; border-top:1px solid var(--border); margin:4px 0;">
+            <div class="dropdown-item active" onclick="filterDocs('Todos', this)">[ TODOS OS REGISTROS ]</div>
+            <div style="height: 1px; background: var(--border); margin: 5px 0;"></div>
         `;
         let selectHTML = '';
 
-        currentCategories.forEach(cat => {
-            dropdownHTML += `
-                <div class="dropdown-item" onclick="filterDocs('${cat}', this)">
-                    <i class="fa-solid fa-folder-open"></i> ${cat}
-                </div>
-            `;
-            // Não permite criar documento direto na pasta de logs ou chat
-            if(cat !== 'Logs do Sistema' && cat !== 'Chat') {
-                selectHTML += `<option value="${cat}">${cat}</option>`;
-            }
+        agencyCategories.forEach(cat => {
+            dropdownHTML += `<div class="dropdown-item" onclick="filterDocs('${cat}', this)">> ${cat}</div>`;
+            selectHTML += `<option value="${cat}">${cat}</option>`;
         });
-
-        if (checkAdminPrivileges()) {
-            dropdownHTML += `
-                <hr style="border:0; border-top:1px solid var(--border); margin:4px 0;">
-                <div class="dropdown-item" onclick="filterDocs('solicitacoes_nivel', this)" style="color: #ff4500; font-weight: bold;">
-                    <i class="fa-solid fa-user-shield"></i> Solicitações de Nível
-                </div>
-            `;
-        }
 
         dropdown.innerHTML = dropdownHTML;
         if(createSelect) createSelect.innerHTML = selectHTML;
@@ -1266,449 +662,95 @@
         if (!e.target.closest('.nav-group-dropdown')) document.querySelectorAll('.nav-group-dropdown').forEach(d => d.classList.remove('active'));
     });
 
-    // SISTEMA DE TROCA DE FAIXAS E VISUALIZER
-    function toggleMusic() {
-        const audio = document.getElementById('terminal-audio'); 
-        const icon = document.getElementById('music-icon'); 
-        const trackText = document.getElementById('track-name-ui');
-        const visualizer = document.getElementById('music-visualizer');
-        
-        if (audio.paused) { 
-            audio.play(); 
-            icon.className = "fa-solid fa-circle-pause"; 
-            icon.style.color = "var(--indigo)"; 
-            trackText.innerText = "TOCANDO: " + musicPlaylist[currentTrackIndex].name;
-            visualizer.classList.remove('paused');
-        } else { 
-            audio.pause(); 
-            icon.className = "fa-solid fa-circle-play"; 
-            icon.style.color = "var(--text)"; 
-            trackText.innerText = "MÚSICA PAUSADA...";
-            visualizer.classList.add('paused');
-        }
-    }
-    
-    function changeTrack(direction) {
-        currentTrackIndex += direction;
-        if (currentTrackIndex >= musicPlaylist.length) currentTrackIndex = 0;
-        if (currentTrackIndex < 0) currentTrackIndex = musicPlaylist.length - 1;
-        
-        const audio = document.getElementById('terminal-audio');
-        const isPaused = audio.paused;
-        audio.src = musicPlaylist[currentTrackIndex].file;
-        
-        if (!isPaused) {
-            audio.play();
-            document.getElementById('track-name-ui').innerText = "TOCANDO: " + musicPlaylist[currentTrackIndex].name;
-        }
-    }
-
-    function changeVolume(val) { document.getElementById('terminal-audio').volume = val; }
-
-    setInterval(() => { document.getElementById('current-time-ui').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
-
-    let globalDocs = [];
-    let currentFilter = 'Todos';
-
-    async function fetchData() {
-        try {
-            const res = await fetch('/api/docs');
-            const data = await res.json();
-            // Verifica se o backend devolveu um formato aceitável
-            if (Array.isArray(data)) {
-                globalDocs = data;
-            } else {
-                console.error("Erro Crítico de Fetch: Servidor retornou um formato inesperado para a rota /api/docs", data);
-                globalDocs = JSON.parse(localStorage.getItem('msf_local_database') || '[]');
-            }
-        } catch(e) {
-            console.error("Aviso: Fallback para LocalStorage ativado (Sem resposta do servidor).", e);
-            globalDocs = JSON.parse(localStorage.getItem('msf_local_database') || '[]');
-        }
-        renderDocs();
-        if(chatRefreshInterval) renderChatMessages(); // Atualiza o chat se estiver aberto
-    }
-
-    async function syncBackendData(doc, method) {
-        try {
-            const url = method === 'POST' ? '/api/docs' : `/api/docs/${doc.id}`;
-            const res = await fetch(url, { method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(doc) });
-            if (!res.ok) console.error(`Falha no Sync de Dados HTTP ${res.status} - Rota: ${url}`);
-        } catch(e) {
-            console.error("Erro na comunicação com o servidor. Fazendo cache local.", e);
-            localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
-        }
-    }
-
-    async function fetchBackendUsers() {
-        try {
-            const res = await fetch('/api/users');
-            if (!res.ok) throw new Error(`HTTP Erro Status: ${res.status} - ${res.statusText}`);
-            
-            const usersFromServer = await res.json();
-            
-            // Garantia de proteção contra retornos de HTML ou null via error 500 do backend
-            if (Array.isArray(usersFromServer)) {
-                let localAccs = JSON.parse(localStorage.getItem('msf_local_accounts') || '{}');
-                let localRoles = JSON.parse(localStorage.getItem('msf_account_roles') || '{}');
-                
-                usersFromServer.forEach(u => {
-                    // Força a inserção padronizada localmente também
-                    localAccs[u.username.toLowerCase()] = u.password;
-                    localRoles[u.username.toLowerCase()] = u.role;
-                });
-                
-                localStorage.setItem('msf_local_accounts', JSON.stringify(localAccs));
-                localStorage.setItem('msf_account_roles', JSON.stringify(localRoles));
-            } else {
-                console.error("Erro de Backend: Servidor não retornou um Array JSON para /api/users", usersFromServer);
-            }
-        } catch(e) {
-            console.error("Aviso: Backend de usuários offline ou inoperante. Carregando instâncias em cache.", e);
-        }
-    }
-
-    async function registerUserBackend(username, password, role) {
-        try {
-            const res = await fetch('/api/users', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                // Força envio em minúsculas
-                body: JSON.stringify({ username: username.toLowerCase(), password, role })
-            });
-            if (!res.ok) console.error(`Erro ao Registrar Usuário Backend: HTTP ${res.status}`);
-        } catch(e) { console.error("Erro de conexão ao salvar usuário no backend.", e); }
-    }
-
-    async function updateUserRoleBackend(username, role) {
-        try {
-            const res = await fetch(`/api/users/${username.toLowerCase()}`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ role })
-            });
-            if (!res.ok) console.error(`Erro na Atualização de Papel Backend: HTTP ${res.status}`);
-        } catch(e) { console.error("Erro de conexão ao atualizar cargo no backend.", e); }
-    }
-
     function getInfoColor(level) {
-        if(level === 'Agente' || level === 'Público') return '#808080';
-        if(level === 'Regente' || level === 'Restrito') return '#ffcc00';
-        if(level === 'Flagelo' || level === 'Confidencial') return '#ff8c00';
-        if(level === 'Arconte' || level === 'Altamente Secreto') return '#ff0000';
-        if(level === 'Magnitude') return '#800080'; return '#808080';
+        if(level === 'Agente') return '#737373';
+        if(level === 'Regente') return '#eab308';
+        if(level === 'Flagelo') return '#f97316';
+        if(level === 'Arconte') return '#ef4444';
+        if(level === 'Magnitude') return '#a855f7'; 
+        return '#737373';
     }
 
     function checkUserDocAccess(docInfoLevel) {
         if (!isLogged) return false;
-        let myRole = JSON.parse(localStorage.getItem('msf_account_roles') || '{}')[currentUserGlobal.toLowerCase()] || 'Agente';
-        if (myRole === 'Magnitude' || checkAdminPrivileges()) return true;
+        if (checkAdminPrivileges()) return true; // Adms veem tudo
+        let userRecord = globalUsers.find(u => u.username === currentUserGlobal);
+        let myRole = userRecord ? userRecord.role : 'Agente';
         return (levelMap[myRole] || 1) >= (levelMap[docInfoLevel] || 1);
     }
 
-    function renderMediaElement(url, isGridCard = false) {
-        if(!url) return '';
-        if(url.startsWith('data:video')) {
-            return `<video src="${url}" ${isGridCard ? 'muted loop onmouseover="this.play()" onmouseout="this.pause()"' : 'controls'} style="width:100%; max-height:380px; object-fit:contain;"></video>`;
-        }
-        if(url.startsWith('data:audio')) {
-            return isGridCard ? `<i class="fa-solid fa-file-audio" style="font-size: 40px; color: var(--border); opacity: 0.3;"></i>` : `<audio src="${url}" controls style="width:100%; max-width: 400px; margin: 15px auto; display:block;"></audio>`;
-        }
-        return `<img src="${url}" style="width:100%; max-height:380px; object-fit:contain;">`;
-    }
-
-    // LOGICA DA BARRA DO COMERCIAL ESTILO YOUTUBE
-    function renderCommercialBanner() {
-        const commercials = globalDocs.filter(d => d.category === 'Comercial');
-        const banner = document.getElementById('mgi-commercial-banner');
-        
-        if (commercials.length === 0) {
-            banner.style.display = 'none';
-            return;
-        }
-
-        const latestComm = commercials[commercials.length - 1];
-        currentCommercialId = latestComm.id;
-
-        document.getElementById('banner-title').innerText = latestComm.title;
-        document.getElementById('banner-desc').innerText = latestComm.content || '';
-        
-        const mediaContainer = document.getElementById('banner-media');
-        let previewImg = latestComm.media && latestComm.media.length > 0 ? latestComm.media[0] : latestComm.imageUrl;
-        
-        if(previewImg) {
-            mediaContainer.innerHTML = renderMediaElement(previewImg, true);
-        } else {
-            mediaContainer.innerHTML = '<i class="fa-solid fa-bullhorn" style="color:var(--text); font-size:24px; opacity: 0.5;"></i>';
-        }
-
-        let isGod = checkAdminPrivileges();
-        document.getElementById('banner-admin-actions').style.display = isGod ? 'block' : 'none';
-
-        banner.style.display = 'flex';
-    }
-
-    async function deleteCommercial() {
-        if(!currentCommercialId) return;
-        if(confirm("COMANDO MAFRA: Remover este anúncio do ar para todos os terminais?")) {
-            globalDocs = globalDocs.filter(doc => doc.id !== currentCommercialId);
-            await syncBackendData({id: currentCommercialId}, 'DELETE');
-            logSystemAction(`Operador expurgou o Comunicado Geral do ar.`);
-            renderDocs(); 
-        }
-    }
-
+    // RENDERIZAÇÃO DE ARQUIVOS MINIMALISTA
     function renderDocs(filterOverride = null) {
         const container = document.getElementById('docs-container');
         container.innerHTML = '';
         
         let query = filterOverride || currentFilter;
-        let filtered = [];
-
-        if(query === 'Todos') {
-            filtered = globalDocs.filter(d => 
-                d.category !== 'Membros da M.G.I' && 
-                d.category !== 'Alvos' && 
-                d.category !== 'Comercial' && 
-                d.type !== 'solicitacao_nivel' &&
-                d.type !== 'chat_msg' &&
-                d.type !== 'sys_log'
-            );
-        } else if (query === 'solicitacoes_nivel') {
-            filtered = globalDocs.filter(d => d.type === 'solicitacao_nivel');
-            if(filtered.length === 0) {
-                container.innerHTML = `<p style="grid-column: 1/-1; padding:20px; text-align: center; font-family:var(--font-mono); font-size:12px; color:gray; border: 1px dashed var(--border);">Nenhuma solicitação de nível pendente no momento.</p>`;
-                return;
-            }
-            let htmlString = '';
-            [...filtered].reverse().forEach(req => {
-                htmlString += `
-                <div class="animated-card" style="border: 2px solid var(--border); padding: 20px; background: var(--card-bg); display: flex; flex-direction: column; gap: 15px;">
-                    <div style="font-family: var(--font-mono); font-size: 13px;">
-                        <strong>OPERADOR:</strong> <span style="text-transform: uppercase; color: var(--indigo); font-weight: bold;">${req.requestedBy}</span><br>
-                        <strong>NÍVEL SOLICITADO:</strong> <span style="color: #008000; font-weight: bold;">${req.requestedRole}</span><br>
-                        <strong style="display:block; margin-top:10px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">JUSTIFICATIVA:</strong>
-                        <p style="margin-top:5px; font-family: 'Times New Roman', serif; font-size: 14px;">"${req.justification || 'Sem justificativa.'}"</p>
-                        <small style="color:gray; margin-top: 10px; display:block;">Enviado em: ${new Date(req.timestamp).toLocaleString('pt-BR')}</small>
-                    </div>
-                    <div style="margin-top: auto; display: flex; gap: 10px;">
-                        <button class="btn" style="flex:1; background: #008000; color: white; border-color: #008000;" onclick="approveLevelRequest('${req.requestedBy}', '${req.requestedRole}', '${req.id}')">
-                            <i class="fa-solid fa-check"></i> Aprovar Acesso
-                        </button>
-                        <button class="btn" style="flex:1; background: #d32f2f; color: white; border-color: #d32f2f;" onclick="rejectLevelRequest('${req.id}')">
-                            <i class="fa-solid fa-xmark"></i> Rejeitar
-                        </button>
-                    </div>
-                </div>`;
-            });
-            container.innerHTML = htmlString;
-            return; 
-        } else {
-            filtered = globalDocs.filter(d => d.category === query && d.type !== 'solicitacao_nivel' && d.type !== 'chat_msg');
-        }
+        let filtered = query === 'Todos' ? globalDocs : globalDocs.filter(d => d.category === query);
 
         if(filtered.length === 0) {
-            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; font-family: var(--font-mono); opacity: 0.6;">[ NENHUM REGISTRO ENCONTRADO NESTA SEÇÃO ]</div>`;
-        } else {
-            let htmlString = '';
-            [...filtered].reverse().forEach(doc => { 
-                const hasAccess = checkUserDocAccess(doc.infoLevel);
-                const infoColor = getInfoColor(doc.infoLevel);
-                const badgeInfoHTML = `<div class="card-badge" style="background: ${infoColor}; border-color: ${infoColor}; color:#fff;">${(doc.infoLevel || 'AGENTE').toUpperCase()}</div>`;
-                
-                const displayTitle = !hasAccess ? `<span class="censored-text">████████████</span>` : doc.title;
-                const displayContent = !hasAccess ? 
-                    `<span style="font-weight: bold; color: #d32f2f;">[ BLOQUEADO ]</span>` : 
-                    (doc.content.substring(0, 100) + (doc.content.length > 100 ? '...' : ''));
-
-                let firstMedia = doc.media && doc.media.length > 0 ? doc.media[0] : doc.imageUrl;
-                let mediaPreview = hasAccess && firstMedia ? renderMediaElement(firstMedia, true) : (firstMedia ? `<img class="censored-img" src="${firstMedia}">` : `<i class="fa-solid fa-file-shield"></i>`);
-
-                if(doc.isUnitType) {
-                    htmlString += `
-                    <div class="unit-card animated-card" onclick='openUnit(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
-                        <div class="unit-card-photo">${mediaPreview}</div>
-                        <div class="unit-card-body">
-                            <div class="unit-card-subtitle">${doc.category}</div>
-                            <div class="unit-card-title">${displayTitle}</div>
-                            <div class="unit-card-stats" style="margin-top:auto; display:flex; justify-content:space-between; align-items:end; width:100%;">
-                                <span class="unit-badge" style="color: ${infoColor}; border-color: ${infoColor};">${doc.infoLevel.toUpperCase()}</span>
-                                <div class="card-author-info" style="font-family:var(--font-mono); font-size:8px; opacity:0.6;"><i class="fa-solid fa-user"></i> ${doc.createdBy || 'Sistema'}<br>${doc.dateFormatted}</div>
-                            </div>
-                        </div>
-                    </div>`;
-                } else {
-                    htmlString += `
-                    <div class="doc-card animated-card" onclick='openDoc(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
-                        ${badgeInfoHTML}
-                        <div class="card-header"><div class="card-category">${doc.category}</div><div class="card-title">${displayTitle}</div></div>
-                        <div class="card-body">${displayContent}</div>
-                        <div class="card-footer">
-                            <span>ID: ${doc.id.substring(0,6)}</span>
-                            <div class="card-author-info"><i class="fa-solid fa-user"></i> ${doc.createdBy || 'Sistema'}<br>${doc.dateFormatted} ${doc.createdTime || ''}</div>
-                        </div>
-                    </div>`;
-                }
-            });
-            container.innerHTML = htmlString;
+            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">[ NENHUM DADO COMPATÍVEL NESTE SETOR ]</div>`;
+            return;
         }
 
-        renderCommercialBanner();
-    }
-
-    function searchDocs(val) {
-        const lowerVal = val.toLowerCase();
-        
-        // --- INÍCIO DOS EASTER EGGS ---
-        if (lowerVal === 'mafra' || lowerVal === 'mafrainf') {
-            document.body.classList.add('glitch-purple-heavy');
-            setTimeout(() => {
-                document.body.classList.remove('glitch-purple-heavy');
-                document.body.classList.add('glitch-purple-subtle');
-            }, 800);
-        } 
-        else if (lowerVal === 'gears') {
-            document.body.classList.add('glitch-white-heavy');
-            const msg = document.getElementById('gears-message');
-            msg.style.display = 'block';
-            setTimeout(() => msg.style.opacity = '1', 100);
+        let htmlString = '';
+        [...filtered].reverse().forEach(doc => { 
+            const hasAccess = checkUserDocAccess(doc.infoLevel);
+            const infoColor = getInfoColor(doc.infoLevel);
+            const badgeInfoHTML = `<div class="lvl-badge" style="color: ${infoColor}; border-color: ${infoColor}; position:absolute; top: 15px; right: 15px;">${(doc.infoLevel || 'AGENTE').toUpperCase()}</div>`;
             
-            setTimeout(() => {
-                document.body.classList.remove('glitch-white-heavy');
-                document.body.classList.add('glitch-white-subtle');
-                msg.style.opacity = '0';
-                setTimeout(() => msg.style.display = 'none', 1500);
-            }, 2000);
-        }
-        else {
-            if(val.trim() === '') {
-                document.body.classList.remove('glitch-purple-subtle', 'glitch-purple-heavy', 'glitch-white-subtle', 'glitch-white-heavy');
-            }
-        }
-        // --- FIM DOS EASTER EGGS ---
+            const displayTitle = !hasAccess ? `<span style="background:var(--text); color:var(--text);">[DADOS REDIGIDOS]</span>` : doc.title;
+            const displayContent = !hasAccess ? 
+                `<span style="color: var(--danger);">[ ACESSO RESTRITO A ESTA CREDENCIAL ]</span>` : 
+                (doc.content.substring(0, 150) + (doc.content.length > 150 ? '...' : ''));
 
-        const filtered = globalDocs.filter(d => d.title.toLowerCase().includes(lowerVal) && d.type !== 'solicitacao_nivel' && d.category !== 'Comercial' && d.type !== 'chat_msg');
-        currentFilter = 'Busca';
-        document.getElementById('view-title').innerText = 'Resultados da Busca';
-        let globalDocsTemp = globalDocs; 
-        globalDocs = filtered; renderDocs('Busca'); globalDocs = globalDocsTemp;
+            htmlString += `
+            <div class="doc-card" onclick='openDoc(${JSON.stringify(doc).replace(/'/g, "&#39;")})'>
+                ${badgeInfoHTML}
+                <div class="card-header">
+                    <div class="card-category">${doc.category}</div>
+                    <div class="card-title" style="width: 80%;">${displayTitle}</div>
+                </div>
+                <div class="card-body">${displayContent}</div>
+                <div class="card-footer">
+                    <span>REF: ${doc.id.substring(0,6)}</span>
+                    <div style="text-align: right;">OP: ${doc.createdBy || 'SIS'}<br>${doc.dateFormatted}</div>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = htmlString;
     }
 
     function filterDocs(cat, el) {
         currentFilter = cat;
-        document.getElementById('view-title').innerText = cat === 'Todos' ? 'Todos os Arquivos' : (cat === 'solicitacoes_nivel' ? 'Solicitações Pendentes' : cat);
+        document.getElementById('view-title').innerText = cat === 'Todos' ? 'Todos os Registros' : cat;
         document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
         if(el) el.classList.add('active');
         renderDocs();
     }
 
-    function startLockoutScreenTimer(seconds) {
-        localStorage.setItem('msf_lockout', Date.now() + (seconds * 1000));
-        const lockScreen = document.getElementById('lockout-screen');
-        const countdownEl = document.getElementById('lockout-countdown');
-        lockScreen.style.display = 'flex'; countdownEl.innerText = seconds + 's';
+    // MANUSEIO DE MÚLTIPLAS MÍDIAS (NOVO SISTEMA)
+    function addMediaInput(prefix, mediaObj = null) {
+        const container = document.getElementById(`media-inputs-container-${prefix}`);
+        const div = document.createElement('div');
+        div.className = 'form-group media-input-group';
         
-        startSoftAlarm(); 
-        
-        let counter = seconds;
-        let timer = setInterval(() => {
-            counter--; countdownEl.innerText = counter + 's';
-            if(counter <= 0) {
-                clearInterval(timer); stopSoftAlarm();
-                lockScreen.style.display = 'none';
-                localStorage.removeItem('msf_lockout');
-            }
-        }, 1000);
-    }
+        let isExisting = mediaObj && mediaObj.url;
+        let fileInputHTML = isExisting ? 
+            `<div style="font-family:var(--font-mono); font-size:10px; color:var(--indigo); margin-bottom:5px;">[ MÍDIA JÁ ANEXADA ] Para trocar, envie outro arquivo.</div>
+             <input type="file" class="form-control media-file-input" accept="image/*,video/*,audio/*">
+             <input type="hidden" class="media-existing-url" value="${mediaObj.url}">` : 
+            `<input type="file" class="form-control media-file-input" accept="image/*,video/*,audio/*">`;
 
-    function toggleAdminReaderActions() {
-        let isAdmin = checkAdminPrivileges();
-        document.getElementById('admin-doc-actions').style.display = isAdmin ? 'flex' : 'none';
-        document.getElementById('admin-unit-actions').style.display = isAdmin ? 'flex' : 'none';
-    }
+        let descVal = mediaObj && mediaObj.desc ? mediaObj.desc : '';
 
-    function openDoc(doc) {
-        if (!checkUserDocAccess(doc.infoLevel)) { 
-            alert("ACESSO NEGADO: Seu Nível de Informação é insuficiente para visualizar este registro.");
-            return; 
-        }
-        openDocBypass(doc);
-    }
-
-    function openDocBypass(doc) {
-        currentOpenDocId = doc.id;
-        currentOpenDocObj = doc;
-        document.getElementById('read-title').innerText = doc.title;
-        document.getElementById('read-date').innerText = doc.dateFormatted || '00/00/0000';
-        document.getElementById('read-id').innerText = doc.id ? doc.id.substring(0,12).toUpperCase() : '0000';
-        document.getElementById('read-text').innerText = doc.content;
-        
-        document.getElementById('read-author').innerText = (doc.createdBy || 'Sistema').toUpperCase();
-        document.getElementById('read-time-exact').innerText = doc.createdTime || '';
-
-        const photoContainer = document.getElementById('read-photo-container');
-        let mediaFiles = doc.media || (doc.imageUrl ? [doc.imageUrl] : []);
-        
-        if(mediaFiles.length > 0) {
-            let html = '<div class="media-gallery-grid">';
-            mediaFiles.forEach(m => { html += `<div class="attached-photo-frame">${renderMediaElement(m, false)}</div>`; });
-            html += '</div>';
-            photoContainer.innerHTML = html;
-        } else { photoContainer.innerHTML = ''; }
-
-        const infoColor = getInfoColor(doc.infoLevel);
-        const infoStamp = document.getElementById('info-lvl-stamp');
-        infoStamp.innerText = "NÍVEL: " + (doc.infoLevel || 'AGENTE').toUpperCase();
-        infoStamp.style.setProperty('--info-color', infoColor);
-
-        toggleAdminReaderActions();
-        openModal('read-modal');
-    }
-
-    function openUnit(doc) {
-        if (!checkUserDocAccess(doc.infoLevel)) { 
-            alert("ACESSO NEGADO: Nível de acesso rejeitado para leitura desta Unidade.");
-            return; 
-        }
-        openUnitBypass(doc);
-    }
-
-    function openUnitBypass(doc) {
-        currentOpenDocId = doc.id;
-        currentOpenDocObj = doc;
-        
-        document.getElementById('r-unit-name').innerText = doc.title;
-        document.getElementById('r-unit-id').innerText = doc.id ? doc.id.substring(0,12).toUpperCase() : '0000';
-        document.getElementById('r-unit-date').innerText = doc.dateFormatted || '00/00/0000';
-        document.getElementById('r-unit-cat').innerText = doc.category.toUpperCase();
-
-        document.getElementById('r-unit-author').innerText = (doc.createdBy || 'Sistema').toUpperCase();
-        document.getElementById('r-unit-time-exact').innerText = doc.createdTime || '';
-        
-        const dColor = doc.dangerLevel === 'Neutro' ? '#888' : '#d32f2f';
-        const dStamp = document.getElementById('r-unit-danger');
-        dStamp.innerText = "RISCO: " + doc.dangerLevel.toUpperCase();
-        dStamp.style.borderColor = dColor; dStamp.style.color = dColor;
-        
-        document.getElementById('r-unit-filial').innerText = doc.filial || 'Desconhecida';
-        document.getElementById('r-unit-info').innerText = doc.infoLevel || 'Não Classificado';
-        document.getElementById('r-unit-desc').innerText = doc.content || '';
-        document.getElementById('r-unit-obs').innerText = doc.obs || 'Nenhuma observação documentada.';
-
-        const photoContainer = document.getElementById('r-unit-photo-container');
-        let mediaFiles = doc.media || (doc.imageUrl ? [doc.imageUrl] : []);
-        
-        if(mediaFiles.length > 0) {
-            let html = '<div class="media-gallery-grid" style="grid-template-columns: 1fr;">';
-            mediaFiles.forEach(m => { html += `<div class="attached-photo-frame" style="width: 100%;">${renderMediaElement(m, false)}</div>`; });
-            html += '</div>';
-            photoContainer.innerHTML = html;
-        } else {
-            photoContainer.innerHTML = `<div id="r-unit-no-img" style="padding: 100px 20px; text-align: center; color: var(--text); opacity: 0.3; font-family: var(--font-mono); font-size: 12px;"><i class="fa-solid fa-user-secret" style="font-size: 40px; margin-bottom:10px;"></i><br>[ SEM IMAGEM ]</div>`;
-        }
-
-        toggleAdminReaderActions();
-        openModal('read-unit-modal');
+        div.innerHTML = `
+            <button type="button" class="remove-media-btn" onclick="this.parentElement.remove()">X REMOVER</button>
+            <label>Arquivo de Mídia</label>
+            ${fileInputHTML}
+            <label style="margin-top:10px;">Descrição Tática da Mídia</label>
+            <input type="text" class="form-control media-desc-input" placeholder="Descreva esta evidência (local, data, contexto)..." value="${descVal}">
+        `;
+        container.appendChild(div);
     }
 
     function convertFileToBase64(file) {
@@ -1718,295 +760,227 @@
         });
     }
 
-    function openModalDoc() { document.getElementById('doc-edit-id').value=''; document.getElementById('doc-title').value=''; document.getElementById('doc-content').value=''; document.getElementById('doc-modal-title').innerText='GERAR NOVO REGISTRO OFICIAL'; openModal('create-modal'); }
-    function openModalUnit() { document.getElementById('unit-edit-id').value=''; document.getElementById('unit-name').value=''; document.getElementById('unit-desc').value=''; document.getElementById('unit-modal-title').innerHTML='<i class="fa-solid fa-id-badge"></i> GERAR NOVA FICHA DE UNIDADE'; openModal('create-unit-modal'); }
-    function openModalCommercial() { document.getElementById('comm-edit-id').value=''; document.getElementById('comm-title').value=''; document.getElementById('comm-content').value=''; openModal('create-commercial-modal'); }
+    // FLUXO DE CRIAÇÃO/EDIÇÃO DO DOCUMENTO (PERSISTÊNCIA GLOBAL)
+    function openModalDoc() { 
+        document.getElementById('doc-edit-id').value=''; 
+        document.getElementById('doc-title').value=''; 
+        document.getElementById('doc-content').value=''; 
+        document.getElementById('doc-obs').value='';
+        document.getElementById('media-inputs-container-doc').innerHTML = ''; // Limpa as mídias
+        document.getElementById('doc-modal-title').innerText='GERAR RELATÓRIO DE INTELIGÊNCIA'; 
+        addMediaInput('doc'); // Adiciona um campo de mídia vazio por padrão
+        openModal('create-modal'); 
+    }
+
+    async function saveDoc() {
+        const title = document.getElementById('doc-title').value;
+        const editId = document.getElementById('doc-edit-id').value;
+        
+        if(!title) return alert("[ERRO] Identificação do relatório é obrigatória.");
+
+        const submitBtn = document.querySelector('#create-modal .btn-primary');
+        let oldText = submitBtn.innerText;
+        submitBtn.innerText = "PROCESSANDO E CRIPTOGRAFANDO...";
+        submitBtn.disabled = true;
+
+        // Processa Múltiplas Mídias
+        let finalMediaArray = [];
+        let mediaGroups = document.querySelectorAll('#media-inputs-container-doc .media-input-group');
+        
+        for (let group of mediaGroups) {
+            let fileInput = group.querySelector('.media-file-input');
+            let descInput = group.querySelector('.media-desc-input');
+            let existingUrlInput = group.querySelector('.media-existing-url');
+            
+            let finalUrl = null;
+            let finalDesc = descInput.value.trim();
+
+            if (fileInput.files && fileInput.files.length > 0) {
+                try {
+                    finalUrl = await convertFileToBase64(fileInput.files[0]);
+                } catch(e) { alert("Falha na leitura de uma das mídias. Ignorando."); }
+            } else if (existingUrlInput && existingUrlInput.value) {
+                finalUrl = existingUrlInput.value;
+            }
+
+            if (finalUrl) {
+                finalMediaArray.push({ url: finalUrl, desc: finalDesc });
+            }
+        }
+
+        const newDoc = {
+            id: editId || 'DOC-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+            title: title,
+            category: document.getElementById('doc-category').value || 'Geral',
+            infoLevel: document.getElementById('doc-info').value || 'Agente',
+            content: document.getElementById('doc-content').value || '',
+            obs: document.getElementById('doc-obs').value || '',
+            mediaObjects: finalMediaArray, // Nova estrutura de mídia
+            createdBy: currentUserGlobal,
+            createdTime: new Date().toLocaleTimeString('pt-BR'),
+            dateFormatted: new Date().toLocaleDateString('pt-BR'),
+            systemVersion: 'v3.1.0-SECURE' // Tag exigida
+        };
+
+        // Envia para o servidor globalmente
+        let method = editId ? 'PUT' : 'POST';
+        let route = editId ? `/api/docs/${newDoc.id}` : '/api/docs';
+        
+        let success = await globalBackendSync(route, method, newDoc);
+        
+        submitBtn.innerText = oldText;
+        submitBtn.disabled = false;
+
+        if (success) {
+            if(editId) {
+                globalDocs = globalDocs.map(d => d.id === editId ? newDoc : d);
+            } else {
+                globalDocs.push(newDoc);
+            }
+            closeModals(); 
+            renderDocs();
+        }
+    }
+
+    // VISUALIZADOR DE DOCUMENTO GERAL
+    function openDoc(doc) {
+        if (!checkUserDocAccess(doc.infoLevel)) { 
+            alert("[ACESSO REJEITADO] Suas credenciais atuais não autorizam a leitura deste relatório.");
+            return; 
+        }
+
+        currentOpenDocId = doc.id;
+        currentOpenDocObj = doc;
+        
+        document.getElementById('read-title').innerText = doc.title;
+        document.getElementById('read-date').innerText = doc.dateFormatted || '00/00/0000';
+        document.getElementById('read-id').innerText = doc.id ? doc.id.substring(0,12).toUpperCase() : '0000';
+        document.getElementById('read-text').innerText = doc.content || '[ VAZIO ]';
+        
+        // Exibição da OBS
+        const obsContainer = document.getElementById('read-obs-container');
+        if (doc.obs && doc.obs.trim() !== '') {
+            obsContainer.style.display = 'block';
+            document.getElementById('read-obs').innerText = doc.obs;
+        } else {
+            obsContainer.style.display = 'none';
+        }
+        
+        document.getElementById('read-author').innerText = (doc.createdBy || 'Sistema').toUpperCase();
+        document.getElementById('read-time-exact').innerText = doc.createdTime || '';
+
+        // Renderização Nova de Mídia + Descrição
+        const photoContainer = document.getElementById('read-photo-container');
+        photoContainer.innerHTML = '';
+        
+        let mediaToRender = [];
+        // Compatibilidade com documentos antigos (media como array de strings ou imageUrl)
+        if (doc.mediaObjects && doc.mediaObjects.length > 0) {
+            mediaToRender = doc.mediaObjects;
+        } else if (doc.media && doc.media.length > 0) {
+            doc.media.forEach(m => mediaToRender.push({url: m, desc: ''}));
+        } else if (doc.imageUrl) {
+            mediaToRender.push({url: doc.imageUrl, desc: ''});
+        }
+
+        if(mediaToRender.length > 0) {
+            mediaToRender.forEach(mediaItem => {
+                let div = document.createElement('div');
+                div.className = 'media-render-container';
+                
+                let mediaHtml = '';
+                if(mediaItem.url.startsWith('data:video')) {
+                    mediaHtml = `<video src="${mediaItem.url}" controls></video>`;
+                } else if(mediaItem.url.startsWith('data:audio')) {
+                    mediaHtml = `<audio src="${mediaItem.url}" controls style="width:100%;"></audio>`;
+                } else {
+                    mediaHtml = `<img src="${mediaItem.url}">`;
+                }
+
+                div.innerHTML = `
+                    ${mediaHtml}
+                    ${mediaItem.desc ? `<div class="media-render-desc">> OBS TÁTICA: ${mediaItem.desc}</div>` : ''}
+                `;
+                photoContainer.appendChild(div);
+            });
+        }
+
+        const infoColor = getInfoColor(doc.infoLevel);
+        const infoStamp = document.getElementById('info-lvl-stamp');
+        infoStamp.innerText = "CLASSIFICAÇÃO: " + (doc.infoLevel || 'AGENTE').toUpperCase();
+        infoStamp.style.color = infoColor;
+        infoStamp.style.borderColor = infoColor;
+
+        // Ações de ADM
+        let isAdmin = checkAdminPrivileges();
+        document.getElementById('admin-doc-actions').style.display = isAdmin ? 'flex' : 'none';
+
+        openModal('read-modal');
+    }
 
     function editCurrentDoc() {
         if(!currentOpenDocObj) return;
         let d = currentOpenDocObj;
         closeModals();
 
-        if (d.isUnitType) {
-            document.getElementById('unit-edit-id').value = d.id;
-            document.getElementById('unit-name').value = d.title;
-            document.getElementById('unit-filial').value = d.filial;
-            document.getElementById('unit-category').value = d.category;
-            document.getElementById('unit-info').value = d.infoLevel;
-            document.getElementById('unit-danger').value = d.dangerLevel;
-            document.getElementById('unit-desc').value = d.content;
-            document.getElementById('unit-obs').value = d.obs;
-            document.getElementById('unit-modal-title').innerHTML = '<i class="fa-solid fa-pen"></i> EDITAR FICHA DE UNIDADE';
-            openModal('create-unit-modal');
-        } else {
-            document.getElementById('doc-edit-id').value = d.id;
-            document.getElementById('doc-title').value = d.title;
-            document.getElementById('doc-category').value = d.category;
-            document.getElementById('doc-info').value = d.infoLevel;
-            document.getElementById('doc-content').value = d.content;
-            document.getElementById('doc-modal-title').innerText = 'EDITAR REGISTRO OFICIAL';
-            openModal('create-modal');
-        }
-    }
-
-    async function processFormSave(type) {
-        let prefix = type === 'doc' ? 'doc' : (type === 'unit' ? 'unit' : 'comm');
-        const title = document.getElementById(`${prefix}-title`)?.value || document.getElementById(`${prefix}-name`)?.value;
-        const editId = document.getElementById(`${prefix}-edit-id`).value;
+        document.getElementById('doc-edit-id').value = d.id;
+        document.getElementById('doc-title').value = d.title;
+        document.getElementById('doc-category').value = d.category;
+        document.getElementById('doc-info').value = d.infoLevel;
+        document.getElementById('doc-content').value = d.content;
+        document.getElementById('doc-obs').value = d.obs || '';
         
-        if(!title) return alert("Erro: O título/nome é obrigatório.");
-
-        let mediaArray = currentOpenDocObj && editId && currentOpenDocObj.media ? currentOpenDocObj.media : [];
-        if (currentOpenDocObj && editId && currentOpenDocObj.imageUrl && (!currentOpenDocObj.media || currentOpenDocObj.media.length === 0)) {
-            mediaArray = [currentOpenDocObj.imageUrl]; 
-        }
-
-        const fileInput = document.getElementById(`${prefix}-image`);
-        if (fileInput && fileInput.files.length > 0) {
-            try {
-                let newMediaFiles = [];
-                for(let i=0; i < fileInput.files.length; i++) {
-                    let b64 = await convertFileToBase64(fileInput.files[i]);
-                    newMediaFiles.push(b64);
-                }
-                mediaArray = newMediaFiles;
-            } catch(e) { return alert("Erro na leitura das mídias."); }
-        }
-
-        const newDoc = {
-            id: editId || Math.random().toString(36).substr(2, 9).toUpperCase(),
-            isUnitType: type === 'unit',
-            title: title,
-            category: type === 'comm' ? 'Comercial' : (document.getElementById(`${prefix}-category`)?.value || 'Geral'),
-            infoLevel: type === 'comm' ? 'Público' : (document.getElementById(`${prefix}-info`)?.value || 'Público'),
-            dangerLevel: document.getElementById(`${prefix}-danger`)?.value,
-            filial: document.getElementById(`${prefix}-filial`)?.value,
-            content: document.getElementById(`${prefix}-content`)?.value || document.getElementById(`${prefix}-desc`)?.value || '',
-            obs: document.getElementById(`${prefix}-obs`)?.value,
-            imageUrl: mediaArray.length > 0 ? mediaArray[0] : '', 
-            media: mediaArray,
-            createdBy: currentUserGlobal || 'Sistema',
-            createdTime: new Date().toLocaleTimeString('pt-BR'),
-            dateFormatted: new Date().toLocaleDateString('pt-BR')
-        };
-
-        if(editId) {
-            globalDocs = globalDocs.map(d => d.id === editId ? newDoc : d);
-            await syncBackendData(newDoc, 'PUT');
-            logSystemAction(`Operador alterou o registro: [${title}]`);
+        document.getElementById('media-inputs-container-doc').innerHTML = '';
+        
+        // Carrega as mídias existentes pro formulário
+        let medias = d.mediaObjects || [];
+        if (medias.length === 0 && d.imageUrl) medias = [{url: d.imageUrl, desc: ''}];
+        
+        if (medias.length > 0) {
+            medias.forEach(m => addMediaInput('doc', m));
         } else {
-            globalDocs.push(newDoc);
-            await syncBackendData(newDoc, 'POST');
-            logSystemAction(`Operador inseriu um novo registro: [${title}]`);
+            addMediaInput('doc');
         }
-        closeModals(); renderDocs();
-    }
 
-    function saveDoc() { processFormSave('doc'); }
-    function saveUnit() { processFormSave('unit'); }
-    function saveCommercial() { processFormSave('comm'); }
+        document.getElementById('doc-modal-title').innerText = 'RETIFICAR RELATÓRIO TÁTICO';
+        openModal('create-modal');
+    }
 
     async function deleteDocTrigger() {
-        if(confirm("ALERTA CRÍTICO: Você está prestes a expurgar este registro permanentemente. Prosseguir?")) {
-            let docTitle = currentOpenDocObj.title;
-            globalDocs = globalDocs.filter(doc => doc.id !== currentOpenDocId);
-            await syncBackendData({id: currentOpenDocId}, 'DELETE');
-            logSystemAction(`Operador expurgou definitivamente o registro: [${docTitle}]`);
-            closeModals(); renderDocs();
+        if(confirm("[DIRETIVA DE EXPURGO] O arquivo será deletado permanentemente da base central. Confirmar?")) {
+            let success = await globalBackendSync(`/api/docs/${currentOpenDocId}`, 'DELETE', {});
+            if(success) {
+                globalDocs = globalDocs.filter(doc => doc.id !== currentOpenDocId);
+                closeModals(); renderDocs();
+            }
         }
     }
 
+    // CONTROLES DE MODAL
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModals() { 
-        document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
-        stopChatRefresh();
-    }
+    function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
 
-    // --- SISTEMA DE CHAT ---
-    let chatRefreshInterval;
-    function openChatModal() {
-        openModal('chat-modal');
-        renderChatMessages();
-        chatRefreshInterval = setInterval(fetchData, 3000); 
-    }
-    
-    function closeChatModal() {
-        closeModals();
-    }
-
-    function stopChatRefresh() {
-        if(chatRefreshInterval) clearInterval(chatRefreshInterval);
-    }
-
-    function renderChatMessages() {
-        const container = document.getElementById('chat-messages-container');
-        let chats = globalDocs.filter(d => d.type === 'chat_msg').sort((a,b) => a.timestamp - b.timestamp);
-        
-        let html = '';
-        chats.forEach(msg => {
-            let isMe = msg.createdBy === currentUserGlobal;
-            html += `
-            <div class="chat-message-box ${isMe ? 'chat-msg-self' : ''}">
-                <div class="chat-header">
-                    <span><i class="fa-solid fa-user"></i> ${msg.createdBy.toUpperCase()}</span>
-                    <span>${msg.createdTime}</span>
-                </div>
-                <div class="chat-text">${msg.content}</div>
-            </div>`;
-        });
-        
-        if(chats.length === 0) html = `<div style="text-align:center; opacity:0.5; font-family:var(--font-mono); font-size:11px; margin-top: auto; margin-bottom:auto;">Nenhuma comunicação registrada.</div>`;
-        
-        // Auto scroll
-        let isScrolledToBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 1;
-        container.innerHTML = html;
-        if(isScrolledToBottom) container.scrollTop = container.scrollHeight;
-    }
-
-    async function sendChatMessage() {
-        const input = document.getElementById('chat-input-text');
-        const txt = input.value.trim();
-        if(!txt) return;
-
-        const newMsg = {
-            id: 'MSG-' + Date.now() + Math.random().toString(36).substr(2, 5),
-            type: 'chat_msg',
-            category: 'Chat',
-            content: txt,
-            createdBy: currentUserGlobal,
-            createdTime: new Date().toLocaleTimeString('pt-BR'),
-            dateFormatted: new Date().toLocaleDateString('pt-BR'),
-            timestamp: Date.now()
-        };
-
-        input.value = '';
-        globalDocs.push(newMsg);
-        renderChatMessages();
-        await syncBackendData(newMsg, 'POST');
-    }
-
-    // --- SISTEMA DE SOLICITAÇÃO ---
-    async function criarSolicitacaoNivel() {
-        const nivelDesejado = prompt("Digite o nível que você precisa (Agente, Regente, Flagelo, Arconte, Magnitude):");
-        if(!nivelDesejado) return;
-        
-        const justificativa = prompt("Insira uma breve justificativa para o seu Administrador:");
-        
-        const novaSolicitacao = {
-            id: 'REQ-' + Date.now(),
-            type: 'solicitacao_nivel',
-            category: 'solicitacoes_nivel',
-            requestedBy: currentUserGlobal,
-            requestedRole: nivelDesejado.trim(),
-            justification: justificativa,
-            timestamp: Date.now()
-        };
-        
-        globalDocs.push(novaSolicitacao);
-        await syncBackendData(novaSolicitacao, 'POST');
-        alert("Solicitação enviada com sucesso! Aguarde a aprovação do operador MAFRAINF.");
-        renderDocs();
-    }
-
-    async function approveLevelRequest(username, newRole, docId) {
-        if(!confirm(`Confirmar a promoção do operador ${username.toUpperCase()} para o nível de ${newRole}?`)) return;
-        
-        try {
-            const response = await fetch('/api/admin/approve-level', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: username.toLowerCase(), newRole, docId })
-            });
-            
-            if(response.ok) {
-                alert(`Operador ${username.toUpperCase()} atualizado com sucesso!`);
-                globalDocs = globalDocs.filter(d => d.id !== docId);
-                await fetchBackendUsers();
-                logSystemAction(`Operador autorizou nível [${newRole}] para o usuário [${username}]`);
-                renderDocs('solicitacoes_nivel');
-            } else {
-                console.error(`Erro Crítico na requisição (/api/admin/approve-level): Status ${response.status} - ${response.statusText}`);
-                alert(`Erro de conexão com o servidor de validação central (Código: ${response.status}). Operação abortada.`);
-            }
-        } catch(err) { 
-            console.error("Falha fatal de rede ao tentar processar aprovação:", err); 
-            alert("A comunicação com a infraestrutura principal falhou.");
-        }
-    }
-
-    async function rejectLevelRequest(docId) {
-        if(!confirm("Deseja recusar e apagar esta solicitação?")) return;
-        globalDocs = globalDocs.filter(d => d.id !== docId);
-        await syncBackendData({id: docId}, 'DELETE');
-        renderDocs('solicitacoes_nivel');
-    }
-
-    async function forceSyncAll() {
-        if(!confirm("ALERTA IMPERIAL: Esta ação irá reescrever completamente o banco de dados do servidor com os dados carregados na sua tela atual. Prosseguir?")) return;
-        
-        const btn = document.getElementById('btn-force-sync');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sincronizando...';
-        
-        try {
-            const response = await fetch('/api/docs/sync-all', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(globalDocs)
-            });
-            
-            if (response.ok) {
-                localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
-                logSystemAction(`Executada sincronização forçada e backup global de todos os sistemas.`);
-                alert("SISTEMA CENTRALIZADO: Backup global e sincronização aplicados com sucesso.");
-            } else {
-                alert("FALHA DE COMUNICAÇÃO: O servidor rejeitou a sobreposição de dados.");
-            }
-        } catch(e) {
-            localStorage.setItem('msf_local_database', JSON.stringify(globalDocs));
-            alert("SERVIDOR OFFLINE: Os dados foram forçados no cache local de contingência.");
-            console.error(e);
-        } finally {
-            btn.innerHTML = originalText;
-        }
-    }
-
-   window.onload = function() {
-        fetchData();
-        fetchBackendUsers(); 
-
-        let lockout = localStorage.getItem('msf_lockout');
-        if (lockout && Date.now() < parseInt(lockout)) {
-            let remaining = Math.ceil((parseInt(lockout) - Date.now()) / 1000);
-            startLockoutScreenTimer(remaining);
-            return; 
-        }
-
-        let sessionData = JSON.parse(localStorage.getItem('msf_session') || 'null');
-        if (sessionData && sessionData.user) {
-            
-            let bannedList = JSON.parse(localStorage.getItem('msf_banned_users') || '[]');
-            if(bannedList.includes(sessionData.user.toLowerCase())) {
+    // INITIAL LOAD
+    window.onload = function() {
+        let token = localStorage.getItem('msf_session_token');
+        if (token) {
+            currentUserGlobal = token;
+            // Valida silenciosamente
+            fetch('/api/users').then(res => res.json()).then(users => {
+                let u = users.find(x => x.username === token);
+                if(u && u.role === 'BANIDO') {
+                    showBannedScreen();
+                } else {
+                    isLogged = true;
+                    globalUsers = users;
+                    document.getElementById('entry-screen').style.display = 'none';
+                    initSystemEnvironment();
+                }
+            }).catch(() => {
+                // Se der erro de rede, ao menos abre vazio
                 document.getElementById('entry-screen').style.display = 'none';
-                document.getElementById('banned-screen').style.display = 'flex';
-                return;
-            }
-
-            if (Date.now() - sessionData.lastActivity < INACTIVITY_LIMIT) {
-                isLogged = true;
-                currentUserGlobal = sessionData.user;
-                sessionData.lastActivity = Date.now();
-                localStorage.setItem('msf_session', JSON.stringify(sessionData));
-                
-                document.getElementById('entry-screen').style.display = 'none';
-                startInactivityMonitor();
-                
-                setupInterfaceUI();
-                renderNavigationStructure();
-                fetchData();
-            } else {
-                localStorage.removeItem('msf_session'); 
-            }
+                initSystemEnvironment();
+            });
         }
     };
 </script>
