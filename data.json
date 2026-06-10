@@ -714,5 +714,18 @@
     "createdTime": "22:15:41",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781054141085
+  },
+  {
+    "id": "LOG-6IADRYMXN",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [Moon_Rarock (Líder)]",
+    "createdBy": "MafraINF",
+    "createdTime": "22:15:58",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781054158502
   }
 ]
