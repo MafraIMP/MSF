@@ -828,5 +828,18 @@
     "createdTime": "22:30:23",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781055023470
+  },
+  {
+    "id": "LOG-MEO2S4B5A",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [HAWK (Membro)]",
+    "createdBy": "MafraINF",
+    "createdTime": "22:30:36",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781055036481
   }
 ]
