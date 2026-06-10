@@ -815,5 +815,18 @@
     "createdBy": "MafraINF",
     "createdTime": "22:30:19",
     "dateFormatted": "09/06/2026"
+  },
+  {
+    "id": "LOG-IE2NO31AJ",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador inseriu um novo registro: [HAWK (Membro)]",
+    "createdBy": "MafraINF",
+    "createdTime": "22:30:23",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781055023470
   }
 ]
