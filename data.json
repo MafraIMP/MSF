@@ -1,6 +1,6 @@
 [
   {
-    "id": "LOG-XIQ038BVN",
+    "id": "LOG-ECXD4PXC7",
     "type": "sys_log",
     "isUnitType": false,
     "title": "REGISTRO DE AUDITORIA",
@@ -8,8 +8,8 @@
     "infoLevel": "Arconte",
     "content": "Operador alterou o registro: [[ 🌑 ] Moon_Rarock (Líder)]",
     "createdBy": "MafraINF",
-    "createdTime": "22:43:44",
+    "createdTime": "22:43:45",
     "dateFormatted": "09/06/2026",
-    "timestamp": 1781055824339
+    "timestamp": 1781055825411
   }
 ]
