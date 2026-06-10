@@ -621,5 +621,18 @@
     "createdTime": "19:08:16",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781042896649
+  },
+  {
+    "id": "LOG-W94OHMVC3",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador [MAFRAINF] realizou login na rede.",
+    "createdBy": "MafraINF",
+    "createdTime": "22:02:30",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781053350999
   }
 ]
