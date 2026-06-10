@@ -828,5 +828,18 @@
     "createdTime": "22:31:13",
     "dateFormatted": "09/06/2026",
     "timestamp": 1781055073871
+  },
+  {
+    "id": "LOG-8ZSU7SM6A",
+    "type": "sys_log",
+    "isUnitType": false,
+    "title": "REGISTRO DE AUDITORIA",
+    "category": "Logs do Sistema",
+    "infoLevel": "Arconte",
+    "content": "Operador alterou o registro: [[ 🌑 ] Moon_Rarock (Líder)]",
+    "createdBy": "MafraINF",
+    "createdTime": "22:34:24",
+    "dateFormatted": "09/06/2026",
+    "timestamp": 1781055264327
   }
 ]
