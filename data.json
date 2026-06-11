@@ -528,7 +528,7 @@
     "title": "(FAB) Makarov",
     "category": "Alvos",
     "infoLevel": "Flagelo",
-    "dangerLevel": "Médio",
+    "dangerLevel": "Alto",
     "filial": "FAB (Lider)",
     "content": "",
     "obs": "Lider da FAB\nTiktok: fabontop3",
@@ -539,7 +539,7 @@
       }
     ],
     "createdBy": "mafrainf",
-    "createdTime": "00:11:44",
+    "createdTime": "00:12:01",
     "dateFormatted": "11/06/2026"
   },
   {
@@ -589,7 +589,7 @@
     "title": "(Moon) Atlaz (Líder)",
     "category": "Alvos",
     "infoLevel": "Arconte",
-    "dangerLevel": "Baixo",
+    "dangerLevel": "Neutro",
     "filial": "The Blood Moons",
     "content": "Lider da Blood Moons",
     "obs": "",
@@ -600,8 +600,8 @@
       }
     ],
     "createdBy": "mafrainf",
-    "createdTime": "00:11:31",
-    "dateFormatted": "11/06/2026"
+    "createdTime": "22:36:51",
+    "dateFormatted": "10/06/2026"
   },
   {
     "id": "DOC-07VKPJ5SN",
