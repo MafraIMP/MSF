@@ -583,7 +583,7 @@
     "isUnitType": true,
     "title": "(Moon) Atlaz (Líder)",
     "category": "Alvos",
-    "infoLevel": "Flagelo",
+    "infoLevel": "Arconte",
     "dangerLevel": "Neutro",
     "filial": "The Blood Moons",
     "content": "Lider da Blood Moons",
@@ -595,7 +595,7 @@
       }
     ],
     "createdBy": "mafrainf",
-    "createdTime": "22:36:36",
+    "createdTime": "22:36:51",
     "dateFormatted": "10/06/2026"
   }
 ]
