@@ -490,7 +490,7 @@
     "infoLevel": "Flagelo",
     "dangerLevel": "Médio",
     "filial": "RLK_MOBIL",
-    "content": "[ATENÇÃO] - (DADOS)\nDescobrir qual desses individuos é o lider da (RLK_MOBIL)",
+    "content": "MEMBRO\n",
     "obs": "",
     "mediaObjects": [
       {
@@ -499,8 +499,8 @@
       }
     ],
     "createdBy": "mafrainf",
-    "createdTime": "17:00:31",
-    "dateFormatted": "10/06/2026"
+    "createdTime": "13:13:48",
+    "dateFormatted": "11/06/2026"
   },
   {
     "id": "DOC-8HM93BM8I",
