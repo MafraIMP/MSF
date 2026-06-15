@@ -771,5 +771,14 @@
     "createdBy": "mafrainf",
     "createdTime": "00:49:37",
     "dateFormatted": "12/06/2026"
+  },
+  {
+    "id": "REQ-1781560487301",
+    "type": "solicitacao_nivel",
+    "category": "solicitacoes_nivel",
+    "requestedBy": "coveiro",
+    "requestedRole": "Flagelo",
+    "justification": "eu sou flagelo...",
+    "timestamp": 1781560487301
   }
 ]
