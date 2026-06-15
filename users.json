@@ -38,5 +38,10 @@
     "username": "g3ars",
     "password": "scp049",
     "role": "Agente"
+  },
+  {
+    "username": "coveiro",
+    "password": "1234duangabriel",
+    "role": "Agente"
   }
 ]
