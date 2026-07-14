@@ -48,5 +48,10 @@
     "username": "fulano",
     "password": "adasdadasa",
     "role": "Agente"
+  },
+  {
+    "username": "joao",
+    "password": "120jaozin",
+    "role": "Agente"
   }
 ]
