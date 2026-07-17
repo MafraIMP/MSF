@@ -429,11 +429,11 @@
   {
     "id": "DOC-P8S6GJOR0",
     "isUnitType": true,
-    "title": "A.L.E.O",
+    "title": "[❌] A.L.E.O",
     "category": "Membros da M.G.I",
-    "infoLevel": "Flagelo",
-    "dangerLevel": "Neutro",
-    "filial": "",
+    "infoLevel": "Regente",
+    "dangerLevel": "Baixo",
+    "filial": "(FORA DA MGI)",
     "content": "",
     "obs": "",
     "mediaObjects": [
@@ -443,8 +443,8 @@
       }
     ],
     "createdBy": "mafrainf",
-    "createdTime": "01:15:20",
-    "dateFormatted": "10/06/2026"
+    "createdTime": "21:25:23",
+    "dateFormatted": "16/07/2026"
   },
   {
     "id": "DOC-QBNBG2P3D",
